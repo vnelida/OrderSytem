@@ -42,14 +42,14 @@
             txtCategory.Location = new Point(301, 152);
             txtCategory.Name = "txtCategory";
             txtCategory.Size = new Size(330, 39);
-            txtCategory.TabIndex = 7;
+            txtCategory.TabIndex = 0;
             // 
             // btnCancel
             // 
             btnCancel.Location = new Point(616, 340);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(165, 73);
-            btnCancel.TabIndex = 6;
+            btnCancel.TabIndex = 2;
             btnCancel.Text = "Cancelar";
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
@@ -59,7 +59,7 @@
             btnOk.Location = new Point(425, 340);
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(165, 73);
-            btnOk.TabIndex = 5;
+            btnOk.TabIndex = 1;
             btnOk.Text = "Ok";
             btnOk.UseVisualStyleBackColor = true;
             btnOk.Click += btnOk_Click;
@@ -87,6 +87,7 @@
             Controls.Add(btnOk);
             Controls.Add(label1);
             Name = "frmCategoriesAE";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = " ";
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);

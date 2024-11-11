@@ -10,31 +10,34 @@ namespace Windows.Forms
     public partial class frmProducts : Form
     {
         private readonly IServiceProvider? _serviceProvider;
-        private readonly IProductsService? _service;
-        private List<ProductDto>? list;
+        private readonly IItemsService? _service;
+        private List<ItemListDto>? list;
 
         private int currentPage = 1;
-        private int pageSize = 4;
+        private int pageSize = 7;
         private int totalPages = 0;
         private int totalRecords = 0;
-        private Order order = Order.ProductZA;
+        private Order order = Order.ProductAZ;
         private FiltroContexto filtroContexto = FiltroContexto.Category;
         private Category? categoryFilter = null;
         private bool filterOn = false;
-        private Func<ProductDto, bool>? filter = null;
+        private Func<ItemListDto, bool>? filter = null;
+
+        private ItemType itemType = ItemType.Product;
+
 
         public frmProducts(IServiceProvider? serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
-            _service = serviceProvider?.GetService<IProductsService>() ?? throw new ApplicationException("Unloaded dependencies"); ;
+            _service = serviceProvider?.GetService<IItemsService>() ?? throw new ApplicationException("Unloaded dependencies"); ;
         }
 
         private void frmProducts_Load(object sender, EventArgs e)
         {
             try
             {
-                totalRecords = _service?.GetCount() ?? 0;
+                totalRecords = _service?.GetCount(itemType) ?? 0;
                 totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
                 LoadData();
             }
@@ -47,7 +50,7 @@ namespace Windows.Forms
 
         private void LoadData()
         {
-            list = _service!.GetList(currentPage, pageSize, order, categoryFilter);
+            list = _service!.GetList(currentPage, pageSize, itemType, filter);
             MostrarDatosEnGrilla();
             if (cboPages.Items.Count != totalPages)
             {
@@ -84,25 +87,22 @@ namespace Windows.Forms
             }
             try
             {
-                Product product = frm.GetTipo();
+                Product? product = frm.GetTipo();
 
                 if (!_service.Exist(product))
                 {
                     _service.Save(product);
-                    totalRecords = _service?.GetCount() ?? 0;
+                    totalRecords = _service?.GetCount(itemType) ?? 0;
                     totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
-                    currentPage = _service?.GetPageByRecord(product.ProductName, pageSize) ?? 0;
+                    currentPage = _service?.GetPageByRecord(itemType, product.Name, pageSize) ?? 0;
                     LoadData();
-                    int row = GridHelper.ObtenerRowIndex(dgv, product.ProductId);
+                    int row = GridHelper.ObtenerRowIndex(dgv, product.ItemId);
                     GridHelper.MarcarRow(dgv, row);
-                    MessageBox.Show("The record has been successfully added",
-                                    "Information",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                    MessageBox.Show("The record has been successfully added", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show($"The record '{product.ProductName} already exists and cannot be added", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"The record '{product.Name} already exists and cannot be added", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 }
             }
@@ -125,10 +125,10 @@ namespace Windows.Forms
 
                 if (r.Tag != null)
                 {
-                    var productDto = (ProductDto)r.Tag;
-                    var product = _service?.GetProductById(productDto.ProductId);
+                    var productDto = (ProductListDto)r.Tag;
+                    var product = _service?.GetItemById(itemType, productDto.ItemId);
                     frmProductsAE frm = new frmProductsAE(_serviceProvider) { Text = "Update product details" };
-                    frm.SetTipo(product);
+                    frm.SetTipo((Product)product);
                     DialogResult dr = frm.ShowDialog(this);
                     if (dr == DialogResult.Cancel)
                     {
@@ -138,9 +138,9 @@ namespace Windows.Forms
                     if (!_service.Exist(product))
                     {
                         _service.Save(product);
-                        currentPage = _service?.GetPageByRecord(product.ProductName, pageSize) ?? 0;
+                        currentPage = _service?.GetPageByRecord(itemType, product.Name, pageSize) ?? 0;
                         LoadData();
-                        int row = GridHelper.ObtenerRowIndex(dgv, product.ProductId);
+                        int row = GridHelper.ObtenerRowIndex(dgv, product.ItemId);
                         GridHelper.MarcarRow(dgv, row);
                         MessageBox.Show("Product details updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -164,17 +164,17 @@ namespace Windows.Forms
             }
             var r = dgv.SelectedRows[0];
             if (r.Tag == null) { return; }
-            var productDto = (ProductDto)r.Tag;
+            var productDto = (ProductListDto)r.Tag;
 
-            DialogResult dr = MessageBox.Show($"Are you sure you want to delete the product '{productDto.ProductName}'?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            DialogResult dr = MessageBox.Show($"Are you sure you want to delete the product '{productDto.Name}'?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (dr == DialogResult.No)
             {
                 return;
             }
-            if (!_service.IsRelated(productDto.ProductId))
+            if (!_service.IsRelated(itemType, productDto.ItemId))
             {
-                _service.Delete(productDto.ProductId);
-                totalRecords = _service?.GetCount() ?? 0;
+                _service.Delete(itemType, productDto.ItemId);
+                totalRecords = _service?.GetCount(itemType) ?? 0;
                 totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
                 if (currentPage > totalPages) currentPage = totalPages;
                 LoadData();
@@ -222,36 +222,36 @@ namespace Windows.Forms
             LoadData();
         }
 
-        private void btnFilter_Click(object sender, EventArgs e)
-        {
-            frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
-            DialogResult dr = frm.ShowDialog(this);
-            if (dr == DialogResult.Cancel) return;
-            categoryFilter = frm.GetCategory();
-            if (categoryFilter is null) return;
+        //private void btnFilter_Click(object sender, EventArgs e)
+        //{
+        //    frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
+        //    DialogResult dr = frm.ShowDialog(this);
+        //    if (dr == DialogResult.Cancel) return;
+        //    categoryFilter = frm.GetCategory();
+        //    if (categoryFilter is null) return;
 
-            list = _service!.GetList(currentPage, pageSize, order, categoryFilter);
-            totalRecords = _service!?.GetCount(categoryFilter) ?? 0;
-            if (totalRecords > 0)
-            {
-                totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
-                LoadData();
-                filterOn = true;
-                btnFilter.Enabled = false;
-            }
-            else
-            {
+        //    list = _service!.GetList(currentPage, pageSize, itemType, filter);
+        //    totalRecords = _service!?.GetCount(itemType) ?? 0;
+        //    if (totalRecords > 0)
+        //    {
+        //        totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+        //        LoadData();
+        //        filterOn = true;
+        //        btnFilter.Enabled = false;
+        //    }
+        //    else
+        //    {
 
-                MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                filter = null;
-            }
-        }
+        //        MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        filter = null;
+        //    }
+        //}
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             currentPage = 1;
             categoryFilter = null;
-            totalRecords = _service!?.GetCount() ?? 0;
+            totalRecords = _service!?.GetCount(itemType) ?? 0;
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
             LoadData();
             filterOn = false;
@@ -286,6 +286,32 @@ namespace Windows.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void tsbFilter_Click(object sender, EventArgs e)
+        {
+            frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.Cancel) return;
+            categoryFilter = frm.GetCategory();
+            if (categoryFilter is null) return;
+
+            list = _service!.GetList(currentPage, pageSize, itemType, filter);
+            totalRecords = _service!?.GetCount(itemType) ?? 0;
+            if (totalRecords > 0)
+            {
+                totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+                LoadData();
+                filterOn = true;
+                btnFilter.Enabled = false;
+            }
+            else
+            {
+
+                MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                filter = null;
+            }
+
         }
     }
 }

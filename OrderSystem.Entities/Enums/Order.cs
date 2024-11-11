@@ -12,6 +12,10 @@ namespace Entities.Enums
         CategoryAZ,
         CategoryZA,
         ProductAZ,
-        ProductZA
+        ProductZA,
+        LastNameZA,
+        LastNameAZ,
+        FirstNameZA,
+        FirstNameAZ
     }
 }

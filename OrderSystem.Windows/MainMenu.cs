@@ -28,5 +28,11 @@ namespace OrderSystem.Windows
             frmProducts frm = new frmProducts(_serviceProvider);
             frm.ShowDialog();
         }
+
+        private void btnCombos_Click(object sender, EventArgs e)
+        {
+            frmCombos frm = new frmCombos(_serviceProvider);
+            frm.ShowDialog();
+        }
     }
 }

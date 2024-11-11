@@ -1,4 +1,6 @@
-﻿using Entities.Entities;
+﻿using Entities.Dtos;
+using Entities.Entities;
+using Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -15,7 +17,8 @@ namespace Data.Interfaces
         void Edit(Employee employee, SqlConnection conn, SqlTransaction? tran = null);
         bool IsRelated(int employeeId, SqlConnection conn, SqlTransaction? tran = null);
         bool Exist(Employee employee, SqlConnection conn, SqlTransaction? tran = null);
-        List<Employee> GetList(SqlConnection conn, SqlTransaction? tran = null);
-
+        Employee GetEmployeeById(int employeeId, SqlConnection conn, SqlTransaction? tran = null);
+        List<EmployeeListDto> GetList(SqlConnection conn, int? currentPage, int? pageSize, Order? order, Genre? selectedGenre);
+        int GetCount(SqlConnection conn, Genre? genre = null, SqlTransaction? tran = null);
     }
 }

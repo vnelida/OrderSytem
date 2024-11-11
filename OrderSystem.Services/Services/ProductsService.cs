@@ -63,7 +63,7 @@ namespace Services.Services
             }
         }
 
-        public List<ProductDto> GetList(int currentPage, int pageSize, Order? order = Order.None, Category? category = null)
+        public List<ProductListDto> GetList(int currentPage, int pageSize, Order? order = Order.None, Category? category = null)
         {
             using (var conn = new SqlConnection(_cadena))
             {
@@ -110,7 +110,7 @@ namespace Services.Services
                 {
                     try
                     {
-                        if (product.ProductId == 0)
+                        if (product.ItemId == 0)
                         {
                             _repository!.Add(product, conn, tran);
                         }

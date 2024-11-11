@@ -38,7 +38,21 @@ namespace IOC
                 return new ProductsService(repository, cadena);
             });
 
+            service.AddScoped<IGenreRepository, GenresRepository>();
+            service.AddScoped<IGenresService>(sp =>
+            {
+                var repository = new GenresRepository();
+                return new GenresService(repository, cadena);
+            });
 
+
+            service.AddScoped<IItemsRepository, ItemsRepository>();
+            service.AddScoped<IItemsService>(sp =>
+            {
+                var repository = new ItemsRepository();
+                var repositoryComboDetails= new ComboDetailsRepository();
+                return new ItemsService(repository, repositoryComboDetails, cadena);
+            });          
             return service.BuildServiceProvider();
         }
        

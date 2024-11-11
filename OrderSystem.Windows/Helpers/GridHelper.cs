@@ -1,10 +1,5 @@
 ﻿using Entities.Dtos;
 using Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Windows.Helpers
 {
@@ -38,20 +33,48 @@ namespace Windows.Helpers
                 case Category category:
                     r.Cells[0].Value = category.CategoryName;
                     break;
-                case Employee employee:
+                case EmployeeListDto employee:
                     r.Cells[0].Value = employee.FirstName;
                     r.Cells[1].Value = employee.LastName;
                     r.Cells[2].Value = employee.Phone;
                     r.Cells[3].Value = employee.Email;
                     r.Cells[4].Value = employee.Address;
+                    r.Cells[5].Value = employee.Dni;
+                    r.Cells[6].Value = employee.DateOfBirth.ToShortDateString();
+                    r.Cells[7].Value = employee.GenreName;
                     break;
-                case ProductDto product:
-                    r.Cells[0].Value = product.ProductName;
+                case ProductListDto product:
+                    r.Cells[0].Value = product.Name;
                     r.Cells[1].Value = product.Description;
-                    r.Cells[2].Value = product.Price;
-                    r.Cells[3].Value = product.Stock;
-                    r.Cells[4].Value = product.CategoryName;
-                    r.Cells[5].Value = product.ProductId;
+                    r.Cells[2].Value = product.CategoryName;
+                    r.Cells[3].Value = product.CostPrice;
+                    r.Cells[4].Value = product.SalePrice;
+                    r.Cells[5].Value = product.Stock;
+                    r.Cells[6].Value = product.ReorderLevel;
+                    r.Cells[7].Value = product.Suspended;
+                    r.Cells[8].Value = product.ItemId;
+                    break;
+                case ComboListDto combo:
+                    r.Cells[0].Value = combo.Name;
+                    r.Cells[1].Value = combo.Description;
+                    r.Cells[2].Value = combo.Size;
+                    r.Cells[3].Value = combo.CostPrice;
+                    r.Cells[4].Value = combo.SalePrice;
+                    r.Cells[5].Value = combo.Stock;
+                    r.Cells[6].Value = combo.ReorderLevel;
+                    r.Cells[7].Value = combo.Suspended;
+                    r.Cells[8].Value = combo.StartDate.ToShortDateString();
+                    r.Cells[9].Value = combo.EndDate.ToShortDateString();
+                    r.Cells[10].Value = combo.ItemId;
+                    break;
+                case ComboDetail detail:
+                    r.Cells[0].Value = detail.ComboDetailId;
+                    r.Cells[1].Value = detail.Product!.Name;
+                    r.Cells[2].Value = detail.Quantity;
+                    break;
+                case Genre genre:
+                    r.Cells[0].Value = genre.GenreId;
+                    r.Cells[1].Value = genre.GenreName;
                     break;
                 default:
                     break;
@@ -60,8 +83,7 @@ namespace Windows.Helpers
             r.Tag = obj;
         }
 
-        public static void AgregarFila(DataGridViewRow r,
-            DataGridView grid)
+        public static void AgregarFila(DataGridViewRow r, DataGridView grid)
         {
             grid.Rows.Add(r);
         }

@@ -43,14 +43,18 @@
             productZAToolStripMenuItem = new ToolStripMenuItem();
             categoryAZToolStripMenuItem = new ToolStripMenuItem();
             categoryZAToolStripMenuItem = new ToolStripMenuItem();
-            btnClose = new ToolStripButton();
+            btnFilter = new ToolStripComboBox();
             btnRefresh = new ToolStripButton();
+            btnClose = new ToolStripButton();
             dgv = new DataGridView();
             colProductName = new DataGridViewTextBoxColumn();
             colDescription = new DataGridViewTextBoxColumn();
-            colPrice = new DataGridViewTextBoxColumn();
-            colStock = new DataGridViewTextBoxColumn();
             colCategory = new DataGridViewTextBoxColumn();
+            colCostPrice = new DataGridViewTextBoxColumn();
+            colSalePrice = new DataGridViewTextBoxColumn();
+            colStock = new DataGridViewTextBoxColumn();
+            colReorderLevel = new DataGridViewTextBoxColumn();
+            colSuspended = new DataGridViewTextBoxColumn();
             colId = new DataGridViewTextBoxColumn();
             panelNavegacion = new Panel();
             btnLast = new Button();
@@ -62,7 +66,7 @@
             label2 = new Label();
             label1 = new Label();
             panelGrilla = new Panel();
-            btnFilter = new ToolStripButton();
+            tsbFilter = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             panelNavegacion.SuspendLayout();
@@ -108,10 +112,10 @@
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnClose, btnRefresh });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh, btnClose, tsbFilter });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1478, 42);
+            toolStrip1.Size = new Size(1974, 42);
             toolStrip1.TabIndex = 6;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -180,15 +184,11 @@
             categoryZAToolStripMenuItem.Text = "Category Z-A";
             categoryZAToolStripMenuItem.Click += categoryZAToolStripMenuItem_Click;
             // 
-            // btnClose
+            // btnFilter
             // 
-            btnClose.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
-            btnClose.ImageTransparentColor = Color.Magenta;
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(76, 36);
-            btnClose.Text = "Close";
-            btnClose.Click += btnClose_Click;
+            btnFilter.Name = "btnFilter";
+            btnFilter.Size = new Size(130, 42);
+            btnFilter.Text = "Filter";
             // 
             // btnRefresh
             // 
@@ -200,12 +200,22 @@
             btnRefresh.Text = "Refresh";
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // btnClose
+            // 
+            btnClose.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
+            btnClose.ImageTransparentColor = Color.Magenta;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(76, 36);
+            btnClose.Text = "Close";
+            btnClose.Click += btnClose_Click;
+            // 
             // dgv
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colProductName, colDescription, colPrice, colStock, colCategory, colId });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colProductName, colDescription, colCategory, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colId });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
             dgv.Name = "dgv";
@@ -213,7 +223,7 @@
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(1478, 554);
+            dgv.Size = new Size(1974, 1287);
             dgv.TabIndex = 7;
             // 
             // colProductName
@@ -232,13 +242,29 @@
             colDescription.Name = "colDescription";
             colDescription.ReadOnly = true;
             // 
-            // colPrice
+            // colCategory
             // 
-            colPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colPrice.HeaderText = "Price";
-            colPrice.MinimumWidth = 10;
-            colPrice.Name = "colPrice";
-            colPrice.ReadOnly = true;
+            colCategory.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCategory.HeaderText = "Category";
+            colCategory.MinimumWidth = 10;
+            colCategory.Name = "colCategory";
+            colCategory.ReadOnly = true;
+            // 
+            // colCostPrice
+            // 
+            colCostPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCostPrice.HeaderText = "Cost Price";
+            colCostPrice.MinimumWidth = 10;
+            colCostPrice.Name = "colCostPrice";
+            colCostPrice.ReadOnly = true;
+            // 
+            // colSalePrice
+            // 
+            colSalePrice.HeaderText = "Sale Price";
+            colSalePrice.MinimumWidth = 10;
+            colSalePrice.Name = "colSalePrice";
+            colSalePrice.ReadOnly = true;
+            colSalePrice.Width = 200;
             // 
             // colStock
             // 
@@ -248,13 +274,21 @@
             colStock.Name = "colStock";
             colStock.ReadOnly = true;
             // 
-            // colCategory
+            // colReorderLevel
             // 
-            colCategory.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colCategory.HeaderText = "Category";
-            colCategory.MinimumWidth = 10;
-            colCategory.Name = "colCategory";
-            colCategory.ReadOnly = true;
+            colReorderLevel.HeaderText = "Reorder Level";
+            colReorderLevel.MinimumWidth = 10;
+            colReorderLevel.Name = "colReorderLevel";
+            colReorderLevel.ReadOnly = true;
+            colReorderLevel.Width = 200;
+            // 
+            // colSuspended
+            // 
+            colSuspended.HeaderText = "Suspended";
+            colSuspended.MinimumWidth = 10;
+            colSuspended.Name = "colSuspended";
+            colSuspended.ReadOnly = true;
+            colSuspended.Width = 200;
             // 
             // colId
             // 
@@ -276,16 +310,16 @@
             panelNavegacion.Controls.Add(label2);
             panelNavegacion.Controls.Add(label1);
             panelNavegacion.Dock = DockStyle.Bottom;
-            panelNavegacion.Location = new Point(0, 474);
+            panelNavegacion.Location = new Point(0, 1207);
             panelNavegacion.Margin = new Padding(6);
             panelNavegacion.Name = "panelNavegacion";
-            panelNavegacion.Size = new Size(1478, 122);
+            panelNavegacion.Size = new Size(1974, 122);
             panelNavegacion.TabIndex = 12;
             // 
             // btnLast
             // 
             btnLast.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnLast.Location = new Point(1337, 34);
+            btnLast.Location = new Point(1833, 34);
             btnLast.Margin = new Padding(6);
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(74, 58);
@@ -296,7 +330,7 @@
             // btnNext
             // 
             btnNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnNext.Location = new Point(1187, 34);
+            btnNext.Location = new Point(1683, 34);
             btnNext.Margin = new Padding(6);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(74, 58);
@@ -307,7 +341,7 @@
             // btnPrevious
             // 
             btnPrevious.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPrevious.Location = new Point(1036, 34);
+            btnPrevious.Location = new Point(1532, 34);
             btnPrevious.Margin = new Padding(6);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.Size = new Size(74, 58);
@@ -318,7 +352,7 @@
             // btnFirst
             // 
             btnFirst.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnFirst.Location = new Point(886, 34);
+            btnFirst.Location = new Point(1382, 34);
             btnFirst.Margin = new Padding(6);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(74, 58);
@@ -373,28 +407,32 @@
             panelGrilla.Location = new Point(0, 42);
             panelGrilla.Margin = new Padding(6);
             panelGrilla.Name = "panelGrilla";
-            panelGrilla.Size = new Size(1478, 554);
+            panelGrilla.Size = new Size(1974, 1287);
             panelGrilla.TabIndex = 11;
             // 
-            // btnFilter
+            // tsbFilter
             // 
-            btnFilter.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnFilter.Image = (Image)resources.GetObject("btnFilter.Image");
-            btnFilter.ImageTransparentColor = Color.Magenta;
-            btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(71, 36);
-            btnFilter.Text = "Filter";
-            btnFilter.Click += btnFilter_Click;
+            tsbFilter.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            tsbFilter.Image = (Image)resources.GetObject("tsbFilter.Image");
+            tsbFilter.ImageTransparentColor = Color.Magenta;
+            tsbFilter.Name = "tsbFilter";
+            tsbFilter.Size = new Size(71, 36);
+            tsbFilter.Text = "Filter";
+            tsbFilter.Click += tsbFilter_Click;
             // 
             // frmProducts
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1478, 596);
+            ClientSize = new Size(1974, 1329);
             Controls.Add(panelNavegacion);
             Controls.Add(panelGrilla);
             Controls.Add(toolStrip1);
+            MaximumSize = new Size(2000, 1400);
+            MinimizeBox = false;
+            MinimumSize = new Size(2000, 1400);
             Name = "frmProducts";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmProducts";
             Load += frmProducts_Load;
             toolStrip1.ResumeLayout(false);
@@ -420,11 +458,6 @@
         private ToolStripButton btnEdit;
         private ToolStripButton btnClose;
         private DataGridView dgv;
-        private DataGridViewTextBoxColumn colProductName;
-        private DataGridViewTextBoxColumn colDescription;
-        private DataGridViewTextBoxColumn colPrice;
-        private DataGridViewTextBoxColumn colStock;
-        private DataGridViewTextBoxColumn colCategory;
         private Panel panelNavegacion;
         private TextBox txtPageCount;
         private ComboBox cboPages;
@@ -435,13 +468,22 @@
         private Button btnNext;
         private Button btnPrevious;
         private Button btnFirst;
-        private DataGridViewTextBoxColumn colId;
         private ToolStripButton btnRefresh;
         private ToolStripDropDownButton btnOrder;
         private ToolStripMenuItem productAZToolStripMenuItem;
         private ToolStripMenuItem productZAToolStripMenuItem;
         private ToolStripMenuItem categoryAZToolStripMenuItem;
         private ToolStripMenuItem categoryZAToolStripMenuItem;
-        private ToolStripButton btnFilter;
+        private DataGridViewTextBoxColumn colProductName;
+        private DataGridViewTextBoxColumn colDescription;
+        private DataGridViewTextBoxColumn colCategory;
+        private DataGridViewTextBoxColumn colCostPrice;
+        private DataGridViewTextBoxColumn colSalePrice;
+        private DataGridViewTextBoxColumn colStock;
+        private DataGridViewTextBoxColumn colReorderLevel;
+        private DataGridViewTextBoxColumn colSuspended;
+        private DataGridViewTextBoxColumn colId;
+        private ToolStripComboBox btnFilter;
+        private ToolStripButton tsbFilter;
     }
 }

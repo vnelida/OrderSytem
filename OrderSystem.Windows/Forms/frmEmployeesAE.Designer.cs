@@ -42,6 +42,12 @@
             txtEmail = new TextBox();
             label5 = new Label();
             errorProvider1 = new ErrorProvider(components);
+            txtDni = new TextBox();
+            label6 = new Label();
+            dtpBDate = new DateTimePicker();
+            label7 = new Label();
+            label8 = new Label();
+            cboGenres = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
@@ -50,7 +56,7 @@
             txtLastName.Location = new Point(261, 180);
             txtLastName.Name = "txtLastName";
             txtLastName.Size = new Size(330, 39);
-            txtLastName.TabIndex = 11;
+            txtLastName.TabIndex = 2;
             // 
             // btnCancel
             // 
@@ -67,7 +73,7 @@
             btnOk.Location = new Point(462, 580);
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(165, 73);
-            btnOk.TabIndex = 9;
+            btnOk.TabIndex = 1;
             btnOk.Text = "Ok";
             btnOk.UseVisualStyleBackColor = true;
             btnOk.Click += btnOk_Click;
@@ -86,7 +92,7 @@
             txtFirstName.Location = new Point(261, 97);
             txtFirstName.Name = "txtFirstName";
             txtFirstName.Size = new Size(330, 39);
-            txtFirstName.TabIndex = 15;
+            txtFirstName.TabIndex = 0;
             // 
             // label3
             // 
@@ -100,9 +106,11 @@
             // txtPhone
             // 
             txtPhone.Location = new Point(261, 251);
+            txtPhone.MaxLength = 999999999;
             txtPhone.Name = "txtPhone";
             txtPhone.Size = new Size(330, 39);
-            txtPhone.TabIndex = 19;
+            txtPhone.TabIndex = 3;
+            txtPhone.TabStop = false;
             // 
             // label2
             // 
@@ -116,9 +124,10 @@
             // txtAddress
             // 
             txtAddress.Location = new Point(261, 413);
+            txtAddress.MaxLength = 999999999;
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(330, 39);
-            txtAddress.TabIndex = 17;
+            txtAddress.TabIndex = 5;
             // 
             // label4
             // 
@@ -134,7 +143,7 @@
             txtEmail.Location = new Point(261, 338);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(330, 39);
-            txtEmail.TabIndex = 21;
+            txtEmail.TabIndex = 4;
             // 
             // label5
             // 
@@ -149,11 +158,69 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
+            // txtDni
+            // 
+            txtDni.Location = new Point(261, 488);
+            txtDni.MaxLength = 999999999;
+            txtDni.Name = "txtDni";
+            txtDni.Size = new Size(330, 39);
+            txtDni.TabIndex = 6;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(172, 488);
+            label6.Name = "label6";
+            label6.Size = new Size(55, 32);
+            label6.TabIndex = 22;
+            label6.Text = "DNI";
+            // 
+            // dtpBDate
+            // 
+            dtpBDate.Format = DateTimePickerFormat.Short;
+            dtpBDate.Location = new Point(759, 206);
+            dtpBDate.Name = "dtpBDate";
+            dtpBDate.Size = new Size(250, 39);
+            dtpBDate.TabIndex = 7;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(759, 162);
+            label7.Name = "label7";
+            label7.Size = new Size(150, 32);
+            label7.TabIndex = 25;
+            label7.Text = "Date of birth";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(738, 300);
+            label8.Name = "label8";
+            label8.Size = new Size(78, 32);
+            label8.TabIndex = 26;
+            label8.Text = "Genre";
+            // 
+            // cboGenres
+            // 
+            cboGenres.FormattingEnabled = true;
+            cboGenres.Location = new Point(851, 300);
+            cboGenres.Name = "cboGenres";
+            cboGenres.Size = new Size(242, 40);
+            cboGenres.TabIndex = 8;
+            cboGenres.SelectedIndexChanged += cboGenres_SelectedIndexChanged;
+            // 
             // frmEmployeesAE
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(872, 720);
+            ClientSize = new Size(1338, 720);
+            Controls.Add(cboGenres);
+            Controls.Add(label8);
+            Controls.Add(label7);
+            Controls.Add(dtpBDate);
+            Controls.Add(txtDni);
+            Controls.Add(label6);
             Controls.Add(txtEmail);
             Controls.Add(label5);
             Controls.Add(txtPhone);
@@ -167,6 +234,7 @@
             Controls.Add(btnOk);
             Controls.Add(label1);
             Name = "frmEmployeesAE";
+            StartPosition = FormStartPosition.CenterScreen;
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -187,5 +255,11 @@
         private TextBox txtEmail;
         private Label label5;
         private ErrorProvider errorProvider1;
+        private TextBox txtDni;
+        private Label label6;
+        private Label label8;
+        private Label label7;
+        private DateTimePicker dtpBDate;
+        private ComboBox cboGenres;
     }
 }

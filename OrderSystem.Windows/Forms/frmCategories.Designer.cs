@@ -45,7 +45,7 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(800, 42);
+            toolStrip1.Size = new Size(1974, 42);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -92,7 +92,7 @@
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(800, 408);
+            dgv.Size = new Size(1974, 1287);
             dgv.TabIndex = 1;
             // 
             // colCategories
@@ -107,10 +107,13 @@
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1974, 1329);
             Controls.Add(dgv);
             Controls.Add(toolStrip1);
+            MaximumSize = new Size(2000, 1400);
+            MinimumSize = new Size(2000, 1400);
             Name = "frmCategories";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmCategories";
             Load += frmCategories_Load;
             toolStrip1.ResumeLayout(false);

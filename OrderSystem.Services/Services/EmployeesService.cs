@@ -1,5 +1,8 @@
-﻿using Data.Interfaces;
+﻿using Dapper;
+using Data.Interfaces;
+using Entities.Dtos;
 using Entities.Entities;
+using Entities.Enums;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,15 +54,32 @@ namespace Services.Services
             }
         }
 
-        public List<Employee> GetList()
+        public int GetCount(Genre? genreFilter)
         {
             using (var conn = new SqlConnection(_cadena))
             {
-                return _repository!.GetList(conn);
+                conn.Open();
+                return _repository!.GetCount(conn, genreFilter);
 
             }
         }
 
+        public Employee GetEmployeeById(int employeeId)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository!.GetEmployeeById(employeeId, conn);
+            }
+        }
+        public List<EmployeeListDto> GetList(int? currentPage, int? pageSize, Order? order = Order.None, Genre? selectedGenre = null)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository!.GetList(conn, currentPage, pageSize, order, selectedGenre);
+            }
+        }
         public bool IsRelated(int employeeId)
         {
             using (var conn = new SqlConnection(_cadena))

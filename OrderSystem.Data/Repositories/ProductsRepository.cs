@@ -16,7 +16,7 @@ namespace Data.Repositories
             var query = @"INSERT INTO Products (ProductName, Description, Price, Stock, CategoryId) 
                                 VALUES (@ProductName, @Description, @Price, @Stock, @CategoryId); 
                                 SELECT CAST(SCOPE_IDENTITY() as int); ";
-            product.ProductId = conn.Query<int>(query, product, tran).Single();
+            product.ItemId = conn.Query<int>(query, product, tran).Single();
         }
 
         public void Delete(int productId, SqlConnection conn, SqlTransaction? tran = null)
@@ -50,7 +50,7 @@ namespace Data.Repositories
             string selectQuery = @"SELECT COUNT(*) FROM Products ";
             string condicionalQuery = string.Empty;
             string finalQuery = string.Empty;
-            condicionalQuery = product.ProductId == 0 ?
+            condicionalQuery = product.ItemId == 0 ?
                 " WHERE ProductName=@ProductName AND CategoryId=@CategoryId" :
                 " WHERE ProductName=@ProductName AND CategoryId=@CategoryId " +
                 "AND ProductId<>@ProductId";
@@ -87,10 +87,10 @@ namespace Data.Repositories
             //return conn.ExecuteScalar<int>(selectQuery);
         }
 
-        public List<ProductDto> GetList(SqlConnection conn, int currentPage, int pageSize, Order? order = Order.None, Category? category = null, SqlTransaction? tran = null)
+        public List<ProductListDto> GetList(SqlConnection conn, int currentPage, int pageSize, Order? order = Order.None, Category? category = null, SqlTransaction? tran = null)
         {
             var selectQuery = @"SELECT p.ProductId, p.ProductName, p.Description, 
-                                p.Price, p.Stock, c.CategoryName
+                                p.CostPrice, p.Stock, c.CategoryName
                                 FROM Products p INNER JOIN Categories c ON 
                                 p.CategoryId = c.CategoryId"; 
 
@@ -136,7 +136,7 @@ namespace Data.Repositories
             //    selectQuery += $" OFFSET {offSet} ROWS FETCH NEXT {pageSize.Value} ROWS ONLY";
             //}
             //return conn.Query<ProductDto>(selectQuery, new { CategoryId = category?.CategoryId }).ToList();
-            var lista = conn.Query<ProductDto>(selectQuery, new { CategoryId = category?.CategoryId }).ToList();
+            var lista = conn.Query<ProductListDto>(selectQuery, new { CategoryId = category?.CategoryId }).ToList();
 
             return lista.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
             //var offset = (currentPage - 1) * pageSize;

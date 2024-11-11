@@ -14,7 +14,7 @@ namespace Services.Interfaces
         void Delete(int productId);
         bool IsRelated(int productId);
         bool Exist(Product product);
-        List<ProductDto> GetList(int currentPage, int pageSize, Order? order = Order.None, Category? category = null);
+        List<ProductListDto> GetList(int currentPage, int pageSize, Order? order = Order.None, Category? category = null);
         void Save(Product product);
         Product GetProductById(int productId);
         int GetCount(Category? category = null);
