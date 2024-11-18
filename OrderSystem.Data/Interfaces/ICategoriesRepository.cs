@@ -16,5 +16,6 @@ namespace Data.Interfaces
         bool IsRelated(int categoryId, SqlConnection conn, SqlTransaction? tran = null);
         bool Exist(Category category, SqlConnection conn, SqlTransaction? tran = null);
         List<Category> GetList(SqlConnection conn, SqlTransaction? tran = null);
+        Category? GetCategoryByName(string categoryName, SqlConnection conn);
     }
 }

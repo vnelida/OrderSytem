@@ -46,6 +46,16 @@ namespace Services.Services
             }
         }
 
+        public Category? GetCategoryByName(string categoryName)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                var category = _repository!.GetCategoryByName(categoryName, conn);
+                return category;
+            }
+        }
+
         public List<Category> GetList()
         {
             using (var conn = new SqlConnection(_cadena))

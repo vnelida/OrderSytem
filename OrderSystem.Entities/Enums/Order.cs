@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Entities.Enums
+﻿namespace Entities.Enums
 {
     public enum Order
     {
-        None=0,
+        None = 0,
         CategoryAZ,
         CategoryZA,
         ProductAZ,
@@ -16,6 +10,8 @@ namespace Entities.Enums
         LastNameZA,
         LastNameAZ,
         FirstNameZA,
-        FirstNameAZ
+        FirstNameAZ,
+        SalePrice,
+        SalePriceDesc
     }
 }

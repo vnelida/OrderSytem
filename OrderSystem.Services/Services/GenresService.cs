@@ -20,8 +20,8 @@ namespace Services.Services
             using (var conn = new SqlConnection(_cadena))
             {
                 conn.Open();
-                var product = _repository!.GetGenreByName(genreName, conn);
-                return product;
+                var genre = _repository!.GetGenreByName(genreName, conn);
+                return genre;
             }
         }
 

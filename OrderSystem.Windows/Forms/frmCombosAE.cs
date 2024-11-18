@@ -111,21 +111,21 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtDescription, "A description is required.");
             }
-            if (txtDescription.Text.Length > 100)
+            if (txtDescription.Text.Length > 600)
             {
                 valido = false;
-                errorProvider1.SetError(txtDescription, "The description must not exceed 100 characters.");
+                errorProvider1.SetError(txtDescription, "The description must not exceed 600 characters.");
             }
             if (txtDescription.Text.Length < 3)
             {
                 valido = false;
                 errorProvider1.SetError(txtDescription, "The description must be at least 3 characters long.");
             }
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
-            {
-                valido = false;
-                errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
-            }
+            //if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
+            //{
+            //    valido = false;
+            //    errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
+            //}
 
 
             if (!decimal.TryParse(numPrice.Text, out decimal costPrice)
@@ -173,10 +173,8 @@ namespace Windows.Forms
             if (combo!.Exist(detail))
             {
                 DialogResult drDetalle = MessageBox.Show(
-                    $"¿Desea agregar la cantidad al bombón {detail.Product!.Name}?", "Detalle Existente",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button2);
+                    $"Do you want to increase the quantity of the product {detail.Product!.Name}?", "Existing Product",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
                 if (drDetalle == DialogResult.Yes)
                 {
                     combo!.Add(detail);
@@ -197,15 +195,18 @@ namespace Windows.Forms
             }
             var r = dgv.SelectedRows[0];
             ComboDetail detail = (ComboDetail)r.Tag!;
-            DialogResult dr = MessageBox.Show($"¿Desea dar de baja el bombón {detail.Combo!.Name}?",
-                "Confirmar",
+            DialogResult dr = MessageBox.Show($"Do you want to remove the product?",
+                "Verify",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                 MessageBoxDefaultButton.Button2);
-            if (dr == DialogResult.Cancel) return;
-            combo!.Add(detail);
-            GridHelper.QuitarFila(r, dgv);
-            MessageBox.Show("Item eliminado!!!", "Mensaje",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (dr == DialogResult.No) return;
+            else
+            {
+                combo!.Delete(detail);
+                GridHelper.QuitarFila(r, dgv);
+                MessageBox.Show("Item removed from the combo.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
         }
 
@@ -220,7 +221,7 @@ namespace Windows.Forms
             if (dr == DialogResult.Cancel) return;
             detail = frm.GetDetail();
             GridHelper.SetearFila(r, detail!);
-            MessageBox.Show("Item editado!!!", "Mensaje",
+            MessageBox.Show("Item updated", "Success",
                  MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }

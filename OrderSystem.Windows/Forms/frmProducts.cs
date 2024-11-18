@@ -3,6 +3,7 @@ using Entities.Entities;
 using Entities.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
+using System.Globalization;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -12,16 +13,15 @@ namespace Windows.Forms
         private readonly IServiceProvider? _serviceProvider;
         private readonly IItemsService? _service;
         private List<ItemListDto>? list;
+        private Func<ItemListDto, bool>? filter = null;
 
         private int currentPage = 1;
-        private int pageSize = 7;
+        private int pageSize = 10;
         private int totalPages = 0;
         private int totalRecords = 0;
         private Order order = Order.ProductAZ;
-        private FiltroContexto filtroContexto = FiltroContexto.Category;
         private Category? categoryFilter = null;
         private bool filterOn = false;
-        private Func<ItemListDto, bool>? filter = null;
 
         private ItemType itemType = ItemType.Product;
 
@@ -37,8 +37,7 @@ namespace Windows.Forms
         {
             try
             {
-                totalRecords = _service?.GetCount(itemType) ?? 0;
-                totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+                CombosHelper.CargarTSBComboCategory(_serviceProvider, ref btnFilter);
                 LoadData();
             }
             catch (Exception)
@@ -50,7 +49,19 @@ namespace Windows.Forms
 
         private void LoadData()
         {
-            list = _service!.GetList(currentPage, pageSize, itemType, filter);
+            totalRecords = _service?.GetCount(itemType, categoryFilter) ?? 0;
+            if (totalRecords<1)
+            {
+                MessageBox.Show("No products found in this category", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                categoryFilter = null;
+                totalRecords = _service?.GetCount(itemType, categoryFilter) ?? 0;
+            }
+            totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+            if (currentPage > totalPages)
+            {
+                currentPage = 1; 
+            }
+            list = _service!.GetList(currentPage, pageSize, itemType, order, categoryFilter);
             MostrarDatosEnGrilla();
             if (cboPages.Items.Count != totalPages)
             {
@@ -222,30 +233,6 @@ namespace Windows.Forms
             LoadData();
         }
 
-        //private void btnFilter_Click(object sender, EventArgs e)
-        //{
-        //    frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
-        //    DialogResult dr = frm.ShowDialog(this);
-        //    if (dr == DialogResult.Cancel) return;
-        //    categoryFilter = frm.GetCategory();
-        //    if (categoryFilter is null) return;
-
-        //    list = _service!.GetList(currentPage, pageSize, itemType, filter);
-        //    totalRecords = _service!?.GetCount(itemType) ?? 0;
-        //    if (totalRecords > 0)
-        //    {
-        //        totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
-        //        LoadData();
-        //        filterOn = true;
-        //        btnFilter.Enabled = false;
-        //    }
-        //    else
-        //    {
-
-        //        MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        filter = null;
-        //    }
-        //}
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -255,7 +242,7 @@ namespace Windows.Forms
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
             LoadData();
             filterOn = false;
-            btnFilter.Enabled = true;
+            btnFilter.SelectedIndex = 0;
 
         }
 
@@ -271,15 +258,15 @@ namespace Windows.Forms
             LoadData();
         }
 
-        private void categoryAZToolStripMenuItem_Click(object sender, EventArgs e)
+        private void salePriceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            order = Order.CategoryAZ;
+            order = Order.SalePrice;
             LoadData();
         }
 
-        private void categoryZAToolStripMenuItem_Click(object sender, EventArgs e)
+        private void salePriceDescToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            order = Order.CategoryZA;
+            order = Order.SalePriceDesc;
             LoadData();
         }
 
@@ -288,30 +275,14 @@ namespace Windows.Forms
             Close();
         }
 
-        private void tsbFilter_Click(object sender, EventArgs e)
+        private void btnFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
-            DialogResult dr = frm.ShowDialog(this);
-            if (dr == DialogResult.Cancel) return;
-            categoryFilter = frm.GetCategory();
-            if (categoryFilter is null) return;
-
-            list = _service!.GetList(currentPage, pageSize, itemType, filter);
-            totalRecords = _service!?.GetCount(itemType) ?? 0;
-            if (totalRecords > 0)
+            if (btnFilter.SelectedIndex > 0)
             {
-                totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+                var _serviceProduct = _serviceProvider.GetService<ICategoriesService>();
+                categoryFilter = _serviceProduct?.GetCategoryByName(btnFilter.Text);
                 LoadData();
-                filterOn = true;
-                btnFilter.Enabled = false;
             }
-            else
-            {
-
-                MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                filter = null;
-            }
-
         }
     }
 }

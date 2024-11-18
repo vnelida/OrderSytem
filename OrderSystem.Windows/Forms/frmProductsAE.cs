@@ -10,7 +10,7 @@ namespace Windows.Forms
         private Product? product;
 
         private string imagenNoDisponible = Environment.CurrentDirectory + @"\Imagenes\SinImagenDisponible.jpg";
-        private string archivoNoEncontrado = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado.jpg";
+        private string archivoNoEncontrado = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado1.jpg";
         private string? archivoImagen = string.Empty;
         private string carpetaImagen = Environment.CurrentDirectory + @"\Imagenes\";
 
@@ -26,7 +26,7 @@ namespace Windows.Forms
             if (product != null)
             {
                 txtProductName.Text = product.Name;
-                txtDescription.Text = product.Description;
+                txtBoxDescription.Text = product.Description;
                 numPrice.Value = product.CostPrice;
                 numSalePrice.Value = product.SalePrice;
                 numStock.Value = product.Stock;
@@ -44,6 +44,7 @@ namespace Windows.Forms
                     {
                         picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
                         archivoImagen = product.Image;
+                        picImage.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                 }
                 else
@@ -61,42 +62,106 @@ namespace Windows.Forms
         {
             if (ValidateData())
             {
-
                 if (product == null)
                 {
                     product = new Product();
                 }
+
                 product.Name = txtProductName.Text;
-                product.Description = txtDescription.Text;
+                product.Description=txtBoxDescription.Text;
                 product.Stock = (int)numStock.Value;
                 product.ReorderLevel = (int)numReorderLevel.Value;
                 product.Suspended = checkBoxSuspended.Checked;
                 product.CostPrice = numPrice.Value;
                 product.SalePrice = numSalePrice.Value;
+
                 if (cboCategories.SelectedValue is not null)
                 {
                     product.CategoryId = (int)cboCategories.SelectedValue;
                     product.Category = selectedCategory;
-
                 }
-                if (product.Image != string.Empty || product.Image is not null)
+
+                // Verificar si se seleccionó una nueva imagen
+                if (!string.IsNullOrEmpty(archivoImagen))
                 {
-                    if (!File.Exists($"{carpetaImagen}{product.Image}"))
+                    string destino = Path.Combine(carpetaImagen, Path.GetFileName(archivoImagen));
+
+                    // Si la imagen no existe en la carpeta destino, copiarla
+                    if (!File.Exists(destino))
+                    {
+                        File.Copy(archivoImagen, destino);
+
+                        // Confirmar que la imagen fue copiada
+                        MessageBox.Show($"Imagen copiada a: {destino}");
+                    }
+
+                    // Asignar el nombre del archivo al producto
+                    product.Image = Path.GetFileName(destino);
+                }
+
+                // Manejar la imagen del producto existente
+                if (!string.IsNullOrEmpty(product.Image))
+                {
+                    string rutaImagenExistente = Path.Combine(carpetaImagen, product.Image);
+
+                    if (!File.Exists(rutaImagenExistente))
                     {
                         picImage.Image = Image.FromFile(archivoNoEncontrado);
                     }
                     else
                     {
-                        picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
-                        archivoImagen = product.Image;
+                        picImage.Image = Image.FromFile(rutaImagenExistente);
                     }
+                    picImage.SizeMode = PictureBoxSizeMode.Zoom;
                 }
                 else
                 {
                     picImage.Image = Image.FromFile(imagenNoDisponible);
+                    picImage.SizeMode = PictureBoxSizeMode.Zoom;
                 }
+
+                // Indicar que el formulario fue completado correctamente
                 DialogResult = DialogResult.OK;
             }
+            //if (ValidateData())
+            //{
+
+            //    if (product == null)
+            //    {
+            //        product = new Product();
+            //    }
+            //    MessageBox.Show($"archivoImagen: {archivoImagen}");
+            //    product.Name = txtProductName.Text;
+            //    product.Description = txtDescription.Text;
+            //    product.Stock = (int)numStock.Value;
+            //    product.ReorderLevel = (int)numReorderLevel.Value;
+            //    product.Suspended = checkBoxSuspended.Checked;
+            //    product.CostPrice = numPrice.Value;
+            //    product.SalePrice = numSalePrice.Value;
+            //    if (cboCategories.SelectedValue is not null)
+            //    {
+            //        product.CategoryId = (int)cboCategories.SelectedValue;
+            //        product.Category = selectedCategory;
+
+            //    }
+            //    if (product.Image != string.Empty || product.Image is not null)
+            //    {
+            //        if (!File.Exists($"{carpetaImagen}{product.Image}"))
+            //        {
+            //            picImage.Image = Image.FromFile(archivoNoEncontrado);
+            //        }
+            //        else
+            //        {
+            //            picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
+            //            archivoImagen = product.Image;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        picImage.Image = Image.FromFile(imagenNoDisponible);
+            //    }
+            //    DialogResult = DialogResult.OK;
+            //}
         }
         private void cboCategories_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -123,7 +188,7 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtProductName, "The product name is required.");
             }
-            if (txtProductName.Text.Length > 40 )
+            if (txtProductName.Text.Length > 40)
             {
                 valido = false;
                 errorProvider1.SetError(txtProductName, "The product name must not exceed 40 characters.");
@@ -138,26 +203,26 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtProductName, "The product name must contain only letters and spaces.");
             }
-            if (string.IsNullOrEmpty(txtDescription.Text) || txtDescription.Text.Length > 100 || txtDescription.Text.Length < 3 || !System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
+            if (string.IsNullOrEmpty(txtBoxDescription.Text))
             {
                 valido = false;
-                errorProvider1.SetError(txtDescription, "A description is required.");
+                errorProvider1.SetError(txtBoxDescription, "A description is required.");
             }
-            if (txtDescription.Text.Length > 100)
+            if (txtBoxDescription.Text.Length > 500)
             {
                 valido = false;
-                errorProvider1.SetError(txtDescription, "The description must not exceed 100 characters.");
+                errorProvider1.SetError(txtBoxDescription, "The description must not exceed 500 characters.");
             }
-            if (txtDescription.Text.Length < 3)
+            if (txtBoxDescription.Text.Length < 3)
             {
                 valido = false;
-                errorProvider1.SetError(txtDescription, "The description must be at least 3 characters long.");
+                errorProvider1.SetError(txtBoxDescription, "The description must be at least 3 characters long.");
             }
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
-            {
-                valido = false;
-                errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
-            }
+            //if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
+            //{
+            //    valido = false;
+            //    errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
+            //}
             if (!decimal.TryParse(numPrice.Text, out decimal costPrice)
                 || costPrice <= 0)
             {
@@ -207,6 +272,11 @@ namespace Windows.Forms
 
         }
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void frmProductsAE_Load(object sender, EventArgs e)
         {
 
         }

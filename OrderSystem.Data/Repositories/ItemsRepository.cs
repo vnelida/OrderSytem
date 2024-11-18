@@ -199,7 +199,7 @@ namespace Data.Repositories
             return false;
         }
 
-        public int GetCount(SqlConnection conn, ItemType itemType, Func<ItemListDto, bool>? filter = null, SqlTransaction? tran = null)
+        public int GetCount(SqlConnection conn, ItemType itemType, Category? selectedCategory = null, Func<ItemListDto, bool>? filter = null, SqlTransaction? tran = null)
         {
             var listItems = new List<ItemListDto>();
             if (itemType == ItemType.Product)
@@ -207,7 +207,20 @@ namespace Data.Repositories
                 var selectQuery = @"SELECT ProductId as ItemId, ProductName as Name, Description, CostPrice, SalePrice,
                                     Stock, Suspended, ReorderLevel, Image, CategoryId
                                     FROM Products";
-                var productList = conn.Query<ProductListDto>(selectQuery).ToList();
+
+                List<string> conditions = new List<string>();
+
+                if (selectedCategory != null)
+                {
+                    conditions.Add("CategoryId=@CategoryId");
+                }
+
+                if (conditions.Any())
+                {
+                    selectQuery += " WHERE " + string.Join(" AND ", conditions);
+                }
+
+                var productList = conn.Query<ProductListDto>(selectQuery, new { CategoryId = selectedCategory?.CategoryId }).ToList();
                 listItems.AddRange(productList);
 
             }
@@ -332,7 +345,7 @@ namespace Data.Repositories
             return itemsList;
         }
 
-        public List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Func<ItemListDto, bool>? filter = null, SqlTransaction? tran = null)
+        public List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, SqlTransaction? tran = null)
         {
             var itemsList = new List<ItemListDto>();
 
@@ -340,10 +353,46 @@ namespace Data.Repositories
             {
                 var selectQuery = @"SELECT p.ProductId as ItemId, p.ProductName as Name, p.Description, p.CostPrice, p.SalePrice,
                                     p.Stock, p.Suspended, p.ReorderLevel, p.Image, c.CategoryName
-                                    FROM Products p INNER JOIN Categories c on p.CategoryId=c.CategoryId ORDER BY p.ProductName";
-                var productList = conn.Query<ProductListDto>(selectQuery).ToList();
-                itemsList.AddRange(productList);
+                                    FROM Products p INNER JOIN Categories c on p.CategoryId=c.CategoryId ";
 
+                List<string> conditions = new List<string>();
+
+                if (selectedCategory != null)
+                {
+                    conditions.Add("c.CategoryId=@CategoryId");
+                }
+
+                if (conditions.Any())
+                {
+                    selectQuery += " WHERE " + string.Join(" AND ", conditions);
+                }
+                string orderBy = string.Empty;
+
+                switch (order)
+                {
+                    case Order.None:
+                        orderBy = " ORDER BY ProductId DESC ";
+                        break;
+                    case Order.ProductAZ:
+                        orderBy = " ORDER BY ProductName ";
+
+                        break;
+                    case Order.ProductZA:
+                        orderBy = " ORDER BY ProductName DESC ";
+
+                        break;
+                    case Order.SalePrice:
+                        orderBy = " ORDER BY SalePrice ";
+
+                        break;
+                    default:
+                        orderBy = " ORDER BY SalePrice DESC ";
+                        break;
+                }
+                selectQuery += orderBy; 
+                var productList = conn.Query<ProductListDto>(selectQuery, new { CategoryId = selectedCategory?.CategoryId }).ToList();
+
+                itemsList.AddRange(productList);
             }
             if (itemType == ItemType.Combo)
             {
@@ -353,10 +402,6 @@ namespace Data.Repositories
                 var combosList = conn.Query<ComboListDto>(selectQuery).ToList();
                 itemsList.AddRange(combosList);
 
-            }
-            if (filter != null)
-            {
-                itemsList = itemsList.Where(filter).ToList();
             }
             return itemsList.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
         }

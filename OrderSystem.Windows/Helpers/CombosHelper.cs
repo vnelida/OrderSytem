@@ -11,15 +11,11 @@ namespace Windows.Helpers
         public static void CargarTSBComboGenres(IServiceProvider serviceProvider, ref ToolStripComboBox cbo)
         {
             var service = serviceProvider.GetService<IGenresService>();
-
             var list = service?.GetListGenres();
             var defaultGenre = new Genre
             {
                 GenreName = "Filter by:"
             };
-
-
-
             cbo.Items.Clear();
             list?.Insert(0, defaultGenre);
             if (list is not null)
@@ -28,7 +24,28 @@ namespace Windows.Helpers
                 {
                     cbo.Items.Add(genre.GenreName);
                 }
-
+            }
+            if (list?.Count > 0)
+            {
+                cbo.SelectedIndex = 0;
+            }
+        }
+        public static void CargarTSBComboCategory(IServiceProvider serviceProvider, ref ToolStripComboBox cbo)
+        {
+            var service = serviceProvider.GetService<ICategoriesService>();
+            var list = service?.GetList();
+            var defaultCategory = new Category
+            {
+                CategoryName = "Filter by:"
+            };
+            cbo.Items.Clear();
+            list?.Insert(0, defaultCategory);
+            if (list is not null)
+            {
+                foreach (Category category in list)
+                {
+                    cbo.Items.Add(category.CategoryName);
+                }
             }
             if (list?.Count > 0)
             {

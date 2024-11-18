@@ -100,5 +100,12 @@ namespace Data.Repositories
                     Categories ORDER BY CategoryName";
             return conn.Query<Category>(selectQuery).ToList();
         }
+
+        public Category? GetCategoryByName(string categoryName, SqlConnection conn)
+        {
+            var selectQuery = @"SELECT CategoryId, CategoryName FROM Categories WHERE CategoryName = @CategoryName";
+
+            return conn.QueryFirstOrDefault<Category>(selectQuery, new { categoryName });
+        }
     }
 }

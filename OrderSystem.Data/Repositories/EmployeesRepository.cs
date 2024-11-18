@@ -131,21 +131,16 @@ namespace Data.Repositories
                     break;
                 case Order.FirstNameAZ:
                     orderBy = " ORDER BY FirstName ";
-
                     break;
                 case Order.FirstNameZA:
                     orderBy = " ORDER BY FirstName DESC ";
-
                     break;
                 case Order.LastNameAZ:
                     orderBy = " ORDER BY LastName ";
-
                     break;
                 default:
                     orderBy = " ORDER BY LastName DESC ";
-
                     break;
-
             }
             selectQuery += orderBy;
 

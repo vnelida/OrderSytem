@@ -31,8 +31,6 @@ namespace Windows.Forms
         {
             try
             {
-                //totalRecords = _service!.GetCount(genreFiltro);
-                //totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
                 LoadData();
                 CombosHelper.CargarTSBComboGenres(_serviceProvider, ref btnFilter);
 
@@ -75,19 +73,7 @@ namespace Windows.Forms
                 cboPages.SelectedIndex = currentPage - 1;
             }
             cboPages.SelectedIndexChanged += cboPages_SelectedIndexChanged;
-            //totalRecords = _service!.GetCount(genreFiltro);
-            //totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
 
-            //list = _service!.GetList(currentPage, pageSize, order, genreFiltro);
-            //MostrarDatosEnGrilla();
-            //if (cboPages.Items.Count != totalPages)
-            //{
-            //    CombosHelper.CargarComboPaginas(ref cboPages, totalPages);
-            //}
-            //txtPageCount.Text = totalPages.ToString();
-            //cboPages.SelectedIndexChanged -= cboPages_SelectedIndexChanged;
-            //cboPages.SelectedIndex = currentPage == 1 ? 0 : currentPage -1;
-            //cboPages.SelectedIndexChanged += cboPages_SelectedIndexChanged;
         }
         private void cboPages_SelectedIndexChanged(object? sender, EventArgs e)
         {
@@ -296,7 +282,12 @@ namespace Windows.Forms
             genreFiltro = null;
             order = Order.None;
             btnFilter.SelectedIndex = 0;
-            LoadData() ;
+            LoadData();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

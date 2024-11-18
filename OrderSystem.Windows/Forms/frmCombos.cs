@@ -46,7 +46,7 @@ namespace Windows.Forms
         }
         private void LoadData()
         {
-            list = _service!.GetList(currentPage, pageSize, itemType, filter);
+            list = _service!.GetList(currentPage, pageSize, itemType);
             MostrarDatosEnGrilla();
             if (cboPages.Items.Count != totalPages)
             {

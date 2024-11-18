@@ -165,5 +165,10 @@ namespace Windows.Forms
                 throw;
             }
         }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmProductsAE));
             cboCategories = new ComboBox();
             label2 = new Label();
-            txtDescription = new TextBox();
             label1 = new Label();
             label3 = new Label();
             txtProductName = new TextBox();
@@ -52,6 +52,8 @@
             openFileDialog1 = new OpenFileDialog();
             btnSearchImages = new Button();
             groupBox1 = new GroupBox();
+            splitContainer1 = new SplitContainer();
+            txtBoxDescription = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)numPrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numStock).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -59,6 +61,10 @@
             ((System.ComponentModel.ISupportInitialize)numSalePrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picImage).BeginInit();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
             // cboCategories
@@ -66,7 +72,7 @@
             cboCategories.DropDownStyle = ComboBoxStyle.DropDownList;
             cboCategories.FormattingEnabled = true;
             cboCategories.ItemHeight = 32;
-            cboCategories.Location = new Point(220, 224);
+            cboCategories.Location = new Point(693, 134);
             cboCategories.Margin = new Padding(6);
             cboCategories.Name = "cboCategories";
             cboCategories.Size = new Size(327, 40);
@@ -76,26 +82,19 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(94, 227);
+            label2.BackColor = Color.Transparent;
+            label2.Location = new Point(567, 137);
             label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
             label2.Size = new Size(122, 32);
             label2.TabIndex = 23;
             label2.Text = "Category: ";
             // 
-            // txtDescription
-            // 
-            txtDescription.Location = new Point(220, 155);
-            txtDescription.Margin = new Padding(6);
-            txtDescription.MaxLength = 50;
-            txtDescription.Name = "txtDescription";
-            txtDescription.Size = new Size(610, 39);
-            txtDescription.TabIndex = 1;
-            // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(61, 158);
+            label1.BackColor = Color.Transparent;
+            label1.Location = new Point(53, 134);
             label1.Margin = new Padding(6, 0, 6, 0);
             label1.Name = "label1";
             label1.Size = new Size(147, 32);
@@ -105,7 +104,8 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(77, 379);
+            label3.BackColor = Color.Transparent;
+            label3.Location = new Point(37, 427);
             label3.Margin = new Padding(6, 0, 6, 0);
             label3.Name = "label3";
             label3.Size = new Size(131, 32);
@@ -114,7 +114,7 @@
             // 
             // txtProductName
             // 
-            txtProductName.Location = new Point(220, 76);
+            txtProductName.Location = new Point(212, 52);
             txtProductName.Margin = new Padding(6);
             txtProductName.MaxLength = 50;
             txtProductName.Name = "txtProductName";
@@ -124,7 +124,8 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(29, 79);
+            label4.BackColor = Color.Transparent;
+            label4.Location = new Point(21, 55);
             label4.Margin = new Padding(6, 0, 6, 0);
             label4.Name = "label4";
             label4.Size = new Size(179, 32);
@@ -134,7 +135,8 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(128, 310);
+            label5.BackColor = Color.Transparent;
+            label5.Location = new Point(88, 358);
             label5.Margin = new Padding(6, 0, 6, 0);
             label5.Name = "label5";
             label5.Size = new Size(83, 32);
@@ -144,7 +146,7 @@
             // numPrice
             // 
             numPrice.DecimalPlaces = 2;
-            numPrice.Location = new Point(220, 379);
+            numPrice.Location = new Point(180, 427);
             numPrice.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numPrice.Name = "numPrice";
             numPrice.Size = new Size(240, 39);
@@ -152,7 +154,7 @@
             // 
             // numStock
             // 
-            numStock.Location = new Point(220, 308);
+            numStock.Location = new Point(180, 356);
             numStock.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numStock.Name = "numStock";
             numStock.Size = new Size(240, 39);
@@ -160,21 +162,24 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(1233, 662);
+            btnCancel.BackColor = Color.IndianRed;
+            btnCancel.ForeColor = SystemColors.ButtonFace;
+            btnCancel.Location = new Point(817, 16);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(165, 73);
             btnCancel.TabIndex = 8;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnOk
             // 
-            btnOk.Location = new Point(1042, 662);
+            btnOk.BackgroundImage = (Image)resources.GetObject("btnOk.BackgroundImage");
+            btnOk.Location = new Point(626, 16);
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(165, 73);
             btnOk.TabIndex = 7;
-            btnOk.Text = "Ok";
+            btnOk.Text = "Save";
             btnOk.UseVisualStyleBackColor = true;
             btnOk.Click += btnOk_Click;
             // 
@@ -184,7 +189,7 @@
             // 
             // numReorderLevel
             // 
-            numReorderLevel.Location = new Point(691, 306);
+            numReorderLevel.Location = new Point(693, 358);
             numReorderLevel.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numReorderLevel.Name = "numReorderLevel";
             numReorderLevel.Size = new Size(240, 39);
@@ -193,7 +198,8 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(518, 308);
+            label6.BackColor = Color.Transparent;
+            label6.Location = new Point(520, 360);
             label6.Margin = new Padding(6, 0, 6, 0);
             label6.Name = "label6";
             label6.Size = new Size(164, 32);
@@ -203,7 +209,7 @@
             // numSalePrice
             // 
             numSalePrice.DecimalPlaces = 2;
-            numSalePrice.Location = new Point(691, 379);
+            numSalePrice.Location = new Point(693, 431);
             numSalePrice.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numSalePrice.Name = "numSalePrice";
             numSalePrice.Size = new Size(240, 39);
@@ -212,7 +218,8 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(544, 379);
+            label7.BackColor = Color.Transparent;
+            label7.Location = new Point(546, 431);
             label7.Margin = new Padding(6, 0, 6, 0);
             label7.Name = "label7";
             label7.Size = new Size(138, 32);
@@ -230,7 +237,7 @@
             // checkBoxSuspended
             // 
             checkBoxSuspended.AutoSize = true;
-            checkBoxSuspended.Location = new Point(220, 503);
+            checkBoxSuspended.Location = new Point(729, 64);
             checkBoxSuspended.Name = "checkBoxSuspended";
             checkBoxSuspended.Size = new Size(165, 36);
             checkBoxSuspended.TabIndex = 40;
@@ -239,9 +246,11 @@
             // 
             // picImage
             // 
-            picImage.Location = new Point(38, 38);
+            picImage.BackColor = Color.White;
+            picImage.Location = new Point(49, 36);
             picImage.Name = "picImage";
-            picImage.Size = new Size(303, 329);
+            picImage.Size = new Size(412, 334);
+            picImage.SizeMode = PictureBoxSizeMode.CenterImage;
             picImage.TabIndex = 41;
             picImage.TabStop = false;
             // 
@@ -251,7 +260,7 @@
             // 
             // btnSearchImages
             // 
-            btnSearchImages.Location = new Point(1109, 434);
+            btnSearchImages.Location = new Point(158, 402);
             btnSearchImages.Name = "btnSearchImages";
             btnSearchImages.Size = new Size(215, 46);
             btnSearchImages.TabIndex = 9;
@@ -261,40 +270,72 @@
             // 
             // groupBox1
             // 
+            groupBox1.BackgroundImage = (Image)resources.GetObject("groupBox1.BackgroundImage");
             groupBox1.Controls.Add(picImage);
-            groupBox1.Location = new Point(1022, 50);
+            groupBox1.Controls.Add(btnSearchImages);
+            groupBox1.Location = new Point(1039, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(376, 378);
+            groupBox1.Size = new Size(509, 548);
             groupBox1.TabIndex = 43;
             groupBox1.TabStop = false;
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
+            splitContainer1.Panel1.Controls.Add(txtBoxDescription);
+            splitContainer1.Panel1.Controls.Add(numReorderLevel);
+            splitContainer1.Panel1.Controls.Add(groupBox1);
+            splitContainer1.Panel1.Controls.Add(label6);
+            splitContainer1.Panel1.Controls.Add(label7);
+            splitContainer1.Panel1.Controls.Add(checkBoxSuspended);
+            splitContainer1.Panel1.Controls.Add(numStock);
+            splitContainer1.Panel1.Controls.Add(numSalePrice);
+            splitContainer1.Panel1.Controls.Add(numPrice);
+            splitContainer1.Panel1.Controls.Add(label4);
+            splitContainer1.Panel1.Controls.Add(label5);
+            splitContainer1.Panel1.Controls.Add(label1);
+            splitContainer1.Panel1.Controls.Add(txtProductName);
+            splitContainer1.Panel1.Controls.Add(label2);
+            splitContainer1.Panel1.Controls.Add(label3);
+            splitContainer1.Panel1.Controls.Add(cboCategories);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel2.BackgroundImage");
+            splitContainer1.Panel2.Controls.Add(btnCancel);
+            splitContainer1.Panel2.Controls.Add(btnOk);
+            splitContainer1.Size = new Size(1601, 733);
+            splitContainer1.SplitterDistance = 628;
+            splitContainer1.TabIndex = 44;
+            // 
+            // txtBoxDescription
+            // 
+            txtBoxDescription.Location = new Point(212, 134);
+            txtBoxDescription.Name = "txtBoxDescription";
+            txtBoxDescription.Size = new Size(327, 136);
+            txtBoxDescription.TabIndex = 44;
+            txtBoxDescription.Text = "";
             // 
             // frmProductsAE
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1505, 781);
-            Controls.Add(groupBox1);
-            Controls.Add(btnSearchImages);
-            Controls.Add(checkBoxSuspended);
+            BackColor = Color.Snow;
+            ClientSize = new Size(1601, 733);
+            Controls.Add(splitContainer1);
             Controls.Add(Suspended);
-            Controls.Add(numSalePrice);
-            Controls.Add(label7);
-            Controls.Add(numReorderLevel);
-            Controls.Add(label6);
-            Controls.Add(btnCancel);
-            Controls.Add(btnOk);
-            Controls.Add(numStock);
-            Controls.Add(numPrice);
-            Controls.Add(label5);
-            Controls.Add(txtProductName);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(cboCategories);
-            Controls.Add(label2);
-            Controls.Add(txtDescription);
-            Controls.Add(label1);
+            MaximumSize = new Size(1627, 804);
+            MinimumSize = new Size(1627, 804);
             Name = "frmProductsAE";
             StartPosition = FormStartPosition.CenterScreen;
+            Load += frmProductsAE_Load;
             ((System.ComponentModel.ISupportInitialize)numPrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)numStock).EndInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
@@ -302,6 +343,11 @@
             ((System.ComponentModel.ISupportInitialize)numSalePrice).EndInit();
             ((System.ComponentModel.ISupportInitialize)picImage).EndInit();
             groupBox1.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -310,7 +356,6 @@
 
         private ComboBox cboCategories;
         private Label label2;
-        private TextBox txtDescription;
         private Label label1;
         private Label label3;
         private TextBox txtProductName;
@@ -331,5 +376,7 @@
         private Button btnSearchImages;
         private OpenFileDialog openFileDialog1;
         private GroupBox groupBox1;
+        private SplitContainer splitContainer1;
+        private RichTextBox txtBoxDescription;
     }
 }

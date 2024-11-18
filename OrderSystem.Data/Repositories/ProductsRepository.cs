@@ -66,25 +66,7 @@ namespace Data.Repositories
                 query += " WHERE CategoryId = @CategoryId";
                 return conn.ExecuteScalar<int>(query, new { CategoryId = category.CategoryId });
             }
-            return conn.ExecuteScalar<int>(query);
-            //var selectQuery = "SELECT COUNT(*) FROM Products";
-            //List<string> conditions = new List<string>();
-
-            //if (category != null)
-            //{
-            //    conditions.Add(" WHERE CategoryId = @CategoryId");
-
-            //}
-            //if (conditions.Any())
-            //{
-
-            //    return conn.ExecuteScalar<int>(selectQuery, new
-            //    {
-            //        @CategoryId = category?.@CategoryId,
-            //    });
-
-            //}
-            //return conn.ExecuteScalar<int>(selectQuery);
+            return conn.ExecuteScalar<int>(query);            
         }
 
         public List<ProductListDto> GetList(SqlConnection conn, int currentPage, int pageSize, Order? order = Order.None, Category? category = null, SqlTransaction? tran = null)

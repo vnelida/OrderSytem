@@ -61,12 +61,12 @@ namespace Services.Services
             }
         }
 
-        public int GetCount(ItemType itemType, Func<ItemListDto, bool>? filter = null)
+        public int GetCount(ItemType itemType, Category? selectedCategory = null, Func<ItemListDto, bool>? filter = null)
         {
             using (var conn = new SqlConnection(_cadena))
             {
                 conn.Open();
-                return _repository!.GetCount(conn, itemType, filter);
+                return _repository!.GetCount(conn, itemType, selectedCategory, filter);
             }
         }
 
@@ -87,12 +87,12 @@ namespace Services.Services
             }
         }
 
-        public List<ItemListDto> GetList(int currentPage, int pageSize, ItemType itemType, Func<ItemListDto, bool>? filter = null)
+        public List<ItemListDto> GetList(int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null)
         {
             using (var conn = new SqlConnection(_cadena))
             {
                 conn.Open();
-                return _repository!.GetList(conn, currentPage, pageSize, itemType, filter);
+                return _repository!.GetList(conn, currentPage, pageSize, itemType, order, selectedCategory);
             }
         }
 

@@ -34,5 +34,10 @@ namespace OrderSystem.Windows
             frmCombos frm = new frmCombos(_serviceProvider);
             frm.ShowDialog();
         }
+
+        private void btnExist_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }

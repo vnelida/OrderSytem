@@ -71,6 +71,7 @@
             // 
             // panelNavegacion
             // 
+            panelNavegacion.BackgroundImage = (Image)resources.GetObject("panelNavegacion.BackgroundImage");
             panelNavegacion.Controls.Add(btnLast);
             panelNavegacion.Controls.Add(btnNext);
             panelNavegacion.Controls.Add(btnPrevious);
@@ -90,6 +91,7 @@
             // btnLast
             // 
             btnLast.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLast.Image = (Image)resources.GetObject("btnLast.Image");
             btnLast.Location = new Point(1829, 44);
             btnLast.Margin = new Padding(6);
             btnLast.Name = "btnLast";
@@ -101,6 +103,7 @@
             // btnNext
             // 
             btnNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnNext.Image = (Image)resources.GetObject("btnNext.Image");
             btnNext.Location = new Point(1700, 44);
             btnNext.Margin = new Padding(6);
             btnNext.Name = "btnNext";
@@ -112,6 +115,7 @@
             // btnPrevious
             // 
             btnPrevious.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPrevious.Image = (Image)resources.GetObject("btnPrevious.Image");
             btnPrevious.Location = new Point(1559, 44);
             btnPrevious.Margin = new Padding(6);
             btnPrevious.Name = "btnPrevious";
@@ -123,6 +127,7 @@
             // btnFirst
             // 
             btnFirst.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnFirst.Image = (Image)resources.GetObject("btnFirst.Image");
             btnFirst.Location = new Point(1439, 44);
             btnFirst.Margin = new Padding(6);
             btnFirst.Name = "btnFirst";
@@ -174,16 +179,17 @@
             // 
             panelGrilla.Controls.Add(dgv);
             panelGrilla.Dock = DockStyle.Fill;
-            panelGrilla.Location = new Point(0, 42);
+            panelGrilla.Location = new Point(0, 106);
             panelGrilla.Margin = new Padding(6);
             panelGrilla.Name = "panelGrilla";
-            panelGrilla.Size = new Size(1974, 1287);
+            panelGrilla.Size = new Size(1974, 1223);
             panelGrilla.TabIndex = 14;
             // 
             // dgv
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
+            dgv.BackgroundColor = SystemColors.ButtonHighlight;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colComboName, colDescription, colSize, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colStartDate, colEndDate, colId });
             dgv.Dock = DockStyle.Fill;
@@ -193,7 +199,7 @@
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(1974, 1287);
+            dgv.Size = new Size(1974, 1223);
             dgv.TabIndex = 0;
             // 
             // colComboName
@@ -287,102 +293,113 @@
             // 
             // toolStrip1
             // 
+            toolStrip1.BackColor = SystemColors.ButtonHighlight;
             toolStrip1.ImageScalingSize = new Size(32, 32);
             toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnClose, btnRefresh });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1974, 42);
+            toolStrip1.Size = new Size(1974, 106);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
             // btnNew
             // 
-            btnNew.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.ImageScaling = ToolStripItemImageScaling.None;
             btnNew.ImageTransparentColor = Color.Magenta;
             btnNew.Name = "btnNew";
-            btnNew.Size = new Size(66, 36);
+            btnNew.Size = new Size(68, 100);
             btnNew.Text = "New";
+            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
             btnNew.Click += btnNew_Click;
             // 
             // btnDelete
             // 
-            btnDelete.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
             btnDelete.ImageTransparentColor = Color.Magenta;
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(88, 36);
+            btnDelete.Size = new Size(88, 100);
             btnDelete.Text = "Delete";
+            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
             btnDelete.Click += btnDelete_Click;
             // 
             // btnEdit
             // 
-            btnEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
+            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
             btnEdit.ImageTransparentColor = Color.Magenta;
             btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(58, 36);
+            btnEdit.Size = new Size(68, 100);
             btnEdit.Text = "Edit";
+            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
             btnEdit.Click += btnEdit_Click;
             // 
             // btnOrder
             // 
             btnOrder.DropDownItems.AddRange(new ToolStripItem[] { productAZToolStripMenuItem, productZAToolStripMenuItem, categoryAZToolStripMenuItem, categoryZAToolStripMenuItem });
+            btnOrder.Image = (Image)resources.GetObject("btnOrder.Image");
+            btnOrder.ImageScaling = ToolStripItemImageScaling.None;
             btnOrder.Name = "btnOrder";
-            btnOrder.Size = new Size(97, 36);
+            btnOrder.Size = new Size(97, 100);
             btnOrder.Text = "Order";
+            btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // productAZToolStripMenuItem
             // 
             productAZToolStripMenuItem.Name = "productAZToolStripMenuItem";
-            productAZToolStripMenuItem.Size = new Size(289, 44);
+            productAZToolStripMenuItem.Size = new Size(359, 44);
             productAZToolStripMenuItem.Text = "Product A-Z";
             // 
             // productZAToolStripMenuItem
             // 
             productZAToolStripMenuItem.Name = "productZAToolStripMenuItem";
-            productZAToolStripMenuItem.Size = new Size(289, 44);
+            productZAToolStripMenuItem.Size = new Size(359, 44);
             productZAToolStripMenuItem.Text = "Product Z-A";
             // 
             // categoryAZToolStripMenuItem
             // 
             categoryAZToolStripMenuItem.Name = "categoryAZToolStripMenuItem";
-            categoryAZToolStripMenuItem.Size = new Size(289, 44);
+            categoryAZToolStripMenuItem.Size = new Size(359, 44);
             categoryAZToolStripMenuItem.Text = "Category A-Z";
             // 
             // categoryZAToolStripMenuItem
             // 
             categoryZAToolStripMenuItem.Name = "categoryZAToolStripMenuItem";
-            categoryZAToolStripMenuItem.Size = new Size(289, 44);
+            categoryZAToolStripMenuItem.Size = new Size(359, 44);
             categoryZAToolStripMenuItem.Text = "Category Z-A";
             // 
             // btnFilter
             // 
-            btnFilter.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnFilter.Image = (Image)resources.GetObject("btnFilter.Image");
+            btnFilter.ImageScaling = ToolStripItemImageScaling.None;
             btnFilter.ImageTransparentColor = Color.Magenta;
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(71, 36);
+            btnFilter.Size = new Size(71, 100);
             btnFilter.Text = "Filter";
+            btnFilter.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // btnClose
             // 
-            btnClose.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnClose.Alignment = ToolStripItemAlignment.Right;
             btnClose.Image = (Image)resources.GetObject("btnClose.Image");
+            btnClose.ImageScaling = ToolStripItemImageScaling.None;
             btnClose.ImageTransparentColor = Color.Magenta;
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(76, 36);
+            btnClose.Size = new Size(76, 100);
             btnClose.Text = "Close";
+            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
             btnClose.Click += btnClose_Click;
             // 
             // btnRefresh
             // 
-            btnRefresh.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
+            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
             btnRefresh.ImageTransparentColor = Color.Magenta;
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 36);
+            btnRefresh.Size = new Size(97, 100);
             btnRefresh.Text = "Refresh";
+            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
             btnRefresh.Click += btnRefresh_Click;
             // 
             // frmCombos
@@ -390,6 +407,7 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1974, 1329);
+            ControlBox = false;
             Controls.Add(panelNavegacion);
             Controls.Add(panelGrilla);
             Controls.Add(toolStrip1);

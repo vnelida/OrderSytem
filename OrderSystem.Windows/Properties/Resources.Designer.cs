@@ -59,5 +59,15 @@ namespace Windows.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Green_Retro_Illustrative_Fast_Food_Logo__2_ {
+            get {
+                object obj = ResourceManager.GetObject("Green Retro Illustrative Fast Food Logo (2)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

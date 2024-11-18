@@ -17,8 +17,7 @@ namespace Services.Interfaces
         bool Exist(Employee employee);
         void Save(Employee employee);
         Employee GetEmployeeById(int employeeId);
-        List<EmployeeListDto> GetList(int? currentPage, int? pageSize, Order? orde = Order.None,
-            Genre? selectedGenre = null);
+        List<EmployeeListDto> GetList(int? currentPage, int? pageSize, Order? orde = Order.None, Genre? selectedGenre = null);
         int GetCount(Genre? genre = null);
     }
 }

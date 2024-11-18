@@ -35,17 +35,12 @@
             LeftToolStripPanel = new ToolStripPanel();
             ContentPanel = new ToolStripContentPanel();
             toolStrip1 = new ToolStrip();
-            btnNew = new ToolStripButton();
-            btnDelete = new ToolStripButton();
-            btnEdit = new ToolStripButton();
             btnOrder = new ToolStripDropDownButton();
             productAZToolStripMenuItem = new ToolStripMenuItem();
             productZAToolStripMenuItem = new ToolStripMenuItem();
             categoryAZToolStripMenuItem = new ToolStripMenuItem();
             categoryZAToolStripMenuItem = new ToolStripMenuItem();
             btnFilter = new ToolStripComboBox();
-            btnRefresh = new ToolStripButton();
-            btnClose = new ToolStripButton();
             dgv = new DataGridView();
             colProductName = new DataGridViewTextBoxColumn();
             colDescription = new DataGridViewTextBoxColumn();
@@ -66,7 +61,11 @@
             label2 = new Label();
             label1 = new Label();
             panelGrilla = new Panel();
-            tsbFilter = new ToolStripButton();
+            btnNew = new ToolStripButton();
+            btnDelete = new ToolStripButton();
+            btnEdit = new ToolStripButton();
+            btnRefresh = new ToolStripButton();
+            btnClose = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             panelNavegacion.SuspendLayout();
@@ -111,109 +110,65 @@
             // 
             // toolStrip1
             // 
+            toolStrip1.BackColor = Color.White;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh, btnClose, tsbFilter });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1974, 42);
+            toolStrip1.Size = new Size(1974, 106);
             toolStrip1.TabIndex = 6;
             toolStrip1.Text = "toolStrip1";
-            // 
-            // btnNew
-            // 
-            btnNew.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
-            btnNew.ImageTransparentColor = Color.Magenta;
-            btnNew.Name = "btnNew";
-            btnNew.Size = new Size(66, 36);
-            btnNew.Text = "New";
-            btnNew.Click += btnNew_Click;
-            // 
-            // btnDelete
-            // 
-            btnDelete.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
-            btnDelete.ImageTransparentColor = Color.Magenta;
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(88, 36);
-            btnDelete.Text = "Delete";
-            btnDelete.Click += btnDelete_Click;
-            // 
-            // btnEdit
-            // 
-            btnEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
-            btnEdit.ImageTransparentColor = Color.Magenta;
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(58, 36);
-            btnEdit.Text = "Edit";
-            btnEdit.Click += btnEdit_Click;
             // 
             // btnOrder
             // 
             btnOrder.DropDownItems.AddRange(new ToolStripItem[] { productAZToolStripMenuItem, productZAToolStripMenuItem, categoryAZToolStripMenuItem, categoryZAToolStripMenuItem });
+            btnOrder.Image = (Image)resources.GetObject("btnOrder.Image");
+            btnOrder.ImageScaling = ToolStripItemImageScaling.None;
             btnOrder.Name = "btnOrder";
-            btnOrder.Size = new Size(97, 36);
+            btnOrder.Size = new Size(97, 100);
             btnOrder.Text = "Order";
+            btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // productAZToolStripMenuItem
             // 
             productAZToolStripMenuItem.Name = "productAZToolStripMenuItem";
-            productAZToolStripMenuItem.Size = new Size(289, 44);
+            productAZToolStripMenuItem.Size = new Size(359, 44);
             productAZToolStripMenuItem.Text = "Product A-Z";
             productAZToolStripMenuItem.Click += productAZToolStripMenuItem_Click;
             // 
             // productZAToolStripMenuItem
             // 
             productZAToolStripMenuItem.Name = "productZAToolStripMenuItem";
-            productZAToolStripMenuItem.Size = new Size(289, 44);
+            productZAToolStripMenuItem.Size = new Size(359, 44);
             productZAToolStripMenuItem.Text = "Product Z-A";
             productZAToolStripMenuItem.Click += productZAToolStripMenuItem_Click;
             // 
             // categoryAZToolStripMenuItem
             // 
             categoryAZToolStripMenuItem.Name = "categoryAZToolStripMenuItem";
-            categoryAZToolStripMenuItem.Size = new Size(289, 44);
-            categoryAZToolStripMenuItem.Text = "Category A-Z";
-            categoryAZToolStripMenuItem.Click += categoryAZToolStripMenuItem_Click;
+            categoryAZToolStripMenuItem.Size = new Size(359, 44);
+            categoryAZToolStripMenuItem.Text = "Sale Price";
+            categoryAZToolStripMenuItem.Click += salePriceToolStripMenuItem_Click;
             // 
             // categoryZAToolStripMenuItem
             // 
             categoryZAToolStripMenuItem.Name = "categoryZAToolStripMenuItem";
-            categoryZAToolStripMenuItem.Size = new Size(289, 44);
-            categoryZAToolStripMenuItem.Text = "Category Z-A";
-            categoryZAToolStripMenuItem.Click += categoryZAToolStripMenuItem_Click;
+            categoryZAToolStripMenuItem.Size = new Size(359, 44);
+            categoryZAToolStripMenuItem.Text = "Sale Price DESC";
+            categoryZAToolStripMenuItem.Click += salePriceDescToolStripMenuItem_Click;
             // 
             // btnFilter
             // 
+            btnFilter.DropDownStyle = ComboBoxStyle.DropDownList;
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(130, 42);
-            btnFilter.Text = "Filter";
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
-            btnRefresh.ImageTransparentColor = Color.Magenta;
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 36);
-            btnRefresh.Text = "Refresh";
-            btnRefresh.Click += btnRefresh_Click;
-            // 
-            // btnClose
-            // 
-            btnClose.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
-            btnClose.ImageTransparentColor = Color.Magenta;
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(76, 36);
-            btnClose.Text = "Close";
-            btnClose.Click += btnClose_Click;
+            btnFilter.Size = new Size(130, 106);
+            btnFilter.SelectedIndexChanged += btnFilter_SelectedIndexChanged;
             // 
             // dgv
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
+            dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colProductName, colDescription, colCategory, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colId });
             dgv.Dock = DockStyle.Fill;
@@ -223,7 +178,7 @@
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(1974, 1287);
+            dgv.Size = new Size(1974, 1223);
             dgv.TabIndex = 7;
             // 
             // colProductName
@@ -301,6 +256,8 @@
             // 
             // panelNavegacion
             // 
+            panelNavegacion.BackColor = Color.DarkSeaGreen;
+            panelNavegacion.BackgroundImage = (Image)resources.GetObject("panelNavegacion.BackgroundImage");
             panelNavegacion.Controls.Add(btnLast);
             panelNavegacion.Controls.Add(btnNext);
             panelNavegacion.Controls.Add(btnPrevious);
@@ -319,6 +276,8 @@
             // btnLast
             // 
             btnLast.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLast.BackgroundImage = (Image)resources.GetObject("btnLast.BackgroundImage");
+            btnLast.BackgroundImageLayout = ImageLayout.Center;
             btnLast.Location = new Point(1833, 34);
             btnLast.Margin = new Padding(6);
             btnLast.Name = "btnLast";
@@ -330,6 +289,8 @@
             // btnNext
             // 
             btnNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnNext.BackgroundImage = (Image)resources.GetObject("btnNext.BackgroundImage");
+            btnNext.BackgroundImageLayout = ImageLayout.Center;
             btnNext.Location = new Point(1683, 34);
             btnNext.Margin = new Padding(6);
             btnNext.Name = "btnNext";
@@ -341,6 +302,8 @@
             // btnPrevious
             // 
             btnPrevious.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPrevious.BackgroundImage = (Image)resources.GetObject("btnPrevious.BackgroundImage");
+            btnPrevious.BackgroundImageLayout = ImageLayout.Center;
             btnPrevious.Location = new Point(1532, 34);
             btnPrevious.Margin = new Padding(6);
             btnPrevious.Name = "btnPrevious";
@@ -352,6 +315,8 @@
             // btnFirst
             // 
             btnFirst.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnFirst.BackgroundImage = (Image)resources.GetObject("btnFirst.BackgroundImage");
+            btnFirst.BackgroundImageLayout = ImageLayout.Center;
             btnFirst.Location = new Point(1382, 34);
             btnFirst.Margin = new Padding(6);
             btnFirst.Name = "btnFirst";
@@ -404,27 +369,75 @@
             // 
             panelGrilla.Controls.Add(dgv);
             panelGrilla.Dock = DockStyle.Fill;
-            panelGrilla.Location = new Point(0, 42);
+            panelGrilla.Location = new Point(0, 106);
             panelGrilla.Margin = new Padding(6);
             panelGrilla.Name = "panelGrilla";
-            panelGrilla.Size = new Size(1974, 1287);
+            panelGrilla.Size = new Size(1974, 1223);
             panelGrilla.TabIndex = 11;
             // 
-            // tsbFilter
+            // btnNew
             // 
-            tsbFilter.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            tsbFilter.Image = (Image)resources.GetObject("tsbFilter.Image");
-            tsbFilter.ImageTransparentColor = Color.Magenta;
-            tsbFilter.Name = "tsbFilter";
-            tsbFilter.Size = new Size(71, 36);
-            tsbFilter.Text = "Filter";
-            tsbFilter.Click += tsbFilter_Click;
+            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.ImageScaling = ToolStripItemImageScaling.None;
+            btnNew.ImageTransparentColor = Color.Magenta;
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(68, 100);
+            btnNew.Text = "New";
+            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnNew.Click += btnNew_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
+            btnDelete.ImageTransparentColor = Color.Magenta;
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(88, 100);
+            btnDelete.Text = "Delete";
+            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
+            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
+            btnEdit.ImageTransparentColor = Color.Magenta;
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(68, 100);
+            btnEdit.Text = "Edit";
+            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEdit_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
+            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
+            btnRefresh.ImageTransparentColor = Color.Magenta;
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(97, 100);
+            btnRefresh.Text = "Refresh";
+            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
+            // btnClose
+            // 
+            btnClose.Alignment = ToolStripItemAlignment.Right;
+            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
+            btnClose.ImageScaling = ToolStripItemImageScaling.None;
+            btnClose.ImageTransparentColor = Color.Magenta;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(76, 100);
+            btnClose.Text = "Close";
+            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnClose.Click += btnClose_Click;
             // 
             // frmProducts
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Ivory;
             ClientSize = new Size(1974, 1329);
+            ControlBox = false;
             Controls.Add(panelNavegacion);
             Controls.Add(panelGrilla);
             Controls.Add(toolStrip1);
@@ -453,10 +466,6 @@
         private ToolStripPanel LeftToolStripPanel;
         private ToolStripContentPanel ContentPanel;
         private ToolStrip toolStrip1;
-        private ToolStripButton btnNew;
-        private ToolStripButton btnDelete;
-        private ToolStripButton btnEdit;
-        private ToolStripButton btnClose;
         private DataGridView dgv;
         private Panel panelNavegacion;
         private TextBox txtPageCount;
@@ -468,7 +477,6 @@
         private Button btnNext;
         private Button btnPrevious;
         private Button btnFirst;
-        private ToolStripButton btnRefresh;
         private ToolStripDropDownButton btnOrder;
         private ToolStripMenuItem productAZToolStripMenuItem;
         private ToolStripMenuItem productZAToolStripMenuItem;
@@ -484,6 +492,10 @@
         private DataGridViewTextBoxColumn colSuspended;
         private DataGridViewTextBoxColumn colId;
         private ToolStripComboBox btnFilter;
-        private ToolStripButton tsbFilter;
+        private ToolStripButton btnClose;
+        private ToolStripButton btnNew;
+        private ToolStripButton btnDelete;
+        private ToolStripButton btnEdit;
+        private ToolStripButton btnRefresh;
     }
 }

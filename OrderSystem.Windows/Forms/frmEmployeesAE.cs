@@ -108,7 +108,7 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtLastName, "Last name is required and must contain only letters.");
             }
-            if (string.IsNullOrEmpty(txtPhone.Text) || txtPhone.Text.Length <4 || txtPhone.Text.Length >10 || !System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, @"^[\d-]+$"))
+            if (string.IsNullOrEmpty(txtPhone.Text) || txtPhone.Text.Length < 4 || txtPhone.Text.Length > 10 || !System.Text.RegularExpressions.Regex.IsMatch(txtPhone.Text, @"^[\d-]+$"))
             {
                 valido = false;
                 errorProvider1.SetError(txtPhone, "Enter a valid phone number.");
@@ -148,6 +148,11 @@ namespace Windows.Forms
         }
 
         private void cboGenres_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
         {
 
         }
