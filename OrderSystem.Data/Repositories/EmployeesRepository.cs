@@ -22,7 +22,6 @@ namespace Data.Repositories
             var primaryKey = conn.QuerySingle<int>(insertQuery, employee, tran);
             if (primaryKey > 0)
             {
-
                 employee.EmployeeId = primaryKey;
                 return;
             }

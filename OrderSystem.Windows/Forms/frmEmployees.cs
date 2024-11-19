@@ -18,7 +18,7 @@ namespace Windows.Forms
         private int totalRecords = 0;
         private Genre? genreFiltro = null;
         private bool filterOn = false;
-        private Order order = Order.None;
+        private Order order = Order.FirstNameAZ;
 
         public frmEmployees(IServiceProvider? serviceProvider)
         {
@@ -112,8 +112,9 @@ namespace Windows.Forms
                 {
                     _service.Save(employee);
                     LoadData();
-                    MessageBox.Show("The record has been successfully added", "Information",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    int row = GridHelper.ObtenerRowIndex(dgv, employee.EmployeeId);
+                    GridHelper.MarcarRow(dgv, row);
+                    MessageBox.Show("The record has been successfully added", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -152,8 +153,10 @@ namespace Windows.Forms
                     employee = frm.GetTipo();
                     if (!_service.Exist(employee))
                     {
-                        _service.Save(employee);
-                        GridHelper.SetearFila(r, employee);
+                        _service.Save(employee); 
+                        LoadData();
+                        int row = GridHelper.ObtenerRowIndex(dgv, employee.EmployeeId);
+                        GridHelper.MarcarRow(dgv, row);
                         MessageBox.Show("Employee details updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -213,7 +216,6 @@ namespace Windows.Forms
                 LoadData();
             }
         }
-
         private void btnPrevious_Click(object sender, EventArgs e)
         {
             if (currentPage > 1)
@@ -222,13 +224,11 @@ namespace Windows.Forms
                 LoadData();
             }
         }
-
         private void btnLast_Click(object sender, EventArgs e)
         {
             currentPage = totalPages;
             LoadData();
         }
-
         private void btnFirst_Click(object sender, EventArgs e)
         {
             currentPage = 1;

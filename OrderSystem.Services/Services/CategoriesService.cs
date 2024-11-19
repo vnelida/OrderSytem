@@ -1,5 +1,6 @@
 ﻿using Data.Interfaces;
 using Entities.Entities;
+using Entities.Enums;
 using Services.Interfaces;
 using System.Data.SqlClient;
 
@@ -56,12 +57,22 @@ namespace Services.Services
             }
         }
 
-        public List<Category> GetList()
+        public int GetCount()
         {
             using (var conn = new SqlConnection(_cadena))
             {
-                return _repository!.GetList(conn);
+                conn.Open();
+                return _repository!.GetCount(conn);
 
+            }
+        }
+
+        public List<Category> GetList(int? currentPage = 0, int? pageSize=0, Order? order = Order.None)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository!.GetList(conn, currentPage, pageSize, order);
             }
         }
 

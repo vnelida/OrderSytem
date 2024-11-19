@@ -345,7 +345,7 @@ namespace Data.Repositories
             return itemsList;
         }
 
-        public List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, SqlTransaction? tran = null)
+        public List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, DateTime? currentDate = null, SqlTransaction? tran = null)
         {
             var itemsList = new List<ItemListDto>();
 
@@ -399,7 +399,39 @@ namespace Data.Repositories
                 var selectQuery = @"SELECT c.ComboId as ItemId, c.ComboName as Name, c.Description, c.CostPrice, c.SalePrice,
                                     c.Stock, c.Suspended, c.ReorderLevel, c.Image, c.Size, c.StartDate, c.EndDate
                                     FROM Combos c";
-                var combosList = conn.Query<ComboListDto>(selectQuery).ToList();
+                //
+                List<string> conditions = new List<string>();
+
+                if (currentDate != null)
+                {
+                    conditions.Add("c.EndDate>=@currentDate");
+                }
+
+                if (conditions.Any())
+                {
+                    selectQuery += " WHERE " + string.Join(" AND ", conditions);
+                }
+                //
+                string orderBy = string.Empty;
+
+                switch (order)
+                {
+                    case Order.None:
+                        orderBy = " ORDER BY c.ComboName ";
+                        break;
+                    case Order.NameZA:
+                        orderBy = " ORDER BY c.ComboName DESC  ";
+                        break;
+                    case Order.SalePrice:
+                        orderBy = " ORDER BY c.SalePrice ";
+                        break;
+                    default:
+                        orderBy = " ORDER BY c.SalePrice DESC ";
+                        break;
+                }
+                selectQuery += orderBy;
+
+                var combosList = conn.Query<ComboListDto>(selectQuery, new { currentDate =currentDate}).ToList();
                 itemsList.AddRange(combosList);
 
             }

@@ -50,7 +50,7 @@ namespace Windows.Forms
         private void LoadData()
         {
             totalRecords = _service?.GetCount(itemType, categoryFilter) ?? 0;
-            if (totalRecords<1)
+            if (totalRecords < 1)
             {
                 MessageBox.Show("No products found in this category", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 categoryFilter = null;
@@ -59,7 +59,7 @@ namespace Windows.Forms
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
             if (currentPage > totalPages)
             {
-                currentPage = 1; 
+                currentPage = 1;
             }
             list = _service!.GetList(currentPage, pageSize, itemType, order, categoryFilter);
             MostrarDatosEnGrilla();
@@ -283,6 +283,21 @@ namespace Windows.Forms
                 categoryFilter = _serviceProduct?.GetCategoryByName(btnFilter.Text);
                 LoadData();
             }
+        }
+
+        private void btnOrder_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

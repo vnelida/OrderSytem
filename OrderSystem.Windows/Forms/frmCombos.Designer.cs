@@ -40,9 +40,9 @@
             label1 = new Label();
             panelGrilla = new Panel();
             dgv = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
             colComboName = new DataGridViewTextBoxColumn();
             colDescription = new DataGridViewTextBoxColumn();
-            colSize = new DataGridViewTextBoxColumn();
             colCostPrice = new DataGridViewTextBoxColumn();
             colSalePrice = new DataGridViewTextBoxColumn();
             colStock = new DataGridViewTextBoxColumn();
@@ -50,17 +50,17 @@
             colSuspended = new DataGridViewTextBoxColumn();
             colStartDate = new DataGridViewTextBoxColumn();
             colEndDate = new DataGridViewTextBoxColumn();
-            colId = new DataGridViewTextBoxColumn();
+            colSize = new DataGridViewTextBoxColumn();
             toolStrip1 = new ToolStrip();
             btnNew = new ToolStripButton();
             btnDelete = new ToolStripButton();
             btnEdit = new ToolStripButton();
             btnOrder = new ToolStripDropDownButton();
-            productAZToolStripMenuItem = new ToolStripMenuItem();
-            productZAToolStripMenuItem = new ToolStripMenuItem();
-            categoryAZToolStripMenuItem = new ToolStripMenuItem();
-            categoryZAToolStripMenuItem = new ToolStripMenuItem();
-            btnFilter = new ToolStripButton();
+            comboNameDesc = new ToolStripMenuItem();
+            salePrice = new ToolStripMenuItem();
+            priceDesc = new ToolStripMenuItem();
+            btnFilter = new ToolStripDropDownButton();
+            activeToolStripMenuItem = new ToolStripMenuItem();
             btnClose = new ToolStripButton();
             btnRefresh = new ToolStripButton();
             panelNavegacion.SuspendLayout();
@@ -86,7 +86,6 @@
             panelNavegacion.Name = "panelNavegacion";
             panelNavegacion.Size = new Size(1974, 135);
             panelNavegacion.TabIndex = 0;
-            panelNavegacion.Paint += panelNavegacion_Paint;
             // 
             // btnLast
             // 
@@ -191,9 +190,10 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = SystemColors.ButtonHighlight;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colComboName, colDescription, colSize, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colStartDate, colEndDate, colId });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colComboName, colDescription, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colStartDate, colEndDate, colSize });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
+            dgv.MultiSelect = false;
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
@@ -201,6 +201,15 @@
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.Size = new Size(1974, 1223);
             dgv.TabIndex = 0;
+            // 
+            // colId
+            // 
+            colId.HeaderText = "Id";
+            colId.MinimumWidth = 10;
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            colId.Width = 200;
             // 
             // colComboName
             // 
@@ -217,14 +226,6 @@
             colDescription.MinimumWidth = 10;
             colDescription.Name = "colDescription";
             colDescription.ReadOnly = true;
-            // 
-            // colSize
-            // 
-            colSize.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colSize.HeaderText = "Sise";
-            colSize.MinimumWidth = 10;
-            colSize.Name = "colSize";
-            colSize.ReadOnly = true;
             // 
             // colCostPrice
             // 
@@ -282,14 +283,14 @@
             colEndDate.ReadOnly = true;
             colEndDate.Width = 200;
             // 
-            // colId
+            // colSize
             // 
-            colId.HeaderText = "Id";
-            colId.MinimumWidth = 10;
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            colId.Width = 200;
+            colSize.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colSize.HeaderText = "Sise";
+            colSize.MinimumWidth = 10;
+            colSize.Name = "colSize";
+            colSize.ReadOnly = true;
+            colSize.Visible = false;
             // 
             // toolStrip1
             // 
@@ -337,7 +338,7 @@
             // 
             // btnOrder
             // 
-            btnOrder.DropDownItems.AddRange(new ToolStripItem[] { productAZToolStripMenuItem, productZAToolStripMenuItem, categoryAZToolStripMenuItem, categoryZAToolStripMenuItem });
+            btnOrder.DropDownItems.AddRange(new ToolStripItem[] { comboNameDesc, salePrice, priceDesc });
             btnOrder.Image = (Image)resources.GetObject("btnOrder.Image");
             btnOrder.ImageScaling = ToolStripItemImageScaling.None;
             btnOrder.Name = "btnOrder";
@@ -345,39 +346,44 @@
             btnOrder.Text = "Order";
             btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
-            // productAZToolStripMenuItem
+            // comboNameDesc
             // 
-            productAZToolStripMenuItem.Name = "productAZToolStripMenuItem";
-            productAZToolStripMenuItem.Size = new Size(359, 44);
-            productAZToolStripMenuItem.Text = "Product A-Z";
+            comboNameDesc.Name = "comboNameDesc";
+            comboNameDesc.Size = new Size(351, 44);
+            comboNameDesc.Text = "Combo Name desc";
+            comboNameDesc.Click += comboNameDesc_Click;
             // 
-            // productZAToolStripMenuItem
+            // salePrice
             // 
-            productZAToolStripMenuItem.Name = "productZAToolStripMenuItem";
-            productZAToolStripMenuItem.Size = new Size(359, 44);
-            productZAToolStripMenuItem.Text = "Product Z-A";
+            salePrice.Name = "salePrice";
+            salePrice.Size = new Size(351, 44);
+            salePrice.Text = "Price";
+            salePrice.Click += salePrice_Click;
             // 
-            // categoryAZToolStripMenuItem
+            // priceDesc
             // 
-            categoryAZToolStripMenuItem.Name = "categoryAZToolStripMenuItem";
-            categoryAZToolStripMenuItem.Size = new Size(359, 44);
-            categoryAZToolStripMenuItem.Text = "Category A-Z";
-            // 
-            // categoryZAToolStripMenuItem
-            // 
-            categoryZAToolStripMenuItem.Name = "categoryZAToolStripMenuItem";
-            categoryZAToolStripMenuItem.Size = new Size(359, 44);
-            categoryZAToolStripMenuItem.Text = "Category Z-A";
+            priceDesc.Name = "priceDesc";
+            priceDesc.Size = new Size(351, 44);
+            priceDesc.Text = "Price Desc";
+            priceDesc.Click += priceDesc_Click;
             // 
             // btnFilter
             // 
+            btnFilter.DropDownItems.AddRange(new ToolStripItem[] { activeToolStripMenuItem });
             btnFilter.Image = (Image)resources.GetObject("btnFilter.Image");
             btnFilter.ImageScaling = ToolStripItemImageScaling.None;
             btnFilter.ImageTransparentColor = Color.Magenta;
             btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(71, 100);
+            btnFilter.Size = new Size(89, 100);
             btnFilter.Text = "Filter";
             btnFilter.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // activeToolStripMenuItem
+            // 
+            activeToolStripMenuItem.Name = "activeToolStripMenuItem";
+            activeToolStripMenuItem.Size = new Size(359, 44);
+            activeToolStripMenuItem.Text = "Active";
+            activeToolStripMenuItem.Click += btnFilter_Click;
             // 
             // btnClose
             // 
@@ -440,9 +446,22 @@
         private Label label1;
         private Panel panelGrilla;
         private DataGridView dgv;
+        private ToolStrip toolStrip1;
+        private ToolStripButton btnNew;
+        private ToolStripButton btnDelete;
+        private ToolStripButton btnEdit;
+        private ToolStripDropDownButton btnOrder;
+        private ToolStripMenuItem comboNameDesc;
+        private ToolStripMenuItem priceDesc;
+        private ToolStripMenuItem categoryAZToolStripMenuItem;
+        private ToolStripMenuItem salePrice;
+        private ToolStripButton btnClose;
+        private ToolStripButton btnRefresh;
+        private ToolStripDropDownButton btnFilter;
+        private ToolStripMenuItem activeToolStripMenuItem;
+        private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colComboName;
         private DataGridViewTextBoxColumn colDescription;
-        private DataGridViewTextBoxColumn colSize;
         private DataGridViewTextBoxColumn colCostPrice;
         private DataGridViewTextBoxColumn colSalePrice;
         private DataGridViewTextBoxColumn colStock;
@@ -450,18 +469,6 @@
         private DataGridViewTextBoxColumn colSuspended;
         private DataGridViewTextBoxColumn colStartDate;
         private DataGridViewTextBoxColumn colEndDate;
-        private DataGridViewTextBoxColumn colId;
-        private ToolStrip toolStrip1;
-        private ToolStripButton btnNew;
-        private ToolStripButton btnDelete;
-        private ToolStripButton btnEdit;
-        private ToolStripDropDownButton btnOrder;
-        private ToolStripMenuItem productAZToolStripMenuItem;
-        private ToolStripMenuItem productZAToolStripMenuItem;
-        private ToolStripMenuItem categoryAZToolStripMenuItem;
-        private ToolStripMenuItem categoryZAToolStripMenuItem;
-        private ToolStripButton btnFilter;
-        private ToolStripButton btnClose;
-        private ToolStripButton btnRefresh;
+        private DataGridViewTextBoxColumn colSize;
     }
 }

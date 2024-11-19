@@ -1,16 +1,7 @@
 ﻿using Entities.Entities;
+using Entities.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -19,6 +10,12 @@ namespace Windows.Forms
     {
         private readonly ICategoriesService? _service;
         private List<Category>? list;
+        int totalRecords = 0;
+        int currentPage = 1;
+        int totalPages = 0;
+        int pageSize = 5;
+        private Order order = Order.CategoryAZ;
+
         public frmCategories(IServiceProvider? serviceProvider)
         {
             InitializeComponent();
@@ -30,8 +27,7 @@ namespace Windows.Forms
         {
             try
             {
-                list = _service!.GetList();
-                MostrarDatosEnGrilla();
+                LoadData();
             }
             catch (Exception)
             {
@@ -39,6 +35,26 @@ namespace Windows.Forms
                 throw;
             }
         }
+
+        private void LoadData()
+        {
+            totalRecords = _service!.GetCount();
+            totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+            list = _service!.GetList(currentPage, pageSize, order);
+            MostrarDatosEnGrilla();
+            if (cboPages.Items.Count != totalPages)
+            {
+                CombosHelper.CargarComboPaginas(ref cboPages, totalPages);
+            }
+            txtPageCount.Text = totalPages.ToString(); 
+            cboPages.SelectedIndexChanged -= cboPages_SelectedIndexChanged;
+            if (totalPages > 0) 
+            {
+                cboPages.SelectedIndex = currentPage - 1;
+            }
+            cboPages.SelectedIndexChanged += cboPages_SelectedIndexChanged;
+        }
+
         private void MostrarDatosEnGrilla()
         {
             GridHelper.LimpiarGrilla(dgv);
@@ -72,6 +88,9 @@ namespace Windows.Forms
                     var r = GridHelper.ConstruirFila(dgv);
                     GridHelper.SetearFila(r, category);
                     GridHelper.AgregarFila(r, dgv);
+
+                    int row = GridHelper.ObtenerRowIndex(dgv, category.CategoryId);
+                    GridHelper.MarcarRow(dgv, row);
                     MessageBox.Show("The record has been successfully added",
                                     "Information",
                                     MessageBoxButtons.OK,
@@ -169,6 +188,50 @@ namespace Windows.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                LoadData();
+            }
+        }
+        private void btnPrevious_Click(object sender, EventArgs e)
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                LoadData();
+            }
+        }
+        private void btnLast_Click(object sender, EventArgs e)
+        {
+            currentPage = totalPages;
+            LoadData();
+        }
+        private void btnFirst_Click(object sender, EventArgs e)
+        {
+            currentPage = 1;
+            LoadData();
+        }
+
+        private void categoryNameAZ_Click(object sender, EventArgs e)
+        {
+            order = Order.CategoryAZ;
+            LoadData();
+        }
+
+        private void categoryNameZA_Click(object sender, EventArgs e)
+        {
+            order = Order.CategoryZA;
+            LoadData();
+        }
+
+        private void cboPages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            currentPage = int.Parse(cboPages.Text);
+            LoadData();
         }
     }
 }

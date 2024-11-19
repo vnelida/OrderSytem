@@ -31,33 +31,35 @@ namespace Windows.Helpers
             switch (obj)
             {
                 case Category category:
-                    r.Cells[0].Value = category.CategoryName;
+                    r.Cells[0].Value = category.CategoryId;
+                    r.Cells[1].Value = category.CategoryName;
                     break;
                 case EmployeeListDto employee:
-                    r.Cells[0].Value = employee.FirstName;
-                    r.Cells[1].Value = employee.LastName;
-                    r.Cells[2].Value = employee.Phone;
-                    r.Cells[3].Value = employee.Email;
-                    r.Cells[4].Value = employee.Address;
-                    r.Cells[5].Value = employee.Dni;
-                    r.Cells[6].Value = employee.DateOfBirth.ToShortDateString();
-                    r.Cells[7].Value = employee.GenreName;
+                    r.Cells[0].Value = employee.EmployeeId;
+                    r.Cells[1].Value = employee.FirstName;
+                    r.Cells[2].Value = employee.LastName;
+                    r.Cells[3].Value = employee.Phone;
+                    r.Cells[4].Value = employee.Email;
+                    r.Cells[5].Value = employee.Address;
+                    r.Cells[6].Value = employee.Dni;
+                    r.Cells[7].Value = employee.DateOfBirth.ToShortDateString();
+                    r.Cells[8].Value = employee.GenreName;
                     break;
-                case ProductListDto product:
-                    r.Cells[0].Value = product.Name;
-                    r.Cells[1].Value = product.Description;
-                    r.Cells[2].Value = product.CategoryName;
-                    r.Cells[3].Value = product.CostPrice;
-                    r.Cells[4].Value = product.SalePrice;
-                    r.Cells[5].Value = product.Stock;
-                    r.Cells[6].Value = product.ReorderLevel;
-                    r.Cells[7].Value = product.Suspended;
-                    r.Cells[8].Value = product.ItemId;
+                case ProductListDto product: 
+                    r.Cells[0].Value = product.ItemId;
+                    r.Cells[1].Value = product.Name;
+                    r.Cells[2].Value = product.Description;
+                    r.Cells[3].Value = product.CategoryName;
+                    r.Cells[4].Value = product.CostPrice;
+                    r.Cells[5].Value = product.SalePrice;
+                    r.Cells[6].Value = product.Stock;
+                    r.Cells[7].Value = product.ReorderLevel;
+                    r.Cells[8].Value = product.Suspended;
                     break;
                 case ComboListDto combo:
-                    r.Cells[0].Value = combo.Name;
-                    r.Cells[1].Value = combo.Description;
-                    r.Cells[2].Value = combo.Size;
+                    r.Cells[0].Value = combo.ItemId;
+                    r.Cells[1].Value = combo.Name;
+                    r.Cells[2].Value = combo.Description;
                     r.Cells[3].Value = combo.CostPrice;
                     r.Cells[4].Value = combo.SalePrice;
                     r.Cells[5].Value = combo.Stock;
@@ -65,7 +67,8 @@ namespace Windows.Helpers
                     r.Cells[7].Value = combo.Suspended;
                     r.Cells[8].Value = combo.StartDate.ToShortDateString();
                     r.Cells[9].Value = combo.EndDate.ToShortDateString();
-                    r.Cells[10].Value = combo.ItemId;
+                    r.Cells[10].Value = combo.Size;
+
                     break;
                 case ComboDetail detail:
                     r.Cells[0].Value = detail.ComboDetailId;
@@ -98,7 +101,7 @@ namespace Windows.Helpers
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 var row = dgv.Rows[i];
-                if ((int)row.Cells[5].Value == id)
+                if ((int)row.Cells[0].Value == id)
                 {
                     return i;
                 }

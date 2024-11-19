@@ -12,6 +12,8 @@
         FirstNameZA,
         FirstNameAZ,
         SalePrice,
-        SalePriceDesc
+        SalePriceDesc,
+        NameAZ,
+        NameZA
     }
 }

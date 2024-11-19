@@ -87,12 +87,12 @@ namespace Services.Services
             }
         }
 
-        public List<ItemListDto> GetList(int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null)
+        public List<ItemListDto> GetList(int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, DateTime? currentDate = null)
         {
             using (var conn = new SqlConnection(_cadena))
             {
                 conn.Open();
-                return _repository!.GetList(conn, currentPage, pageSize, itemType, order, selectedCategory);
+                return _repository!.GetList(conn, currentPage, pageSize, itemType, order, selectedCategory, currentDate);
             }
         }
 

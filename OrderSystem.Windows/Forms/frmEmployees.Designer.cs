@@ -30,21 +30,18 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEmployees));
             dgv = new DataGridView();
-            colFirstName = new DataGridViewTextBoxColumn();
-            colLastName = new DataGridViewTextBoxColumn();
-            colPhone = new DataGridViewTextBoxColumn();
-            colEmail = new DataGridViewTextBoxColumn();
-            colAddress = new DataGridViewTextBoxColumn();
-            colDNI = new DataGridViewTextBoxColumn();
-            colDate = new DataGridViewTextBoxColumn();
-            colGenre = new DataGridViewTextBoxColumn();
             toolStrip1 = new ToolStrip();
+            btnNew = new ToolStripButton();
+            btnDelete = new ToolStripButton();
+            btnEdit = new ToolStripButton();
+            btnClose = new ToolStripButton();
             btnOrder = new ToolStripDropDownButton();
             firstNameAZ = new ToolStripMenuItem();
             firstNameZA = new ToolStripMenuItem();
             lastNameAZ = new ToolStripMenuItem();
             lastNameZA = new ToolStripMenuItem();
             btnFilter = new ToolStripComboBox();
+            btnRefresh = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             btnLast = new Button();
             btnNext = new Button();
@@ -54,11 +51,15 @@
             cboPages = new ComboBox();
             label2 = new Label();
             label1 = new Label();
-            btnClose = new ToolStripButton();
-            btnEdit = new ToolStripButton();
-            btnRefresh = new ToolStripButton();
-            btnDelete = new ToolStripButton();
-            btnNew = new ToolStripButton();
+            colEmployeeId = new DataGridViewTextBoxColumn();
+            colFirstName = new DataGridViewTextBoxColumn();
+            colLastName = new DataGridViewTextBoxColumn();
+            colPhone = new DataGridViewTextBoxColumn();
+            colEmail = new DataGridViewTextBoxColumn();
+            colAddress = new DataGridViewTextBoxColumn();
+            colDNI = new DataGridViewTextBoxColumn();
+            colDate = new DataGridViewTextBoxColumn();
+            colGenre = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -73,7 +74,7 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = SystemColors.ButtonHighlight;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colFirstName, colLastName, colPhone, colEmail, colAddress, colDNI, colDate, colGenre });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colEmployeeId, colFirstName, colLastName, colPhone, colEmail, colAddress, colDNI, colDate, colGenre });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
             dgv.MultiSelect = false;
@@ -85,70 +86,6 @@
             dgv.Size = new Size(1974, 1119);
             dgv.TabIndex = 3;
             // 
-            // colFirstName
-            // 
-            colFirstName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colFirstName.HeaderText = "First Name";
-            colFirstName.MinimumWidth = 10;
-            colFirstName.Name = "colFirstName";
-            colFirstName.ReadOnly = true;
-            // 
-            // colLastName
-            // 
-            colLastName.HeaderText = "Last Name";
-            colLastName.MinimumWidth = 10;
-            colLastName.Name = "colLastName";
-            colLastName.ReadOnly = true;
-            colLastName.Width = 200;
-            // 
-            // colPhone
-            // 
-            colPhone.HeaderText = "Phone";
-            colPhone.MinimumWidth = 10;
-            colPhone.Name = "colPhone";
-            colPhone.ReadOnly = true;
-            colPhone.Width = 200;
-            // 
-            // colEmail
-            // 
-            colEmail.HeaderText = "Email";
-            colEmail.MinimumWidth = 10;
-            colEmail.Name = "colEmail";
-            colEmail.ReadOnly = true;
-            colEmail.Width = 200;
-            // 
-            // colAddress
-            // 
-            colAddress.HeaderText = "Address";
-            colAddress.MinimumWidth = 10;
-            colAddress.Name = "colAddress";
-            colAddress.ReadOnly = true;
-            colAddress.Width = 200;
-            // 
-            // colDNI
-            // 
-            colDNI.HeaderText = "DNI";
-            colDNI.MinimumWidth = 10;
-            colDNI.Name = "colDNI";
-            colDNI.ReadOnly = true;
-            colDNI.Width = 200;
-            // 
-            // colDate
-            // 
-            colDate.HeaderText = "Date of Birth";
-            colDate.MinimumWidth = 10;
-            colDate.Name = "colDate";
-            colDate.ReadOnly = true;
-            colDate.Width = 200;
-            // 
-            // colGenre
-            // 
-            colGenre.HeaderText = "Genre";
-            colGenre.MinimumWidth = 10;
-            colGenre.Name = "colGenre";
-            colGenre.ReadOnly = true;
-            colGenre.Width = 200;
-            // 
             // toolStrip1
             // 
             toolStrip1.BackColor = SystemColors.ButtonHighlight;
@@ -159,6 +96,51 @@
             toolStrip1.Size = new Size(1974, 106);
             toolStrip1.TabIndex = 2;
             toolStrip1.Text = "toolStrip1";
+            // 
+            // btnNew
+            // 
+            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.ImageScaling = ToolStripItemImageScaling.None;
+            btnNew.ImageTransparentColor = Color.Magenta;
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(68, 100);
+            btnNew.Text = "New";
+            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnNew.Click += btnNew_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
+            btnDelete.ImageTransparentColor = Color.Magenta;
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(88, 100);
+            btnDelete.Text = "Delete";
+            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
+            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
+            btnEdit.ImageTransparentColor = Color.Magenta;
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(68, 100);
+            btnEdit.Text = "Edit";
+            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEdit_Click;
+            // 
+            // btnClose
+            // 
+            btnClose.Alignment = ToolStripItemAlignment.Right;
+            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
+            btnClose.ImageScaling = ToolStripItemImageScaling.None;
+            btnClose.ImageTransparentColor = Color.Magenta;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(76, 100);
+            btnClose.Text = "Close";
+            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnClose.Click += btnClose_Click;
             // 
             // btnOrder
             // 
@@ -173,28 +155,28 @@
             // firstNameAZ
             // 
             firstNameAZ.Name = "firstNameAZ";
-            firstNameAZ.Size = new Size(359, 44);
+            firstNameAZ.Size = new Size(308, 44);
             firstNameAZ.Text = "Fisrt Name A-Z";
             firstNameAZ.Click += firstNameAZ_Click;
             // 
             // firstNameZA
             // 
             firstNameZA.Name = "firstNameZA";
-            firstNameZA.Size = new Size(359, 44);
+            firstNameZA.Size = new Size(308, 44);
             firstNameZA.Text = "First Name Z-A";
             firstNameZA.Click += firstNameZA_Click;
             // 
             // lastNameAZ
             // 
             lastNameAZ.Name = "lastNameAZ";
-            lastNameAZ.Size = new Size(359, 44);
+            lastNameAZ.Size = new Size(308, 44);
             lastNameAZ.Text = "Last Name A-Z";
             lastNameAZ.Click += lastNameAZ_Click;
             // 
             // lastNameZA
             // 
             lastNameZA.Name = "lastNameZA";
-            lastNameZA.Size = new Size(359, 44);
+            lastNameZA.Size = new Size(308, 44);
             lastNameZA.Text = "Last Name Z-A";
             lastNameZA.Click += lastNameZA_Click;
             // 
@@ -205,6 +187,17 @@
             btnFilter.Size = new Size(130, 106);
             btnFilter.SelectedIndexChanged += btnFilter_SelectedIndexChanged;
             btnFilter.Click += btnFilter_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
+            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
+            btnRefresh.ImageTransparentColor = Color.Magenta;
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(97, 100);
+            btnRefresh.Text = "Refresh";
+            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // splitContainer1
             // 
@@ -321,61 +314,78 @@
             label1.TabIndex = 33;
             label1.Text = "Page";
             // 
-            // btnClose
+            // colEmployeeId
             // 
-            btnClose.Alignment = ToolStripItemAlignment.Right;
-            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
-            btnClose.ImageScaling = ToolStripItemImageScaling.None;
-            btnClose.ImageTransparentColor = Color.Magenta;
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(76, 100);
-            btnClose.Text = "Close";
-            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnClose.Click += btnClose_Click;
+            colEmployeeId.HeaderText = "EmployeeId";
+            colEmployeeId.MinimumWidth = 10;
+            colEmployeeId.Name = "colEmployeeId";
+            colEmployeeId.ReadOnly = true;
+            colEmployeeId.Visible = false;
+            colEmployeeId.Width = 200;
             // 
-            // btnEdit
+            // colFirstName
             // 
-            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
-            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
-            btnEdit.ImageTransparentColor = Color.Magenta;
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(68, 100);
-            btnEdit.Text = "Edit";
-            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnEdit.Click += btnEdit_Click;
+            colFirstName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colFirstName.HeaderText = "First Name";
+            colFirstName.MinimumWidth = 10;
+            colFirstName.Name = "colFirstName";
+            colFirstName.ReadOnly = true;
             // 
-            // btnRefresh
+            // colLastName
             // 
-            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
-            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
-            btnRefresh.ImageTransparentColor = Color.Magenta;
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 100);
-            btnRefresh.Text = "Refresh";
-            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnRefresh.Click += btnRefresh_Click;
+            colLastName.HeaderText = "Last Name";
+            colLastName.MinimumWidth = 10;
+            colLastName.Name = "colLastName";
+            colLastName.ReadOnly = true;
+            colLastName.Width = 200;
             // 
-            // btnDelete
+            // colPhone
             // 
-            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
-            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
-            btnDelete.ImageTransparentColor = Color.Magenta;
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(88, 100);
-            btnDelete.Text = "Delete";
-            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnDelete.Click += btnDelete_Click;
+            colPhone.HeaderText = "Phone";
+            colPhone.MinimumWidth = 10;
+            colPhone.Name = "colPhone";
+            colPhone.ReadOnly = true;
+            colPhone.Width = 200;
             // 
-            // btnNew
+            // colEmail
             // 
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
-            btnNew.ImageScaling = ToolStripItemImageScaling.None;
-            btnNew.ImageTransparentColor = Color.Magenta;
-            btnNew.Name = "btnNew";
-            btnNew.Size = new Size(68, 100);
-            btnNew.Text = "New";
-            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnNew.Click += btnNew_Click;
+            colEmail.HeaderText = "Email";
+            colEmail.MinimumWidth = 10;
+            colEmail.Name = "colEmail";
+            colEmail.ReadOnly = true;
+            colEmail.Width = 200;
+            // 
+            // colAddress
+            // 
+            colAddress.HeaderText = "Address";
+            colAddress.MinimumWidth = 10;
+            colAddress.Name = "colAddress";
+            colAddress.ReadOnly = true;
+            colAddress.Width = 200;
+            // 
+            // colDNI
+            // 
+            colDNI.HeaderText = "DNI";
+            colDNI.MinimumWidth = 10;
+            colDNI.Name = "colDNI";
+            colDNI.ReadOnly = true;
+            colDNI.Width = 200;
+            // 
+            // colDate
+            // 
+            colDate.HeaderText = "Date of Birth";
+            colDate.MinimumWidth = 10;
+            colDate.Name = "colDate";
+            colDate.ReadOnly = true;
+            colDate.Width = 200;
+            // 
+            // colGenre
+            // 
+            colGenre.HeaderText = "Genre";
+            colGenre.MinimumWidth = 10;
+            colGenre.Name = "colGenre";
+            colGenre.ReadOnly = true;
+            colGenre.Width = 200;
             // 
             // frmEmployees
             // 
@@ -407,14 +417,6 @@
 
         private DataGridView dgv;
         private ToolStrip toolStrip1;
-        private DataGridViewTextBoxColumn colFirstName;
-        private DataGridViewTextBoxColumn colLastName;
-        private DataGridViewTextBoxColumn colPhone;
-        private DataGridViewTextBoxColumn colEmail;
-        private DataGridViewTextBoxColumn colAddress;
-        private DataGridViewTextBoxColumn colDNI;
-        private DataGridViewTextBoxColumn colDate;
-        private DataGridViewTextBoxColumn colGenre;
         private SplitContainer splitContainer1;
         private Button btnLast;
         private Button btnNext;
@@ -435,5 +437,14 @@
         private ToolStripButton btnEdit;
         private ToolStripButton btnClose;
         private ToolStripButton btnRefresh;
+        private DataGridViewTextBoxColumn colEmployeeId;
+        private DataGridViewTextBoxColumn colFirstName;
+        private DataGridViewTextBoxColumn colLastName;
+        private DataGridViewTextBoxColumn colPhone;
+        private DataGridViewTextBoxColumn colEmail;
+        private DataGridViewTextBoxColumn colAddress;
+        private DataGridViewTextBoxColumn colDNI;
+        private DataGridViewTextBoxColumn colDate;
+        private DataGridViewTextBoxColumn colGenre;
     }
 }

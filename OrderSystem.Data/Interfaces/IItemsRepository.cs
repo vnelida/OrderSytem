@@ -7,7 +7,7 @@ namespace Data.Interfaces
 {
     public interface IItemsRepository
     {
-        List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, SqlTransaction? tran = null);
+        List<ItemListDto> GetList(SqlConnection conn, int currentPage, int pageSize, ItemType itemType, Order? order = Order.None, Category? selectedCategory = null, DateTime? currentDate = null, SqlTransaction? tran = null);
         int GetCount(SqlConnection conn, ItemType itemType, Category? selectedCategory = null, Func<ItemListDto, bool>? filter = null, SqlTransaction? tran = null);
         void Delete(ItemType itemType, int itemId, SqlConnection conn, SqlTransaction tran);
         bool IsRelated(ItemType itemType, int itemId, SqlConnection conn);

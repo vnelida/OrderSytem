@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Data.Interfaces;
 using Entities.Entities;
+using Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -94,10 +95,35 @@ namespace Data.Repositories
             }
         }
 
-        public List<Category> GetList(SqlConnection conn, SqlTransaction? tran = null)
+        public List<Category> GetList(SqlConnection conn, int? currentPage=0, int? pageSize=0, Order? order = Order.None, SqlTransaction? tran = null)
         {
             var selectQuery = @"SELECT CategoryId, CategoryName FROM 
-                    Categories ORDER BY CategoryName";
+                    Categories"; 
+                        
+            string orderBy = string.Empty;
+
+            switch (order)
+            {
+                case Order.None:
+                    orderBy = " ORDER BY CategoryId DESC ";
+                    break;                
+                case Order.CategoryAZ:
+                    orderBy = " ORDER BY CategoryName ";
+                    break;
+                default:
+                    orderBy = " ORDER BY CategoryName DESC ";
+                    break;
+            }
+            selectQuery += orderBy;
+            if (currentPage != 0)
+            {
+                if (currentPage.HasValue && pageSize.HasValue)
+                {
+                    var offSet = (currentPage.Value - 1) * pageSize;
+                    selectQuery += $" OFFSET {offSet} ROWS FETCH NEXT {pageSize.Value} ROWS ONLY";
+                }
+            }
+
             return conn.Query<Category>(selectQuery).ToList();
         }
 
@@ -106,6 +132,14 @@ namespace Data.Repositories
             var selectQuery = @"SELECT CategoryId, CategoryName FROM Categories WHERE CategoryName = @CategoryName";
 
             return conn.QueryFirstOrDefault<Category>(selectQuery, new { categoryName });
+        }
+
+        public int GetCount(SqlConnection conn)
+        {
+            var query = "SELECT COUNT(*) FROM Categories";
+            
+            return conn.ExecuteScalar<int>(query);
+
         }
     }
 }

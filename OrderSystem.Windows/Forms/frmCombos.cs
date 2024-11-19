@@ -18,10 +18,11 @@ namespace Windows.Forms
         private int totalPages = 0;
         private int totalRecords = 0;
         private Order order = Order.ProductZA;
-        //private FiltroContexto filtroContexto = FiltroContexto.Category;
         private Product? productFilter = null;
         private bool filterOn = false;
         private Func<ItemListDto, bool>? filter = null;
+        private DateTime? currentDate =null;
+        private Category? categoryFilter = null;
 
         private ItemType itemType = ItemType.Combo;
         public frmCombos(IServiceProvider? serviceProvider)
@@ -46,7 +47,7 @@ namespace Windows.Forms
         }
         private void LoadData()
         {
-            list = _service!.GetList(currentPage, pageSize, itemType);
+            list = _service!.GetList(currentPage, pageSize, itemType, order,categoryFilter, currentDate);
             MostrarDatosEnGrilla();
             if (cboPages.Items.Count != totalPages)
             {
@@ -151,7 +152,7 @@ namespace Windows.Forms
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -222,27 +223,8 @@ namespace Windows.Forms
 
         private void btnFilter_Click(object sender, EventArgs e)
         {
-            //frmFilters frm = new frmFilters(_serviceProvider, filtroContexto) { Text = "Select category to filter" };
-            //DialogResult dr = frm.ShowDialog(this);
-            //if (dr == DialogResult.Cancel) return;
-            //categoryFilter = frm.GetCategory();
-            //if (categoryFilter is null) return;
-
-            //list = _service!.GetList(currentPage, pageSize, itemType, filter);
-            //totalRecords = _service!?.GetCount(itemType) ?? 0;
-            //if (totalRecords > 0)
-            //{
-            //    totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
-            //    LoadData();
-            //    filterOn = true;
-            //    btnFilter.Enabled = false;
-            //}
-            //else
-            //{
-
-            //    MessageBox.Show("No records found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    filter = null;
-            //}
+            currentDate = DateTime.Today;
+            LoadData();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -251,44 +233,34 @@ namespace Windows.Forms
             productFilter = null;
             totalRecords = _service!?.GetCount(itemType) ?? 0;
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+            order = Order.None;
+            currentDate = null;
             LoadData();
             filterOn = false;
             btnFilter.Enabled = true;
 
         }
 
-        private void productAZToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            order = Order.ProductAZ;
-            LoadData();
-        }
-
-        private void productZAToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            order = Order.ProductZA;
-            LoadData();
-        }
-
-        private void categoryAZToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            order = Order.CategoryAZ;
-            LoadData();
-        }
-
-        private void categoryZAToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            order = Order.CategoryZA;
-            LoadData();
-        }
-
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
         }
-
-        private void panelNavegacion_Paint(object sender, PaintEventArgs e)
+        private void salePrice_Click(object sender, EventArgs e)
         {
+            order = Order.SalePrice;
+            LoadData();
+        }
 
+        private void priceDesc_Click(object sender, EventArgs e)
+        {
+            order = Order.SalePriceDesc;
+            LoadData();
+        }
+
+        private void comboNameDesc_Click(object sender, EventArgs e)
+        {
+            order = Order.NameZA;
+            LoadData();
         }
     }
 }

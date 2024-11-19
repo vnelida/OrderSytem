@@ -35,13 +35,19 @@
             LeftToolStripPanel = new ToolStripPanel();
             ContentPanel = new ToolStripContentPanel();
             toolStrip1 = new ToolStrip();
+            btnClose = new ToolStripButton();
+            btnNew = new ToolStripButton();
+            btnDelete = new ToolStripButton();
+            btnEdit = new ToolStripButton();
             btnOrder = new ToolStripDropDownButton();
             productAZToolStripMenuItem = new ToolStripMenuItem();
             productZAToolStripMenuItem = new ToolStripMenuItem();
             categoryAZToolStripMenuItem = new ToolStripMenuItem();
             categoryZAToolStripMenuItem = new ToolStripMenuItem();
             btnFilter = new ToolStripComboBox();
+            btnRefresh = new ToolStripButton();
             dgv = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
             colProductName = new DataGridViewTextBoxColumn();
             colDescription = new DataGridViewTextBoxColumn();
             colCategory = new DataGridViewTextBoxColumn();
@@ -50,7 +56,6 @@
             colStock = new DataGridViewTextBoxColumn();
             colReorderLevel = new DataGridViewTextBoxColumn();
             colSuspended = new DataGridViewTextBoxColumn();
-            colId = new DataGridViewTextBoxColumn();
             panelNavegacion = new Panel();
             btnLast = new Button();
             btnNext = new Button();
@@ -61,11 +66,6 @@
             label2 = new Label();
             label1 = new Label();
             panelGrilla = new Panel();
-            btnNew = new ToolStripButton();
-            btnDelete = new ToolStripButton();
-            btnEdit = new ToolStripButton();
-            btnRefresh = new ToolStripButton();
-            btnClose = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             panelNavegacion.SuspendLayout();
@@ -118,6 +118,52 @@
             toolStrip1.Size = new Size(1974, 106);
             toolStrip1.TabIndex = 6;
             toolStrip1.Text = "toolStrip1";
+            toolStrip1.ItemClicked += toolStrip1_ItemClicked;
+            // 
+            // btnClose
+            // 
+            btnClose.Alignment = ToolStripItemAlignment.Right;
+            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
+            btnClose.ImageScaling = ToolStripItemImageScaling.None;
+            btnClose.ImageTransparentColor = Color.Magenta;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(76, 100);
+            btnClose.Text = "Close";
+            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnClose.Click += btnClose_Click;
+            // 
+            // btnNew
+            // 
+            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.ImageScaling = ToolStripItemImageScaling.None;
+            btnNew.ImageTransparentColor = Color.Magenta;
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(68, 100);
+            btnNew.Text = "New";
+            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnNew.Click += btnNew_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
+            btnDelete.ImageTransparentColor = Color.Magenta;
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(88, 100);
+            btnDelete.Text = "Delete";
+            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
+            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
+            btnEdit.ImageTransparentColor = Color.Magenta;
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(68, 100);
+            btnEdit.Text = "Edit";
+            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnOrder
             // 
@@ -128,6 +174,7 @@
             btnOrder.Size = new Size(97, 100);
             btnOrder.Text = "Order";
             btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnOrder.Click += btnOrder_Click;
             // 
             // productAZToolStripMenuItem
             // 
@@ -163,6 +210,18 @@
             btnFilter.Name = "btnFilter";
             btnFilter.Size = new Size(130, 106);
             btnFilter.SelectedIndexChanged += btnFilter_SelectedIndexChanged;
+            btnFilter.Click += btnFilter_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
+            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
+            btnRefresh.ImageTransparentColor = Color.Magenta;
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(97, 100);
+            btnRefresh.Text = "Refresh";
+            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // dgv
             // 
@@ -170,9 +229,10 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colProductName, colDescription, colCategory, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended, colId });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colProductName, colDescription, colCategory, colCostPrice, colSalePrice, colStock, colReorderLevel, colSuspended });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
+            dgv.MultiSelect = false;
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
@@ -180,6 +240,15 @@
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.Size = new Size(1974, 1223);
             dgv.TabIndex = 7;
+            // 
+            // colId
+            // 
+            colId.HeaderText = "Id";
+            colId.MinimumWidth = 10;
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            colId.Width = 200;
             // 
             // colProductName
             // 
@@ -244,15 +313,6 @@
             colSuspended.Name = "colSuspended";
             colSuspended.ReadOnly = true;
             colSuspended.Width = 200;
-            // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.MinimumWidth = 10;
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            colId.Width = 200;
             // 
             // panelNavegacion
             // 
@@ -375,62 +435,6 @@
             panelGrilla.Size = new Size(1974, 1223);
             panelGrilla.TabIndex = 11;
             // 
-            // btnNew
-            // 
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
-            btnNew.ImageScaling = ToolStripItemImageScaling.None;
-            btnNew.ImageTransparentColor = Color.Magenta;
-            btnNew.Name = "btnNew";
-            btnNew.Size = new Size(68, 100);
-            btnNew.Text = "New";
-            btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnNew.Click += btnNew_Click;
-            // 
-            // btnDelete
-            // 
-            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
-            btnDelete.ImageScaling = ToolStripItemImageScaling.None;
-            btnDelete.ImageTransparentColor = Color.Magenta;
-            btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(88, 100);
-            btnDelete.Text = "Delete";
-            btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnDelete.Click += btnDelete_Click;
-            // 
-            // btnEdit
-            // 
-            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
-            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
-            btnEdit.ImageTransparentColor = Color.Magenta;
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(68, 100);
-            btnEdit.Text = "Edit";
-            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnEdit.Click += btnEdit_Click;
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
-            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
-            btnRefresh.ImageTransparentColor = Color.Magenta;
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 100);
-            btnRefresh.Text = "Refresh";
-            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnRefresh.Click += btnRefresh_Click;
-            // 
-            // btnClose
-            // 
-            btnClose.Alignment = ToolStripItemAlignment.Right;
-            btnClose.Image = (Image)resources.GetObject("btnClose.Image");
-            btnClose.ImageScaling = ToolStripItemImageScaling.None;
-            btnClose.ImageTransparentColor = Color.Magenta;
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(76, 100);
-            btnClose.Text = "Close";
-            btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnClose.Click += btnClose_Click;
-            // 
             // frmProducts
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -482,6 +486,13 @@
         private ToolStripMenuItem productZAToolStripMenuItem;
         private ToolStripMenuItem categoryAZToolStripMenuItem;
         private ToolStripMenuItem categoryZAToolStripMenuItem;
+        private ToolStripComboBox btnFilter;
+        private ToolStripButton btnClose;
+        private ToolStripButton btnNew;
+        private ToolStripButton btnDelete;
+        private ToolStripButton btnEdit;
+        private ToolStripButton btnRefresh;
+        private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colProductName;
         private DataGridViewTextBoxColumn colDescription;
         private DataGridViewTextBoxColumn colCategory;
@@ -490,12 +501,5 @@
         private DataGridViewTextBoxColumn colStock;
         private DataGridViewTextBoxColumn colReorderLevel;
         private DataGridViewTextBoxColumn colSuspended;
-        private DataGridViewTextBoxColumn colId;
-        private ToolStripComboBox btnFilter;
-        private ToolStripButton btnClose;
-        private ToolStripButton btnNew;
-        private ToolStripButton btnDelete;
-        private ToolStripButton btnEdit;
-        private ToolStripButton btnRefresh;
     }
 }
