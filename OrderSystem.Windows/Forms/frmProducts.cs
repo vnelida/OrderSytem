@@ -237,11 +237,10 @@ namespace Windows.Forms
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             currentPage = 1;
-            categoryFilter = null;
+            order = Order.ProductAZ;
             totalRecords = _service!?.GetCount(itemType) ?? 0;
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
             LoadData();
-            filterOn = false;
             btnFilter.SelectedIndex = 0;
 
         }

@@ -38,18 +38,18 @@ namespace Windows.Forms
                 {
                     if (!File.Exists($"{carpetaImagen}{product.Image}"))
                     {
-                        picImage.Image = Image.FromFile(archivoNoEncontrado);
+                        picImage.Image = Image.FromFile(archivoNoEncontrado);//asigna si no tiene img
                     }
                     else
                     {
-                        picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
+                        picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");//comprueba si la imagen esta en la carpeta
                         archivoImagen = product.Image;
-                        picImage.SizeMode = PictureBoxSizeMode.Zoom;
+                        picImage.SizeMode = PictureBoxSizeMode.Zoom;//se carga la img y se ajusta el tamaño
                     }
                 }
                 else
                 {
-                    picImage.Image = Image.FromFile(imagenNoDisponible);
+                    picImage.Image = Image.FromFile(imagenNoDisponible);//muestra en caso de que no haya img
                 }
             }
         }
@@ -81,26 +81,19 @@ namespace Windows.Forms
                     product.Category = selectedCategory;
                 }
 
-                // Verificar si se seleccionó una nueva imagen
-                if (!string.IsNullOrEmpty(archivoImagen))
+                if (!string.IsNullOrEmpty(archivoImagen))// verific si se selecciono una nueva img
                 {
                     string destino = Path.Combine(carpetaImagen, Path.GetFileName(archivoImagen));
-
-                    // Si la imagen no existe en la carpeta destino, copiarla
-                    if (!File.Exists(destino))
+                                        
+                    if (!File.Exists(destino))// si la imagen no existe en la carpeta destino copiarla
                     {
                         File.Copy(archivoImagen, destino);
-
-                        // Confirmar que la imagen fue copiada
-                        MessageBox.Show($"Imagen copiada a: {destino}");
                     }
 
-                    // Asignar el nombre del archivo al producto
-                    product.Image = Path.GetFileName(destino);
+                    product.Image = Path.GetFileName(destino); // asigna el nombre del archivo al producto
                 }
-
-                // Manejar la imagen del producto existente
-                if (!string.IsNullOrEmpty(product.Image))
+                           
+                if (!string.IsNullOrEmpty(product.Image))// manejar la imagen del producto existente
                 {
                     string rutaImagenExistente = Path.Combine(carpetaImagen, product.Image);
 
@@ -119,49 +112,8 @@ namespace Windows.Forms
                     picImage.Image = Image.FromFile(imagenNoDisponible);
                     picImage.SizeMode = PictureBoxSizeMode.Zoom;
                 }
-
-                // Indicar que el formulario fue completado correctamente
                 DialogResult = DialogResult.OK;
             }
-            //if (ValidateData())
-            //{
-
-            //    if (product == null)
-            //    {
-            //        product = new Product();
-            //    }
-            //    MessageBox.Show($"archivoImagen: {archivoImagen}");
-            //    product.Name = txtProductName.Text;
-            //    product.Description = txtDescription.Text;
-            //    product.Stock = (int)numStock.Value;
-            //    product.ReorderLevel = (int)numReorderLevel.Value;
-            //    product.Suspended = checkBoxSuspended.Checked;
-            //    product.CostPrice = numPrice.Value;
-            //    product.SalePrice = numSalePrice.Value;
-            //    if (cboCategories.SelectedValue is not null)
-            //    {
-            //        product.CategoryId = (int)cboCategories.SelectedValue;
-            //        product.Category = selectedCategory;
-
-            //    }
-            //    if (product.Image != string.Empty || product.Image is not null)
-            //    {
-            //        if (!File.Exists($"{carpetaImagen}{product.Image}"))
-            //        {
-            //            picImage.Image = Image.FromFile(archivoNoEncontrado);
-            //        }
-            //        else
-            //        {
-            //            picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
-            //            archivoImagen = product.Image;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        picImage.Image = Image.FromFile(imagenNoDisponible);
-            //    }
-            //    DialogResult = DialogResult.OK;
-            //}
         }
         private void cboCategories_SelectedIndexChanged(object sender, EventArgs e)
         {

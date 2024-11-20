@@ -1,6 +1,4 @@
 ﻿using Entities.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Forms;
 using Windows.Helpers;
 
 namespace Windows.Forms
