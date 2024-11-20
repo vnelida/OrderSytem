@@ -79,6 +79,27 @@ namespace Windows.Helpers
                     r.Cells[0].Value = genre.GenreId;
                     r.Cells[1].Value = genre.GenreName;
                     break;
+                case CustomerListDto customer:
+                    r.Cells[0].Value = customer.CustomerId;
+                    r.Cells[1].Value = customer.DocumentNumber;
+                    r.Cells[2].Value = customer.FullName;
+                    r.Cells[3].Value = customer.PrincipalAddress;
+                    r.Cells[4].Value = customer.PrincipalPhone;
+                    break;
+                case SalesListDto sale:
+                    r.Cells[0].Value = sale.SaleId;
+                    r.Cells[1].Value = sale.Customer;
+                    r.Cells[2].Value = sale.SaleDate.ToShortDateString();
+                    r.Cells[3].Value = sale.IsGift;
+                    r.Cells[4].Value = sale.TotalAmount;
+                    break;
+                case SaleDetails saleDetails:
+                    r.Cells[0].Value = saleDetails.SaleId;
+                    r.Cells[1].Value = saleDetails.ProductId is null ? saleDetails.Combo!.Name : saleDetails.Product!.Name;
+                    r.Cells[2].Value = saleDetails.Price;
+                    r.Cells[3].Value = saleDetails.Quantity;
+                    r.Cells[4].Value = saleDetails.Quantity * saleDetails.Price;
+                    break;
                 default:
                     break;
             }

@@ -39,5 +39,17 @@ namespace OrderSystem.Windows
         {
             Close();
         }
+
+        private void btnCustomers_Click(object sender, EventArgs e)
+        {
+            frmCustomers frm = new frmCustomers(_serviceProvider);
+            frm.ShowDialog();
+        }
+
+        private void btnOrders_Click(object sender, EventArgs e)
+        {
+            frmSales frm = new frmSales(_serviceProvider);
+            frm.ShowDialog();
+        }
     }
 }

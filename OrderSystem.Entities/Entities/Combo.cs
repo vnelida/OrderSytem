@@ -9,14 +9,14 @@
         public void Add(ComboDetail detail)
         {
             var comboDetails = Details
-                .FirstOrDefault(d => d.ProductId == detail.ProductId);
+                .FirstOrDefault(d => d.ProductId == detail.ProductId); //busca si ya existe este producto en el combo
             if (comboDetails is null)
             {
-                Details.Add(detail);
+                Details.Add(detail);//si no existe, lo agrega
             }
             else
             {
-                comboDetails.Quantity += detail.Quantity;
+                comboDetails.Quantity += detail.Quantity;//si existe, le agrega solo la cantidad
             }
         }
         public bool Exist(ComboDetail detail)

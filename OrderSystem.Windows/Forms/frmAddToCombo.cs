@@ -1,6 +1,4 @@
 ﻿using Entities.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Forms;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -21,7 +19,7 @@ namespace Windows.Forms
             CombosHelper.CargarComboProducts(ref cboProducts, _serviceProvider);
             if (comboDetail is not null)
             {
-                cboProducts.SelectedValue = comboDetail.ComboId;
+                cboProducts.SelectedValue = comboDetail.ProductId;
                 numQuantity.Value = comboDetail.Quantity;
             }
         }

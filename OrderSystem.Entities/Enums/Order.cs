@@ -14,6 +14,10 @@
         SalePrice,
         SalePriceDesc,
         NameAZ,
-        NameZA
+        NameZA,
+        CountryAZ,
+        CountryZA,
+        StateProvinceAZ,
+        StateProvinceZA
     }
 }
