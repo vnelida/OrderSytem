@@ -100,6 +100,7 @@
             splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
             splitContainer1.Panel1.Controls.Add(txtCategory);
             splitContainer1.Panel1.Controls.Add(label1);
+            splitContainer1.Panel1.Paint += splitContainer1_Panel1_Paint;
             // 
             // splitContainer1.Panel2
             // 
@@ -122,6 +123,7 @@
             Name = "frmCategoriesAE";
             StartPosition = FormStartPosition.CenterScreen;
             Text = " ";
+            Load += frmCategoriesAE_Load;
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();

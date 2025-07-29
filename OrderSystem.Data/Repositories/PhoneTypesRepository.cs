@@ -9,7 +9,7 @@ namespace Data.Repositories
     {
         public List<PhoneType> GetList(SqlConnection conn, SqlTransaction? tran = null)
         {
-            var selectQuery = @"SELECT PhoneTypeId, Description FROM PhoneTypesORDER BY Description";
+            var selectQuery = @"SELECT PhoneTypeId, Description FROM PhoneTypes ORDER BY Description";
 
 
             return conn.Query<PhoneType>(selectQuery).ToList();

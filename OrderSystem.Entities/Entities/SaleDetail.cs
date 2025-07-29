@@ -1,8 +1,8 @@
 ﻿namespace Entities.Entities
 {
-    public class SaleDetails
+    public class SaleDetail
     {
-        public int SaleDetailsId { get; set; }
+        public int SaleDetailId { get; set; }
         public int SaleId { get; set; }
         public int? ProductId { get; set; }
         public int? ComboId { get; set; }

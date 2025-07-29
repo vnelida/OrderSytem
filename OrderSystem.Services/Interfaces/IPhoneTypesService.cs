@@ -10,6 +10,6 @@ namespace Services.Interfaces
 {
     public interface IPhoneTypesService
     {
-        List<PhoneType> GetList(SqlConnection conn, SqlTransaction? tran = null);
+        List<PhoneType> GetList();
     }
 }

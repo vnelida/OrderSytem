@@ -7,7 +7,7 @@ namespace Data.Repositories
 {
     public class SaleDetailsRepository : ISaleDetailsRepository
     {
-        public void Add(SaleDetails details, SqlConnection conn, SqlTransaction tran)
+        public void Add(SaleDetail details, SqlConnection conn, SqlTransaction tran)
         {
             string insertQuery = @"INSERT INTO SaleDetails 
                 (SaleId, ProductId, ComboId, Quantity, Price) 
@@ -17,10 +17,10 @@ namespace Data.Repositories
             int primaryKey = conn.QuerySingle<int>(insertQuery, details, tran);
             if (primaryKey > 0)
             {
-                details.SaleDetailsId = primaryKey;
+                details.SaleDetailId = primaryKey;
                 return;
             }
-            throw new Exception("Failed to add sale detail.");
+            throw new Exception("Failed to add sale details.");
         }
     }
 }

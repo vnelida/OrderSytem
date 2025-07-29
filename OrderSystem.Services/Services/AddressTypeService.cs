@@ -15,13 +15,13 @@ namespace Services.Services
             _repository = repository;
             _cadena = cadena;
         }
-        public List<AddressType> GetList(SqlConnection conn, SqlTransaction? tran = null)
+        public List<AddressType> GetList()
         {
-            var selectQuery = @"SELECT AddressTypeId, Description FROM AddressTypes
-                    ORDER BY Description";
-
-
-            return conn.Query<AddressType>(selectQuery).ToList();
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository.GetList(conn);
+            }
 
         }
     }

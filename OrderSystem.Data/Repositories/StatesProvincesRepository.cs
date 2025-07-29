@@ -136,7 +136,7 @@ namespace Data.Repositories
         {
             string selectQuery = @"SELECT StateProvinceId,
                 StateProvinceName, CountryId 
-                FROM StatesProvince 
+                FROM StatesProvinces 
                 WHERE CountryId=@CountryId 
                 ORDER BY StateProvinceName";
             return conn.Query<StateProvince>(selectQuery,

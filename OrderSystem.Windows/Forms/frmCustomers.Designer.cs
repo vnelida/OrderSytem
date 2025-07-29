@@ -37,6 +37,7 @@
             NameAZ = new ToolStripMenuItem();
             NameZA = new ToolStripMenuItem();
             btnRefresh = new ToolStripButton();
+            btnDetails = new ToolStripButton();
             btnClose = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
@@ -65,7 +66,7 @@
             // 
             toolStrip1.BackColor = SystemColors.ButtonHighlight;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnRefresh, btnClose });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnRefresh, btnDetails, btnClose });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1974, 106);
@@ -92,6 +93,7 @@
             btnDelete.Size = new Size(88, 100);
             btnDelete.Text = "Delete";
             btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDelete.Click += tsbDelete_Click;
             // 
             // btnEdit
             // 
@@ -102,6 +104,7 @@
             btnEdit.Size = new Size(68, 100);
             btnEdit.Text = "Edit";
             btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnOrder
             // 
@@ -135,6 +138,17 @@
             btnRefresh.Text = "Refresh";
             btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
+            // btnDetails
+            // 
+            btnDetails.Image = (Image)resources.GetObject("btnDetails.Image");
+            btnDetails.ImageScaling = ToolStripItemImageScaling.None;
+            btnDetails.ImageTransparentColor = Color.Magenta;
+            btnDetails.Name = "btnDetails";
+            btnDetails.Size = new Size(90, 100);
+            btnDetails.Text = "Details";
+            btnDetails.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDetails.Click += btnDetails_Click;
+            // 
             // btnClose
             // 
             btnClose.Alignment = ToolStripItemAlignment.Right;
@@ -145,6 +159,7 @@
             btnClose.Size = new Size(76, 100);
             btnClose.Text = "Close";
             btnClose.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnClose.Click += btnClose_Click;
             // 
             // splitContainer1
             // 
@@ -323,11 +338,13 @@
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1974, 1329);
+            ControlBox = false;
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
             MaximumSize = new Size(2000, 1400);
             MinimumSize = new Size(2000, 1400);
             Name = "frmCustomers";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmCustomers";
             Load += frmCustomers_Load;
             toolStrip1.ResumeLayout(false);
@@ -351,7 +368,7 @@
         private ToolStripDropDownButton btnOrder;
         private ToolStripMenuItem NameAZ;
         private ToolStripMenuItem NameZA;
-        private ToolStripButton btnRefresh;
+        private ToolStripButton btnDetails;
         private ToolStripButton btnClose;
         private SplitContainer splitContainer1;
         private Button btnLast;
@@ -368,5 +385,6 @@
         private DataGridViewTextBoxColumn colCostumer;
         private DataGridViewTextBoxColumn colAddress;
         private DataGridViewTextBoxColumn colPhone;
+        private ToolStripButton btnRefresh;
     }
 }

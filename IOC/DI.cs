@@ -45,11 +45,25 @@ namespace IOC
                 return new GenresService(repository, cadena);
             });
 
-            service.AddScoped<ICitiesRepository, CitiesRepository>();
-            service.AddScoped<ICitiesService>(sp =>
+            service.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
+            service.AddScoped<IOrderStatusService>(sp =>
             {
-                var repository = new CitiesRepository();
-                return new CitiesService(repository, cadena);
+                var repository = new OrderStatusRepository();
+                return new OrderStatusService(repository, cadena);
+            });
+
+            service.AddScoped<IOrderTypeRepository, OrderTypeRepository>();
+            service.AddScoped<IOrderTypeServices>(sp =>
+            {
+                var repository = new OrderTypeRepository();
+                return new OrderTypeService(repository, cadena);
+            });
+
+            service.AddScoped<ICountriesRepository, CountriesRepository>();
+            service.AddScoped<ICountriesService>(sp =>
+            {
+                var repository = new CountriesRepository();
+                return new CountriesService(repository, cadena);
             });
 
             service.AddScoped<IStatesProvincesRepository, StatesProvincesRepository>();

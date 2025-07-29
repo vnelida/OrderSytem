@@ -281,6 +281,7 @@ namespace Data.Repositories
                            c.Size, 
                            c.StartDate, 
                            c.EndDate,
+                           c.OnOrderQuantity,
 						   cd.ComboDetailId,
 						   cd.ComboId,
 						   cd.ProductId,
@@ -320,7 +321,8 @@ namespace Data.Repositories
             if (itemType is ItemType.Product)
             {
 
-                var selectQuery = @"SELECT c.ProductId AS ItemId, c.ProductName AS Name, c.SalePrice, c.Stock
+                var selectQuery = @"SELECT c.ProductId AS ItemId, c.ProductName AS Name, c.SalePrice, c.Stock,
+                                    c.Image
                                     FROM Products c 
                                     WHERE c.Suspended=0
                                     ORDER BY c.ProductName";
@@ -331,12 +333,12 @@ namespace Data.Repositories
             if (itemType is ItemType.Combo)
             {
 
-                var selectQuery = @"SELECT c.CajaId AS ProductoId, 
-                                   c.NombreCaja AS Nombre,
-                                c.PrecioVenta,
-                                c.Stock
-                            FROM Cajas c WHERE c.Suspendido=0
-                            ORDER BY c.NombreCaja";
+                var selectQuery = @"SELECT c.ComboId AS ItemId, 
+                                    c.ComboName AS Name,
+                                    c.SalePrice,
+                                    c.Stock, c.Image
+                                    FROM Combos c WHERE c.Suspended=0
+                                    ORDER BY c.ComboName";
                 var combosList = conn.Query<Combo>(selectQuery).ToList();
                 itemsList.AddRange(combosList);
 

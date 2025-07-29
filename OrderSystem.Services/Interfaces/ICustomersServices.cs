@@ -13,5 +13,9 @@ namespace Services.Interfaces
         int GetCount();
         CustomerDetailsDto? GetCustomerDetails(int customerId);
         List<Customer> GetCustomers();
+        bool IsRelated(int customerId);
+        Customer? GetCustomerFullDetails(int customerId);
+        Phone? GetPhoneDetails(int phoneId);
+        void SaveCustomerFullDetails(Customer customerToSave);
     }
 }

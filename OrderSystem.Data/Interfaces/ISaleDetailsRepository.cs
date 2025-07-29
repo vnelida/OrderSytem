@@ -5,7 +5,7 @@ namespace Data.Interfaces
 {
     public interface ISaleDetailsRepository
     {
-        void Add(SaleDetails details, SqlConnection conn, SqlTransaction tran);
+        void Add(SaleDetail details, SqlConnection conn, SqlTransaction tran);
 
     }
 }

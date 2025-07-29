@@ -11,8 +11,8 @@ namespace Data.Repositories
         public void Add(Sale sale, SqlConnection conn, SqlTransaction tran)
         {
             string insertQuery = @"INSERT INTO Sales 
-                (CustomerId, SaleDate, IsGift, TotalAmount, Status ) 
-                VALUES (@CustomerId, @SaleDate, @IfGift, @TotalAmount, @Status); 
+                (CustomerId, SaleDate, TotalAmount, OrderStatusId, OrderTypeId ) 
+                VALUES (@CustomerId, @SaleDate, @TotalAmount, @OrderStatusId, @OrderTypeId); 
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
             int primaryKey = conn.QuerySingle<int>(insertQuery, sale, tran);
@@ -32,15 +32,25 @@ namespace Data.Repositories
         public int GetCaount(SqlConnection conn, Func<SalesListDto, bool>? filter)
         {
             var selectQuery = @"SELECT
-				v.SaleId,
-				COALESCE(v.CustomerId,999999) AS CustomerId,
-				v.SaleDate,
-				v.IsGift,
-				v.TotalAmount,
-				COALESCE(c.FirstName+' '+c.LastName,'Consumidor Final') as Customer
-	
-				FROM Sales v LEFT JOIN Customers c ON v.CustomerId=c.CustomerId
-				ORDER BY v.SaleId";
+                                v.SaleId,
+                                COALESCE(v.CustomerId, 999999) AS CustomerId,
+                                v.SaleDate,
+                                v.TotalAmount,
+                                v.OrderTypeId,      
+                                ot.TypeName AS OrderType, 
+                                v.OrderStatusId,    
+                                os.StatusName AS OrderStatus,
+                                COALESCE(c.FirstName + ' ' + c.LastName, 'Consumidor Final') AS CustomerName
+                            FROM
+                                Sales AS v
+                            LEFT JOIN
+                                Customers AS c ON v.CustomerId = c.CustomerId
+                            LEFT JOIN
+                                OrderTypes AS ot ON v.OrderTypeId = ot.OrderTypeId   
+                            LEFT JOIN
+                                OrderStatuses AS os ON v.OrderStatusId = os.OrderStatusId 
+                            ORDER BY
+                                v.SaleId";
             var listaVentas = conn.Query<SalesListDto>(selectQuery).ToList();
             if (filter is not null)
             {
@@ -53,16 +63,25 @@ namespace Data.Repositories
         {
             var listaVentas = new List<SalesListDto>();
             string selectQuery = @"SELECT
-				v.SaleId,
-				COALESCE(v.CustomerId,999999) AS CustomerId,
-				v.SaleDate,
-				v.IsGift,
-				v.TotalAmount,
-				v.Status,
-				COALESCE(c.FirstName+' '+c.LastName,'Consumidor Final') as Customer
-	
-				FROM Sales v LEFT JOIN Customers c ON v.CustomerId=c.CustomerId
-				ORDER BY v.SaleId";
+                                    v.SaleId,
+                                    COALESCE(v.CustomerId, 999999) AS CustomerId,
+                                    v.SaleDate,
+                                    v.TotalAmount,
+                                    v.OrderTypeId,
+                                    ot.TypeName AS OrderType,
+                                    v.OrderStatusId,
+                                    os.StatusName AS OrderStatus,
+                                    COALESCE(c.FirstName + ' ' + c.LastName, 'Consumidor Final') AS Customer
+                                FROM
+                                    Sales AS v
+                                LEFT JOIN
+                                    Customers AS c ON v.CustomerId = c.CustomerId
+                                LEFT JOIN
+                                    OrderTypes AS ot ON v.OrderTypeId = ot.OrderTypeId
+                                LEFT JOIN
+                                    OrderStatuses AS os ON v.OrderStatusId = os.OrderStatusId
+                                ORDER BY
+                                    v.SaleId";
             listaVentas = conn.Query<SalesListDto>(selectQuery).ToList();
             if (filter != null)
             {
@@ -73,53 +92,82 @@ namespace Data.Repositories
 
         public Sale? GetSaleById(SqlConnection conn, int saleId, SqlTransaction? tran = null)
         {
-            var selectQuery = @"SELECT
-				v.SaleId,
-				COALESCE(v.CustomerId,999999) AS CustomerId,
-				v.SaleDate,
-				v.IsGift,
-				v.TotalAmount,
-				v.Status,
-				COALESCE(v.CustomerId,999999) AS CustomerId,
-				COALESCE(c.FirstName,'Consumidor') as FirstName,
-				COALESCE(c.LastName,'Final') as LastName,
-				dv.SaleDetailsId,
-				dv.SaleId,
-				dv.ProductId,
-				dv.ComboId,
-				dv.Quantity,
-				dv.Price,
-				b.ProductId,
-				b.ProductName AS Name,
-				ca.ComboId,
-				ca.ComboName As Name
-				FROM Sales v LEFT JOIN Customers c ON v.CustomerId=c.CustomerId
-				INNER JOIN SaleDetails dv ON v.SaleId=dv.SaleId
-				LEFT JOIN Products b ON dv.ProductId=b.ProductId
-				LEFT JOIN Combos ca ON dv.ComboId=ca.ComboId
-				WHERE v.SaleId=@SaleId";
-            var ventasDictionary = new Dictionary<int, Sale>();
-            var resultado = conn.Query<Sale, Customer, SaleDetails, Product, Combo, Sale>(selectQuery,
-                (sale, customer, details, product, combo) =>
+            var selectQuery = @"
+                                SELECT
+                            v.SaleId,
+	                        COALESCE(v.CustomerId,999999) AS CustomerId,
+                            v.SaleDate,
+                            v.TotalAmount,
+
+                            COALESCE(v.CustomerId,999999) AS CustomerId,
+				            COALESCE(c.FirstName,'Consumidor') as FirstName,
+				            COALESCE(c.LastName,'Final') as LastName,
+
+                            dv.SaleDetailId, 
+                            dv.SaleId,
+                            dv.ProductId, 
+                            dv.ComboId,  
+                            dv.Quantity,
+                            dv.Price,
+
+                            p.ProductId, 
+                            p.ProductName AS Name,
+
+                            co.ComboId,
+                            co.ComboName as Name,
+
+                            ot.OrderTypeId, 
+                            ot.TypeName AS TypeName,
+
+                            os.OrderStatusId,
+                            os.StatusName AS StatusName
+
+                        FROM Sales v
+                        LEFT JOIN Customers c ON v.CustomerId = c.CustomerId
+                        INNER JOIN SaleDetails dv ON v.SaleId = dv.SaleId
+                        LEFT JOIN Products p ON dv.ProductId = p.ProductId 
+                        LEFT JOIN Combos co ON dv.ComboId = co.ComboId      
+                        LEFT JOIN OrderTypes ot ON v.OrderTypeId = ot.OrderTypeId
+                        LEFT JOIN OrderStatuses os ON v.OrderStatusId = os.OrderStatusId
+                        WHERE v.SaleId = @SaleId";
+
+            var salesDictionary = new Dictionary<int, Sale>();
+
+            var result = conn.Query<Sale, Customer, SaleDetail, Product, Combo, OrderType, OrderStatus, Sale>(
+                selectQuery,
+                (sale, customer, saleDetail, product, combo, orderType, orderStatus) =>
                 {
-                    if (!ventasDictionary.TryGetValue(sale.SaleId, out var ventaEntry))
+                    if (!salesDictionary.TryGetValue(sale.SaleId, out var saleEntry))
                     {
-                        ventaEntry = sale;
-                        sale.Customer = customer;
-                        sale.Details = new List<SaleDetails>();
-                        ventasDictionary.Add(sale.SaleId, ventaEntry);
+                        saleEntry = sale;
+                        saleEntry.Customer = customer;
+                        saleEntry.OrderType = orderType;
+                        saleEntry.OrderStatus = orderStatus;
+                        saleEntry.Details = new List<SaleDetail>();
+                        salesDictionary.Add(sale.SaleId, saleEntry);
                     }
-                    details.Product = product;
-                    details.Combo = combo;
-                    ventaEntry.Details.Add(details);
-                    return ventaEntry;
 
+                    if (saleDetail != null)
+                    {
+                        if (saleDetail.ProductId.HasValue && product != null)
+                        {
+                            saleDetail.Product = product;
+                        }
+                        else if (saleDetail.ComboId.HasValue && combo != null)
+                        {
+                            saleDetail.Combo = combo;
+                        }
+                        saleEntry.Details.Add(saleDetail);
+                    }
+
+                    return saleEntry;
                 },
-                    new { @SaleId = saleId },
-                    splitOn: "CustomerId,SaleDetailsId,ProductId,ComboId"
-                ).FirstOrDefault();
+                new { SaleId = saleId },
+                splitOn: "CustomerId,SaleDetailId,ProductId,ComboId,OrderTypeId,OrderStatusId",
+                transaction: tran
+            ).ToList();
 
-            return ventasDictionary.Values.FirstOrDefault();
+            return salesDictionary.Values.FirstOrDefault();            
         }
     }
 }

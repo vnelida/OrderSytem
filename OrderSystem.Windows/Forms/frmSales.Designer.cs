@@ -43,7 +43,8 @@
             colId = new DataGridViewTextBoxColumn();
             colCustomer = new DataGridViewTextBoxColumn();
             colDate = new DataGridViewTextBoxColumn();
-            colGift = new DataGridViewTextBoxColumn();
+            colStatus = new DataGridViewTextBoxColumn();
+            colOrderType = new DataGridViewTextBoxColumn();
             colTotal = new DataGridViewTextBoxColumn();
             toolStrip1 = new ToolStrip();
             btnClose = new ToolStripButton();
@@ -57,6 +58,7 @@
             categoryZAToolStripMenuItem = new ToolStripMenuItem();
             btnFilter = new ToolStripComboBox();
             btnRefresh = new ToolStripButton();
+            btnDetails = new ToolStripButton();
             panelNavegacion.SuspendLayout();
             panelGrilla.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
@@ -190,7 +192,7 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colCustomer, colDate, colGift, colTotal });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colCustomer, colDate, colStatus, colOrderType, colTotal });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
             dgv.MultiSelect = false;
@@ -227,13 +229,21 @@
             colDate.Name = "colDate";
             colDate.ReadOnly = true;
             // 
-            // colGift
+            // colStatus
             // 
-            colGift.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colGift.HeaderText = "IsGift";
-            colGift.MinimumWidth = 10;
-            colGift.Name = "colGift";
-            colGift.ReadOnly = true;
+            colStatus.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colStatus.HeaderText = "Order Status";
+            colStatus.MinimumWidth = 10;
+            colStatus.Name = "colStatus";
+            colStatus.ReadOnly = true;
+            // 
+            // colOrderType
+            // 
+            colOrderType.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colOrderType.HeaderText = "Order Type";
+            colOrderType.MinimumWidth = 10;
+            colOrderType.Name = "colOrderType";
+            colOrderType.ReadOnly = true;
             // 
             // colTotal
             // 
@@ -247,7 +257,7 @@
             // 
             toolStrip1.BackColor = Color.White;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh, btnDetails });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1974, 106);
@@ -275,6 +285,7 @@
             btnNew.Size = new Size(68, 100);
             btnNew.Text = "New";
             btnNew.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnNew.Click += btnNew_Click;
             // 
             // btnDelete
             // 
@@ -346,6 +357,17 @@
             btnRefresh.Text = "Refresh";
             btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
+            // btnDetails
+            // 
+            btnDetails.Image = (Image)resources.GetObject("btnDetails.Image");
+            btnDetails.ImageScaling = ToolStripItemImageScaling.None;
+            btnDetails.ImageTransparentColor = Color.Magenta;
+            btnDetails.Name = "btnDetails";
+            btnDetails.Size = new Size(90, 100);
+            btnDetails.Text = "Details";
+            btnDetails.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDetails.Click += btnDetails_Click;
+            // 
             // frmSales
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -392,14 +414,16 @@
         private Button button2;
         private Button button3;
         private Button button4;
-        private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colCustomer;
-        private DataGridViewTextBoxColumn colDate;
-        private DataGridViewTextBoxColumn colGift;
-        private DataGridViewTextBoxColumn colTotal;
         private TextBox txtPageCount;
         private ComboBox cboPages;
         private Label label2;
         private Label label1;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colCustomer;
+        private DataGridViewTextBoxColumn colDate;
+        private DataGridViewTextBoxColumn colStatus;
+        private DataGridViewTextBoxColumn colOrderType;
+        private DataGridViewTextBoxColumn colTotal;
+        private ToolStripButton btnDetails;
     }
 }

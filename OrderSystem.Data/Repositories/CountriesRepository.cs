@@ -97,7 +97,7 @@ namespace Data.Repositories
 
         public List<Country>? GetList(SqlConnection conn, int? currentPage, int? pageSize, SqlTransaction? tran = null)
         {
-            var selectQuery = @"SELECT CountryId, CountryNamw FROM 
+            var selectQuery = @"SELECT CountryId, CountryName FROM 
                 Countries ORDER BY CountryName";
             if (currentPage.HasValue && pageSize.HasValue)
             {

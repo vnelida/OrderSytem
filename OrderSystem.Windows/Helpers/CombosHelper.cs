@@ -116,6 +116,146 @@ namespace Windows.Helpers
             }
 
         }
+
+        internal static void LoadCustomersComboBox(ref ComboBox cboCustomers, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            ICustomersServices? service = _serviceProvider?.GetService<ICustomersServices>();
+            var list = service?.GetCustomers();
+            var defaultCustomer = new Customer()
+            {
+                CustomerId = 99999,
+                LastName = "Consumidor",
+                FirstName = "Final"
+            };
+            list?.Insert(0, defaultCustomer);
+            cboCustomers.DataSource = list;
+            cboCustomers.DisplayMember = "FullName";
+            cboCustomers.ValueMember = "CustomerId";
+            cboCustomers.SelectedIndex = 0;
+        }
+
+        internal static void LoadOrderStatusComboBx(ref ComboBox cbo, IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IOrderStatusService? service = _serviceProvider?.GetService<IOrderStatusService>();
+
+            var list = service?.GetListOrderStatus();
+            var defaultStatus = new OrderStatus()
+            {
+                OrderStatusId = 0,
+                StatusName = "Seleccione"
+            };
+            list?.Insert(0, defaultStatus);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "StatusName";
+            cbo.ValueMember = "OrderStatusId";
+            cbo.SelectedIndex = 0;
+        }
+
+        internal static void LoadOrderTypesComboBx(ref ComboBox cbo, IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IOrderTypeServices? service = _serviceProvider?.GetService<IOrderTypeServices>();
+
+            var list = service?.GetListOrderType();
+            var defaultTypes = new OrderType()
+            {
+                OrderTypeId = 0,
+                TypeName = "Seleccione"
+            };
+            list?.Insert(0, defaultTypes);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "TypeName";
+            cbo.ValueMember = "OrderTypeId";
+            cbo.SelectedIndex = 0;
+        }
+
+       
+        internal static void LaodAddressTypesComboBox(ref ComboBox cbo, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IAddressTypesService? service = _serviceProvider?.GetService<IAddressTypesService>();
+            var list = service?.GetList();
+            var defaultType = new AddressType()
+            {
+                AddressTypeId = 0,
+                Description = "Select"
+            };
+            list?.Insert(0, defaultType);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "Description";
+            cbo.ValueMember = "AddressTypeId";
+            cbo.SelectedIndex = 0;
+        }
+
+        internal static void LoadCountriesComboBox(ref ComboBox cbo, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            ICountriesService? service = _serviceProvider?.GetService<ICountriesService>();
+            var list = service?.GetList(null, null);
+            var defaultCountry = new Country()
+            {
+                CountryId = 0,
+                CountryName = "Select"
+            };
+            list?.Insert(0, defaultCountry);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "CountryName";
+            cbo.ValueMember = "CountryId";
+            cbo.SelectedIndex = 0;
+        }
+
+        internal static void LoadStatesComboBox(ref ComboBox cbo, Country country, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IStatesProvincesService? service = _serviceProvider?.GetService<IStatesProvincesService>();
+            var list = service?.GetListComboStates(country);
+            var defaultState = new StateProvince()
+            {
+                CountryId = 0,
+                StateProvinceName = "Select"
+            };
+            list?.Insert(0, defaultState);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "StateProvinceName";
+            cbo.ValueMember = "StateProvinceId";
+            cbo.SelectedIndex = 0;
+        }
+
+        internal static void LoadCitiesComboBox(ref ComboBox cbo, Country? country, StateProvince stateProvince, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            ICitiesService? service = _serviceProvider?.GetService<ICitiesService>();
+            var list = service?.GetListCombo(country, stateProvince);
+            var defaultCity = new City()
+            {
+                CityId = 0,
+                CityName = "Select"
+            };
+            list?.Insert(0, defaultCity);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "CityName";
+            cbo.ValueMember = "CityId";
+            cbo.SelectedIndex = 0;
+        }
+
+        internal static void LoadPhoneTypesComboBox(ref ComboBox cbo, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IPhoneTypesService? service = _serviceProvider?.GetService<IPhoneTypesService>();
+            var list = service?.GetList();
+            var defaultType = new PhoneType()
+            {
+                PhoneTypeId = 0,
+                Description = "Select"
+            };
+            list?.Insert(0, defaultType);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "Description";
+            cbo.ValueMember = "PhoneTypeId";
+            cbo.SelectedIndex = 0;
+        }
     }
 }
 

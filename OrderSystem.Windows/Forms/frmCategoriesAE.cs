@@ -55,7 +55,7 @@ namespace Windows.Forms
             bool valido = true;
             errorProvider1.Clear();
 
-            if (string.IsNullOrEmpty(txtCategory.Text) || txtCategory.Text.Length>50 || txtCategory.Text.Length <3 || !System.Text.RegularExpressions.Regex.IsMatch(txtCategory.Text, @"^[a-zA-Z\s]+$"))
+            if (string.IsNullOrEmpty(txtCategory.Text) || txtCategory.Text.Length > 50 || txtCategory.Text.Length < 3 || !System.Text.RegularExpressions.Regex.IsMatch(txtCategory.Text, @"^[a-zA-Z\s]+$"))
             {
                 valido = false;
                 errorProvider1.SetError(txtCategory, "You must enter a valid category.");
@@ -67,6 +67,16 @@ namespace Windows.Forms
         public void SetTipo(Category category)
         {
             this.category = category;
+        }
+
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void frmCategoriesAE_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

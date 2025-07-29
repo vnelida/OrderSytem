@@ -30,7 +30,6 @@ namespace Services.Services
             using (var conn = new SqlConnection(_cadena))
             {
                 return _repository!.GetListGenres(conn);
-
             }
         }
     }

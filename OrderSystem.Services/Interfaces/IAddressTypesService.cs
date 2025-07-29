@@ -10,6 +10,6 @@ namespace Services.Interfaces
 {
     public interface IAddressTypesService
     {
-        List<AddressType> GetList(SqlConnection conn, SqlTransaction? tran = null);
+        List<AddressType> GetList();
     }
 }

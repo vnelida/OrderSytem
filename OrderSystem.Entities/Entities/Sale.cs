@@ -1,24 +1,19 @@
-﻿using Entities.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Entities.Entities
+﻿namespace Entities.Entities
 {
     public class Sale
     {
         public int SaleId { get; set; }
         public int? CustomerId { get; set; }
         public DateTime SaleDate { get; set; }
-        public bool IsGift { get; set; }
         public decimal TotalAmount { get; set; }
-        public SaleStatus Status { get; set; }
-        public List<SaleDetails> Details { get; set; } = new List<SaleDetails>();
-        public Customer? Customer { get; set; }
+        public int OrderTypeId { get; set; }
+        public int OrderStatusId { get; set; }
+        public List<SaleDetail> Details { get; set; } = new List<SaleDetail>();
+        public Customer? Customer { get; set; } 
+        public OrderType? OrderType { get; set; } 
+        public OrderStatus? OrderStatus { get; set; } 
 
-        public void Agregar(SaleDetails details)
+        public void Add(SaleDetail details)
         {
             var dEnVenta = Details.FirstOrDefault(
                 x => x.ProductId == details.ProductId && x.ComboId == details.ComboId);
@@ -32,12 +27,14 @@ namespace Entities.Entities
             }
         }
         public decimal GetTotal() => Details.Sum(dv => dv.Quantity * dv.Price);
-        public int GetCantidad() => Details.Sum(dv => dv.Quantity);
+        public int GetQuantity() => Details.Sum(dv => dv.Quantity);
 
-        public void Borrar(SaleDetails dt)
+        public void Delete(SaleDetail dt)
         {
             Details.Remove(dt);
         }
+        //public SaleStatus Status { get; set; }
+        //public bool IsGift { get; set; }
 
     }
 }

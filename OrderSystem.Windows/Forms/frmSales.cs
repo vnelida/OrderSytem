@@ -12,10 +12,10 @@ namespace Windows.Forms
         private readonly ISalesService? _service;
         private readonly IServiceProvider? _serviceProvider;
 
-        private int currentPage = 1;//pagina actual
-        private int totalPages = 0;//total de paginas
-        private int pageSize = 10;//registros por página
-        private int totalRecords = 0;//cantidad de registros
+        private int currentPage = 1;
+        private int totalPages = 0;
+        private int pageSize = 10;
+        private int totalRecords = 0;
 
         private Func<SalesListDto, bool>? filter = null;
         public frmSales(IServiceProvider serviceProvider)
@@ -23,7 +23,6 @@ namespace Windows.Forms
             InitializeComponent();
             _serviceProvider = serviceProvider;
             _service = serviceProvider?.GetService<ISalesService>() ?? throw new ApplicationException("Dependencies not loaded");
-
         }
 
 
@@ -127,51 +126,6 @@ namespace Windows.Forms
         }
 
 
-        private void tsbDetalles_Click(object sender, EventArgs e)
-        {
-            if (dgv.SelectedRows.Count == 0) return;
-            var r = dgv.SelectedRows[0];
-            SalesListDto saleDto = (SalesListDto)r.Tag!;
-            Sale? sale = _service!.GetSaleById(saleDto.SaleId);
-            //frmDetalleVenta frm = new frmDetalleVenta();
-            //frm.SetVenta(sale);
-            //frm.ShowDialog(this);
-        }
-
-        private void tsbNuevo_Click(object sender, EventArgs e)
-        {
-            //frmVentasAE frm = new frmVentasAE(_serviceProvider) { Text = "Nueva Venta" };
-            //DialogResult dr = frm.ShowDialog(this);
-            //if (dr == DialogResult.Cancel) return;
-            //try
-            //{
-            //    Venta? venta = frm.GetVenta();
-            //    if (venta is null) return;
-            //    _servicio.Guardar(venta);
-            //    totalRecords = _servicio!.GetCantidad(null);
-            //    totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
-            //    currentPage = totalPages;
-            //    LoadData();
-            //    int row = GridHelper.ObtenerRowIndex(dgvDatos, venta.VentaId);
-            //    GridHelper.MarcarRow(dgvDatos, row);
-
-            //    MessageBox.Show("Registro agregado",
-            //        "Mensaje",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Information);
-
-            //}
-            //catch (Exception ex)
-            //{
-
-            //    MessageBox.Show(ex.Message,
-            //        "Mensaje",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Error);
-            //}
-
-        }
-
         private void frmSales_Load(object sender, EventArgs e)
         {
             RecargarGrilla();
@@ -180,6 +134,50 @@ namespace Windows.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            frmSalesAE frm = new frmSalesAE(_serviceProvider) { Text = "New Order" };
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.Cancel) return;
+            try
+            {
+                Sale? sale = frm.GetSale();
+                if (sale is null) return;
+                _service.Save(sale);
+                totalRecords = _service!.GetCount(null);
+                totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
+                currentPage = totalPages;
+                LoadData();
+                int row = GridHelper.ObtenerRowIndex(dgv, sale.SaleId);
+                GridHelper.MarcarRow(dgv, row);
+
+                MessageBox.Show("Registro agregado",
+                    "Mensaje",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message,
+                    "Mensaje",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDetails_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0) return;
+            var r = dgv.SelectedRows[0];
+            SalesListDto saleDto = (SalesListDto)r.Tag!;
+            Sale? sale = _service!.GetSaleById(saleDto.SaleId);
+            frmSaleDetails frm = new frmSaleDetails();
+            frm.SetSale(sale);
+            frm.ShowDialog(this);
         }
     }
 }

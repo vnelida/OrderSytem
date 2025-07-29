@@ -8,6 +8,7 @@
         public decimal CostPrice { get; set; }
         public decimal SalePrice { get; set; }
         public int Stock { get; set; }
+        public int OnOrderQuantity { get; set; }
         public int ReorderLevel { get; set; }
         public bool Suspended { get; set; }
         public string? Image { get; set; }

@@ -15,13 +15,13 @@ namespace Services.Services
             _repository = repository;
             _cadena = cadena;
         }
-        public List<PhoneType> GetList(SqlConnection conn, SqlTransaction? tran = null)
+        public List<PhoneType> GetList()
         {
-            var selectQuery = @"SELECT PhoneTypeId, Description FROM PhoneTypes
-                    ORDER BY Description";
-
-
-            return conn.Query<PhoneType>(selectQuery).ToList();
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository.GetList(conn);
+            }
         }
     }
 }

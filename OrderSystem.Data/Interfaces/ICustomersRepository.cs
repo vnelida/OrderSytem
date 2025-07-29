@@ -1,11 +1,6 @@
 ﻿using Entities.Dtos;
 using Entities.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Interfaces
 {
@@ -23,5 +18,7 @@ namespace Data.Interfaces
         int GetCount(SqlConnection conn);
         CustomerDetailsDto? GetCustomerDetails(int customerId, SqlConnection conn, SqlTransaction? tran = null);
         List<Customer> GetCustomers(SqlConnection conn);
+        bool IsRelated(int customerId, SqlConnection conn);
+        Customer? GetCustomerFullDetails(int customerId, SqlConnection conn);
     }
 }
