@@ -1,5 +1,6 @@
 using IOC;
 using OrderSystem.Windows;
+using Windows.Forms;
 
 namespace Windows
 {
@@ -14,7 +15,7 @@ namespace Windows
         {
             _serviceProvider = DI.ConfigurarServicios();
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainMenu(_serviceProvider));
+            Application.Run(new frmLogin(_serviceProvider));
         }
     }
 }

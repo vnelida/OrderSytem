@@ -293,7 +293,7 @@ namespace Data.Repositories
 						   INNER JOIN Products p ON p.ProductId=cd.ProductId
 						WHERE c.ComboId=@ComboId";
                 var comboDictionary = new Dictionary<int, Combo>();
-                //Ver cuando el combo no tenga detalles
+                
                 var result = conn.Query<Combo, ComboDetail, Product, Combo>(
                     selectQuery, (combo, detail, product) =>
                     {
@@ -488,19 +488,37 @@ namespace Data.Repositories
         {
             if (itemType is ItemType.Product)
             {
-                var selectQuery = @"SELECT COUNT(*) FROM ComboDetails WHERE ProductId=@ProductId";
-                return conn.QuerySingle<int>
-                    (selectQuery, new { @ProductId = itemId }) > 0;
+                var selectQuery = @"SELECT COUNT(*)
+                                    FROM (
+                                    SELECT ProductId FROM ComboDetails WHERE ProductId = @ProductId
+                                    UNION ALL
+                                    SELECT ProductId FROM SaleDetails WHERE ProductId = @ProductId
+                                ) AS Relations";
+                return conn.QuerySingle<int>(selectQuery, new { @ProductId = itemId }) > 0;
 
             }
             else if (itemType is ItemType.Combo)
             {
-                var selectQuery = @"SELECT COUNT(*) FROM ComboDetails WHERE ComboId=@ComboId";
+                var selectQuery = @"SELECT COUNT(*) FROM SaleDetails WHERE ComboId=@ComboId";
                 return conn.QuerySingle<int>
                     (selectQuery, new { @ComboId = itemId }) > 0;
 
             }
             return false;
+        }
+
+        public void UpdateComboStock(int comboId, int quantity, SqlConnection conn, SqlTransaction tran)
+        {
+            var sql = "UPDATE Combos SET Stock = Stock + @Quantity WHERE ComboId = @ComboId;";
+            conn.Execute(sql, new { ComboId = comboId, Quantity = quantity }, transaction: tran);
+
+        }
+
+        public void UpdateProductStock(int productId, int quantity, SqlConnection conn, SqlTransaction tran)
+        {
+            var sql = "UPDATE Products SET Stock = Stock + @Quantity WHERE ProductId = @ProductId;";
+
+            conn.Execute(sql, new { ProductId = productId, Quantity = quantity }, transaction: tran);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Data.Interfaces;
+﻿using Data.Interfaces;
 using Entities.Entities;
 using Services.Interfaces;
 using System.Data.SqlClient;

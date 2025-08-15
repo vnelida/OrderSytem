@@ -270,7 +270,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.BackgroundImage = (Image)resources.GetObject("groupBox1.BackgroundImage");
+            groupBox1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             groupBox1.Controls.Add(picImage);
             groupBox1.Controls.Add(btnSearchImages);
             groupBox1.Location = new Point(1039, 12);
@@ -288,7 +288,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
+            splitContainer1.Panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             splitContainer1.Panel1.Controls.Add(txtBoxDescription);
             splitContainer1.Panel1.Controls.Add(numReorderLevel);
             splitContainer1.Panel1.Controls.Add(groupBox1);

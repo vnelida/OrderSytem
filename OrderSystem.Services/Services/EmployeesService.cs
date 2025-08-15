@@ -1,15 +1,9 @@
-﻿using Dapper;
-using Data.Interfaces;
+﻿using Data.Interfaces;
 using Entities.Dtos;
 using Entities.Entities;
 using Entities.Enums;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Services
 {

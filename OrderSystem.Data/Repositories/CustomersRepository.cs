@@ -2,6 +2,7 @@
 using Data.Interfaces;
 using Entities.Dtos;
 using Entities.Entities;
+using Entities.Enums;
 using System.Data.SqlClient;
 
 namespace Data.Repositories
@@ -83,107 +84,105 @@ namespace Data.Repositories
             List<string> conditions = new List<string>();
             return conn.ExecuteScalar<int>(selectQuery);
         }
-
         public Customer? GetCustomerFullDetails(int customerId, SqlConnection conn)
         {
-            // Las consultas SQL se separan, ¡pero se ejecutan en un solo viaje a la DB!
-            var sql = @"
-                -- 1. Consulta el cliente principal
-                SELECT CustomerId, DocumentNumber, FirstName, LastName FROM Customers WHERE CustomerId = @CustomerId;
+            var sql = @"SELECT CustomerId, DocumentNumber, FirstName, LastName FROM Customers WHERE CustomerId = @CustomerId;
+                        SELECT
+                        ca.CustomerId, ca.AddressId, ca.AddressTypeId,
 
-                -- 2. Consulta las direcciones del cliente con sus datos anidados
-                SELECT
-                    ca.CustomerId, ca.AddressId, ca.AddressTypeId,
-                    a.AddressId AS Address_AddressId, a.Street, a.BuildingNumber, a.BetweenStreet1, a.BetweenStreet2,
-                    a.FloorNumber, a.ApartmentUnit, a.PostalCode, a.CountryId AS Address_CountryId, a.StateProvinceId AS Address_StateProvinceId, a.CityId AS Address_CityId,
-                    at.AddressTypeId AS AddressType_AddressTypeId, at.Description AS AddressType_Description,
-                    ci.CityId AS City_CityId, ci.CityName AS City_CityName,
-                    sp.StateProvinceId AS StateProvince_StateProvinceId, sp.StateProvinceName AS StateProvince_StateProvinceName,
-                    co.CountryId AS Country_CountryId, co.CountryName AS Country_CountryName
-                FROM CustomerAddresses ca
-                INNER JOIN Addresses a ON ca.AddressId = a.AddressId
-                LEFT JOIN AddressTypes at ON ca.AddressTypeId = at.AddressTypeId
-                LEFT JOIN Cities ci ON a.CityId = ci.CityId
-                LEFT JOIN StatesProvinces sp ON a.StateProvinceId = sp.StateProvinceId
-                LEFT JOIN Countries co ON a.CountryId = co.CountryId
-                WHERE ca.CustomerId = @CustomerId;
+                        a.AddressId, a.Street, a.BuildingNumber, a.BetweenStreet1, a.BetweenStreet2,
+                        a.FloorNumber, a.ApartmentUnit, a.PostalCode,
+           
+                        at.AddressTypeId, at.Description,
+           
+                        ci.CityId, ci.CityName,
+           
+                        sp.StateProvinceId, sp.StateProvinceName,
+           
+                        co.CountryId, co.CountryName
+                    FROM CustomerAddresses ca
+                    INNER JOIN Addresses a ON ca.AddressId = a.AddressId
+                    LEFT JOIN AddressTypes at ON ca.AddressTypeId = at.AddressTypeId
+                    LEFT JOIN Cities ci ON a.CityId = ci.CityId
+                    LEFT JOIN StatesProvinces sp ON a.StateProvinceId = sp.StateProvinceId
+                    LEFT JOIN Countries co ON a.CountryId = co.CountryId
+                    WHERE ca.CustomerId = @CustomerId;
 
-                -- 3. Consulta los teléfonos del cliente con sus datos anidados
-                SELECT
-                    cp.CustomerId, cp.PhoneId, cp.PhoneTypeId,
-                    p.PhoneId AS Phone_PhoneId, p.PhoneNumber,
-                    pt.PhoneTypeId AS PhoneType_PhoneTypeId, pt.Description AS PhoneType_Description
-                FROM CustomerPhones cp
-                INNER JOIN Phones p ON cp.PhoneId = p.PhoneId
-                LEFT JOIN PhoneTypes pt ON cp.PhoneTypeId = pt.PhoneTypeId
-                WHERE cp.CustomerId = @CustomerId;
-            ";
+                         SELECT
+                        cp.CustomerId,
+                        cp.PhoneId,     
+                        cp.PhoneTypeId, 
+                       
+                        p.PhoneId,     
+                        p.PhoneNumber,                        
+                        
+                        pt.PhoneTypeId,
+                        pt.Description
+                    FROM CustomerPhones cp
+                    INNER JOIN Phones p ON cp.PhoneId = p.PhoneId
+                    LEFT JOIN PhoneTypes pt ON cp.PhoneTypeId = pt.PhoneTypeId
+                    WHERE cp.CustomerId = @CustomerId;";
 
             using (var multi = conn.QueryMultiple(sql, new { @CustomerId = customerId }))
             {
-                // Leer el cliente principal (primera consulta)
                 var customer = multi.Read<Customer>().SingleOrDefault();
+                if (customer == null) return null;
 
-                if (customer == null)
-                {
-                    return null; // Cliente no encontrado
-                }
-
-                // Asegurar que las listas estén inicializadas si el constructor de Customer no lo hace
                 customer.CustomerAdresses = customer.CustomerAdresses ?? new List<CustomerAddress>();
                 customer.CustomerPhones = customer.CustomerPhones ?? new List<CustomerPhone>();
 
-                // Leer direcciones (segunda consulta)
-                var addresses = multi.Read<CustomerAddress, Address, AddressType, City, StateProvince, Country, CustomerAddress>(
-                    (ca, a, at, ci, sp, co) => // Dapper mapea directamente a CustomerAddress, Address, AddressType, etc.
-                    {
-                        if (ca != null)
+
+                var customerAddresses = multi.Read<CustomerAddress, Address, AddressType, City, StateProvince, Country, CustomerAddress>(
+                        (ca, a, at, ci, sp, co) =>
                         {
-                            ca.Address = a; // Asigna Address
-                            ca.AddressType = at; // Asigna AddressType
-                            if (ca.Address != null)
+                            var woeuftthow = 1;
+                            if (ca != null)
                             {
-                                ca.Address.City = ci; // Asigna City a Address
-                                ca.Address.StateProvince = sp; // Asigna StateProvince a Address
-                                ca.Address.Country = co; // Asigna Country a Address
+                                ca.Address = a;
+                                ca.AddressType = at;
+                                if (ca.Address != null)
+                                {
+                                    ca.Address.City = ci;
+                                    ca.Address.StateProvince = sp;
+                                    ca.Address.Country = co;
+                                }
                             }
-                        }
-                        return ca;
-                    },
-                    splitOn: "Address_AddressId, AddressType_AddressTypeId, City_CityId, StateProvince_StateProvinceId, Country_CountryId"
-                ).ToList();
+                            return ca;
+                        },
+                        splitOn: "AddressId, AddressTypeId, CityId, StateProvinceId, CountryId"
+                    ).ToList();
+                customer.CustomerAdresses.AddRange(customerAddresses);
 
-                customer.CustomerAdresses.AddRange(addresses); // Añadir a la lista del Customer principal
-
-                // Leer teléfonos (tercera consulta)
-                var phones = multi.Read<CustomerPhone, Phone, PhoneType, CustomerPhone>(
-                    (cp, p, pt) => // Dapper mapea directamente a CustomerPhone, Phone, PhoneType
+                var customerPhones = multi.Read<CustomerPhone, Phone, PhoneType, CustomerPhone>(
+                (cp, p, pt) =>
+                {
+                    var woeuftthsow = 1;
+                    if (cp != null)
                     {
-                        if (cp != null)
-                        {
-                            cp.Phone = p; // Asigna Phone
-                            cp.PhoneType = pt; // Asigna PhoneType
-                        }
-                        return cp;
-                    },
-                    splitOn: "Phone_PhoneId, PhoneType_PhoneTypeId"
-                ).ToList();
+                        cp.Phone = p;
+                        cp.PhoneType = pt;
+                    }
+                    return cp;
+                },
 
-                customer.CustomerPhones.AddRange(phones); // Añadir a la lista del Customer principal
-
-                return customer; // Devuelve el Customer completamente poblado
+                splitOn: "PhoneId, PhoneTypeId"
+            ).ToList();
+                customer.CustomerPhones.AddRange(customerPhones);
+                return customer;
             }
         }
         public Customer? GetCustomerById(int customerId, SqlConnection conn)
         {
-            string selectQuery = @"SELECT CustomerId, DocumentNumber, FirstName, LastName 
-                FROM Customers 
-                WHERE CustomerId=@CustomerId";
+            string selectQuery = @"SELECT CustomerId, DocumentNumber, FirstName, LastName
+                                   FROM Customers
+                                   WHERE CustomerId=@CustomerId";
             var customer = conn.QuerySingleOrDefault<Customer>(selectQuery, new { @CustomerId = customerId });
 
-            if (customer == null)
+            if (customer != null)
             {
-                return null;
+                customer.CustomerAdresses = customer.CustomerAdresses ?? new List<CustomerAddress>();
+                customer.CustomerPhones = customer.CustomerPhones ?? new List<CustomerPhone>();
+
             }
             return customer;
         }
@@ -202,13 +201,15 @@ namespace Data.Repositories
                 return null;
             }
             string direccionesQuery = @"SELECT d.AddressId,
-                                            td.Description AS AddressType,
-                                            d.Street,
-                                            d.BuildingNumber,
-                                            d.BetweenStreet1,
-                                            d.BetweenStreet2,
-                                            p.CountryName AS Country,
-                                            pe.StateProvinceName
+                                       td.Description AS AddressType,
+                                       d.Street,
+                                       d.BuildingNumber,
+                                       d.BetweenStreet1,
+                                       d.BetweenStreet2,
+                                       d.PostalCode,
+                                       c.CityName AS City, 
+                                       p.CountryName AS Country,
+                                       pe.StateProvinceName AS StateProvince
                                     FROM CustomerAddresses cd 
                                     INNER JOIN Addresses d ON cd.AddressId = d.AddressId 
                                     INNER JOIN Countries p ON d.CountryId = p.CountryId
@@ -242,70 +243,150 @@ namespace Data.Repositories
             ORDER BY c.LastName, c.FirstName";
             return conn.Query<Customer>(selectQuery).ToList();
         }
-        public List<CustomerListDto> GetList(SqlConnection conn, int? pageNumber, int? pageSize, SqlTransaction? tran = null)
+        public List<CustomerListDto> GetList(SqlConnection conn, int? pageNumber, int? pageSize, Order? order, SqlTransaction? tran = null)
         {
             var offset = (pageNumber - 1) * pageSize;
-            var selectQuery = @"
-                                WITH PaginatedCustomers AS (
-                                    SELECT
-                                        c.CustomerId,
-                                        c.DocumentNumber,
-                                        c.LastName,
-                                        c.FirstName
-                                    FROM Customers c
-                                    ORDER BY c.CustomerId -- ¡Importante: Ordenar antes de OFFSET/FETCH!
-                                    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
-                                )
-                                SELECT
-                                    pc.CustomerId,
-                                    pc.DocumentNumber,
-                                    pc.LastName,
-                                    pc.FirstName,
-                                    d.Street,
-                                    d.BuildingNumber,
-                                    ci.CityName AS City,
-                                    pe.StateProvinceName AS StateProvince,
-                                    p.CountryName AS Country,
-                                    t.PhoneNumber
-                                FROM PaginatedCustomers pc
-                                LEFT JOIN CustomerAddresses cd ON pc.CustomerId = cd.CustomerId
-                                LEFT JOIN Addresses d ON cd.AddressId = d.AddressId
-                                LEFT JOIN CustomerPhones ct ON pc.CustomerId = ct.CustomerId
-                                LEFT JOIN Phones t ON ct.PhoneId = t.PhoneId
-                                LEFT JOIN Countries p ON d.CountryId = p.CountryId
-                                LEFT JOIN StatesProvinces pe ON d.StateProvinceId = pe.StateProvinceId
-                                LEFT JOIN Cities ci ON d.CityId = ci.CityId
-                                -- Puedes mantener un ORDER BY externo si quieres un orden final consistente,
-                                -- aunque la CTE ya lo ordenó para la paginación.
-                                -- ORDER BY pc.CustomerId;
-                                ";
+            var orderByPag = "ORDER BY c.CustomerId";
+            var orderByFinal = "ORDER BY pc.CustomerId";
+
+            switch (order)
+            {
+                case Order.None:
+                    break;
+                case Order.CustomerName:
+                    orderByPag = "ORDER BY c.LastName ASC, c.FirstName ASC";
+                    orderByFinal = "ORDER BY pc.LastName ASC, pc.FirstName ASC";
+                    break;
+                case Order.CustomerNameDesc:
+                    orderByPag = "ORDER BY c.LastName DESC, c.FirstName DESC";
+                    orderByFinal = "ORDER BY pc.LastName DESC, pc.FirstName DESC";
+                    break;
+                default:
+                    break;
+            }
+
+            var selectQuery = $@"
+                WITH PaginatedCustomers AS (
+                    SELECT
+                        c.CustomerId,
+                        c.DocumentNumber,
+                        c.LastName,
+                        c.FirstName
+                    FROM Customers c
+                    {orderByPag}
+                    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                )
+                SELECT
+                    pc.CustomerId,
+                    pc.DocumentNumber,
+                    pc.LastName,
+                    pc.FirstName,
+                    d.Street,
+                    d.BuildingNumber,
+                    ci.CityName AS City,
+                    pe.StateProvinceName AS StateProvince,
+                    p.CountryName AS Country,
+                    t.PhoneNumber
+                FROM PaginatedCustomers pc
+                LEFT JOIN CustomerAddresses cd ON pc.CustomerId = cd.CustomerId
+                LEFT JOIN Addresses d ON cd.AddressId = d.AddressId
+                LEFT JOIN CustomerPhones ct ON pc.CustomerId = ct.CustomerId
+                LEFT JOIN Phones t ON ct.PhoneId = t.PhoneId
+                LEFT JOIN Countries p ON d.CountryId = p.CountryId
+                LEFT JOIN StatesProvinces pe ON d.StateProvinceId = pe.StateProvinceId
+                LEFT JOIN Cities ci ON d.CityId = ci.CityId
+                {orderByFinal};
+            ";
 
             var customers = new List<CustomerListDto>();
-            conn.Query<Customer, AddressListDto, Phone, CustomerListDto>
-                (selectQuery,
-                    (customer, address, phone) =>
+
+            conn.Query<Customer, AddressListDto, Phone, CustomerListDto>(
+                selectQuery,
+                (customer, address, phone) =>
+                {
+                    var customerDto = customers.FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+                    if (customerDto is null)
                     {
-                        var customerDto = customers
-                        .FirstOrDefault(c => c.CustomerId == customer.CustomerId);
-                        if (customerDto is null)
+                        customerDto = new CustomerListDto
                         {
-                            customerDto = new CustomerListDto
-                            {
-                                CustomerId = customer.CustomerId,
-                                DocumentNumber = customer.DocumentNumber,
-                                FullName = $"{customer.LastName} {customer.FirstName}",
-                                PrincipalAddress = address?.ToString() ?? "N/A",
-                                PrincipalPhone = phone?.ToString() ?? "N/A"
-                            };
-                            customers.Add(customerDto);
-                        }
-                        return customerDto;
-                    },
-                    new { @Offset = offset, @PageSize = pageSize },
-                    splitOn: "CustomerId, Street, PhoneNumber",
-                    buffered: true
-                );
+                            CustomerId = customer.CustomerId,
+                            DocumentNumber = customer.DocumentNumber,
+                            FullName = $"{customer.LastName} {customer.FirstName}",
+                            PrincipalAddress = address?.ToString() ?? "N/A",
+                            PrincipalPhone = phone?.ToString() ?? "N/A"
+                        };
+                        customers.Add(customerDto);
+                    }
+                    return customerDto;
+                },
+                new { @Offset = offset, @PageSize = pageSize },
+                splitOn: "CustomerId, Street, PhoneNumber",
+                buffered: true
+            );
             return customers;
+
+
+            //var offset = (pageNumber - 1) * pageSize;
+            //var selectQuery = @"
+            //                    WITH PaginatedCustomers AS (
+            //                        SELECT
+            //                            c.CustomerId,
+            //                            c.DocumentNumber,
+            //                            c.LastName,
+            //                            c.FirstName
+            //                        FROM Customers c
+            //                        ORDER BY c.CustomerId 
+            //                        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+            //                    )
+            //                    SELECT
+            //                        pc.CustomerId,
+            //                        pc.DocumentNumber,
+            //                        pc.LastName,
+            //                        pc.FirstName,
+            //                        d.Street,
+            //                        d.BuildingNumber,
+            //                        ci.CityName AS City,
+            //                        pe.StateProvinceName AS StateProvince,
+            //                        p.CountryName AS Country,
+            //                        t.PhoneNumber
+            //                    FROM PaginatedCustomers pc
+            //                    LEFT JOIN CustomerAddresses cd ON pc.CustomerId = cd.CustomerId
+            //                    LEFT JOIN Addresses d ON cd.AddressId = d.AddressId
+            //                    LEFT JOIN CustomerPhones ct ON pc.CustomerId = ct.CustomerId
+            //                    LEFT JOIN Phones t ON ct.PhoneId = t.PhoneId
+            //                    LEFT JOIN Countries p ON d.CountryId = p.CountryId
+            //                    LEFT JOIN StatesProvinces pe ON d.StateProvinceId = pe.StateProvinceId
+            //                    LEFT JOIN Cities ci ON d.CityId = ci.CityId
+
+            //var customers = new List<CustomerListDto>();
+
+
+            //conn.Query<Customer, AddressListDto, Phone, CustomerListDto>
+            //    (selectQuery,
+            //        (customer, address, phone) =>
+            //        {
+            //            var customerDto = customers
+            //            .FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+            //            if (customerDto is null)
+            //            {
+            //                customerDto = new CustomerListDto
+            //                {
+            //                    CustomerId = customer.CustomerId,
+            //                    DocumentNumber = customer.DocumentNumber,
+            //                    FullName = $"{customer.LastName} {customer.FirstName}",
+            //                    PrincipalAddress = address?.ToString() ?? "N/A",
+            //                    PrincipalPhone = phone?.ToString() ?? "N/A"
+            //                };
+            //                customers.Add(customerDto);
+            //            }
+            //            return customerDto;
+            //        },
+
+            //        new { @Offset = offset, @PageSize = pageSize },
+            //        splitOn: "CustomerId, Street, PhoneNumber",
+            //        buffered: true
+            //    );
+            //return customers;
         }
 
         public bool IsRelated(int customerId, SqlConnection conn)

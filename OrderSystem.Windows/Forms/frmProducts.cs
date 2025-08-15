@@ -3,7 +3,6 @@ using Entities.Entities;
 using Entities.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
-using System.Globalization;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -16,7 +15,7 @@ namespace Windows.Forms
         private Func<ItemListDto, bool>? filter = null;
 
         private int currentPage = 1;
-        private int pageSize = 10;
+        private int pageSize = 20;
         private int totalPages = 0;
         private int totalRecords = 0;
         private Order order = Order.ProductAZ;
@@ -237,11 +236,12 @@ namespace Windows.Forms
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             currentPage = 1;
+            btnFilter.SelectedIndex = 0;
+            categoryFilter = null;
             order = Order.ProductAZ;
             totalRecords = _service!?.GetCount(itemType) ?? 0;
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
             LoadData();
-            btnFilter.SelectedIndex = 0;
 
         }
 

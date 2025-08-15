@@ -9,7 +9,7 @@ namespace Windows.Forms
         private Category? selectedCategory;
         private Product? product;
 
-        private string imagenNoDisponible = Environment.CurrentDirectory + @"\Imagenes\SinImagenDisponible.jpg";
+        private string imagenNoDisponible = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado1.jpg";
         private string archivoNoEncontrado = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado1.jpg";
         private string? archivoImagen = string.Empty;
         private string carpetaImagen = Environment.CurrentDirectory + @"\Imagenes\";
@@ -33,23 +33,22 @@ namespace Windows.Forms
                 cboCategories.SelectedValue = product.CategoryId;
                 numReorderLevel.Value = product.ReorderLevel;
                 checkBoxSuspended.Checked = product.Suspended;
-                //ver tamaño y tipo de imagen
                 if (product.Image != string.Empty)
                 {
                     if (!File.Exists($"{carpetaImagen}{product.Image}"))
                     {
-                        picImage.Image = Image.FromFile(archivoNoEncontrado);//asigna si no tiene img
+                        picImage.Image = Image.FromFile(archivoNoEncontrado);
                     }
                     else
                     {
-                        picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");//comprueba si la imagen esta en la carpeta
+                        picImage.Image = Image.FromFile($"{carpetaImagen}{product.Image}");
                         archivoImagen = product.Image;
-                        picImage.SizeMode = PictureBoxSizeMode.Zoom;//se carga la img y se ajusta el tamaño
+                        picImage.SizeMode = PictureBoxSizeMode.Zoom;
                     }
                 }
                 else
                 {
-                    picImage.Image = Image.FromFile(imagenNoDisponible);//muestra en caso de que no haya img
+                    picImage.Image = Image.FromFile(imagenNoDisponible);
                 }
             }
         }
@@ -81,19 +80,19 @@ namespace Windows.Forms
                     product.Category = selectedCategory;
                 }
 
-                if (!string.IsNullOrEmpty(archivoImagen))// verific si se selecciono una nueva img
+                if (!string.IsNullOrEmpty(archivoImagen))
                 {
                     string destino = Path.Combine(carpetaImagen, Path.GetFileName(archivoImagen));
                                         
-                    if (!File.Exists(destino))// si la imagen no existe en la carpeta destino copiarla
+                    if (!File.Exists(destino))
                     {
                         File.Copy(archivoImagen, destino);
                     }
 
-                    product.Image = Path.GetFileName(destino); // asigna el nombre del archivo al producto
+                    product.Image = Path.GetFileName(destino); 
                 }
                            
-                if (!string.IsNullOrEmpty(product.Image))// manejar la imagen del producto existente
+                if (!string.IsNullOrEmpty(product.Image))
                 {
                     string rutaImagenExistente = Path.Combine(carpetaImagen, product.Image);
 
@@ -170,11 +169,6 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtBoxDescription, "The description must be at least 3 characters long.");
             }
-            //if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
-            //{
-            //    valido = false;
-            //    errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
-            //}
             if (!decimal.TryParse(numPrice.Text, out decimal costPrice)
                 || costPrice <= 0)
             {

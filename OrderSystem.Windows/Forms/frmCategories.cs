@@ -13,7 +13,7 @@ namespace Windows.Forms
         int totalRecords = 0;
         int currentPage = 1;
         int totalPages = 0;
-        int pageSize = 5;
+        int pageSize = 20;
         private Order order = Order.CategoryAZ;
 
         public frmCategories(IServiceProvider? serviceProvider)
@@ -46,9 +46,9 @@ namespace Windows.Forms
             {
                 CombosHelper.CargarComboPaginas(ref cboPages, totalPages);
             }
-            txtPageCount.Text = totalPages.ToString(); 
+            txtPageCount.Text = totalPages.ToString();
             cboPages.SelectedIndexChanged -= cboPages_SelectedIndexChanged;
-            if (totalPages > 0) 
+            if (totalPages > 0)
             {
                 cboPages.SelectedIndex = currentPage - 1;
             }

@@ -12,6 +12,6 @@ namespace Data.Interfaces
     {
         void Add(ComboDetail detail, SqlConnection conn, SqlTransaction tran);
         void Delete(int itemId, SqlConnection conn, SqlTransaction tran);
-
+        IEnumerable<ComboDetail> GetComboDetails(int comboId, SqlConnection conn, SqlTransaction tran);
     }
 }

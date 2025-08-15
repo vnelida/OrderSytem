@@ -34,11 +34,15 @@
             btnProduct = new Button();
             btnCombos = new Button();
             splitContainer1 = new SplitContainer();
-            btnCustomers = new Button();
-            btnExist = new Button();
+            btnPermissions = new Button();
             btnOrders = new Button();
+            btnExist = new Button();
+            btnCustomers = new Button();
+            lblUser = new Label();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
@@ -114,9 +118,10 @@
             // 
             splitContainer1.Panel1.BackColor = SystemColors.ButtonHighlight;
             splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
+            splitContainer1.Panel1.Controls.Add(btnPermissions);
             splitContainer1.Panel1.Controls.Add(btnOrders);
-            splitContainer1.Panel1.Controls.Add(btnCustomers);
             splitContainer1.Panel1.Controls.Add(btnExist);
+            splitContainer1.Panel1.Controls.Add(btnCustomers);
             splitContainer1.Panel1.Controls.Add(btnCombos);
             splitContainer1.Panel1.Controls.Add(btnEmployees);
             splitContainer1.Panel1.Controls.Add(btnProduct);
@@ -126,38 +131,26 @@
             // 
             splitContainer1.Panel2.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel2.BackgroundImage");
             splitContainer1.Panel2.BackgroundImageLayout = ImageLayout.Stretch;
-            splitContainer1.Size = new Size(2236, 1107);
+            splitContainer1.Panel2.Controls.Add(lblUser);
+            splitContainer1.Panel2.Controls.Add(label1);
+            splitContainer1.Size = new Size(2236, 1286);
             splitContainer1.SplitterDistance = 249;
             splitContainer1.TabIndex = 4;
             // 
-            // btnCustomers
+            // btnPermissions
             // 
-            btnCustomers.Anchor = AnchorStyles.Top;
-            btnCustomers.AutoSize = true;
-            btnCustomers.BackgroundImage = (Image)resources.GetObject("btnCustomers.BackgroundImage");
-            btnCustomers.Image = (Image)resources.GetObject("btnCustomers.Image");
-            btnCustomers.Location = new Point(69, 604);
-            btnCustomers.Name = "btnCustomers";
-            btnCustomers.Size = new Size(168, 142);
-            btnCustomers.TabIndex = 5;
-            btnCustomers.Text = "Customers";
-            btnCustomers.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnCustomers.UseVisualStyleBackColor = true;
-            btnCustomers.Click += btnCustomers_Click;
-            // 
-            // btnExist
-            // 
-            btnExist.Anchor = AnchorStyles.Bottom;
-            btnExist.BackgroundImage = (Image)resources.GetObject("btnExist.BackgroundImage");
-            btnExist.Image = (Image)resources.GetObject("btnExist.Image");
-            btnExist.Location = new Point(69, 953);
-            btnExist.Name = "btnExist";
-            btnExist.Size = new Size(168, 142);
-            btnExist.TabIndex = 4;
-            btnExist.Text = "Exist";
-            btnExist.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnExist.UseVisualStyleBackColor = true;
-            btnExist.Click += btnExist_Click;
+            btnPermissions.Anchor = AnchorStyles.Top;
+            btnPermissions.AutoSize = true;
+            btnPermissions.BackgroundImage = (Image)resources.GetObject("btnPermissions.BackgroundImage");
+            btnPermissions.Image = (Image)resources.GetObject("btnPermissions.Image");
+            btnPermissions.Location = new Point(69, 900);
+            btnPermissions.Name = "btnPermissions";
+            btnPermissions.Size = new Size(168, 142);
+            btnPermissions.TabIndex = 7;
+            btnPermissions.Text = "Permissions";
+            btnPermissions.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnPermissions.UseVisualStyleBackColor = true;
+            btnPermissions.Click += btnPermissions_Click;
             // 
             // btnOrders
             // 
@@ -174,17 +167,69 @@
             btnOrders.UseVisualStyleBackColor = true;
             btnOrders.Click += btnOrders_Click;
             // 
+            // btnExist
+            // 
+            btnExist.Anchor = AnchorStyles.Bottom;
+            btnExist.BackgroundImage = (Image)resources.GetObject("btnExist.BackgroundImage");
+            btnExist.Image = (Image)resources.GetObject("btnExist.Image");
+            btnExist.Location = new Point(69, 1132);
+            btnExist.Name = "btnExist";
+            btnExist.Size = new Size(168, 142);
+            btnExist.TabIndex = 4;
+            btnExist.Text = "Exit";
+            btnExist.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnExist.UseVisualStyleBackColor = true;
+            btnExist.Click += btnExist_Click;
+            // 
+            // btnCustomers
+            // 
+            btnCustomers.Anchor = AnchorStyles.Top;
+            btnCustomers.AutoSize = true;
+            btnCustomers.BackgroundImage = (Image)resources.GetObject("btnCustomers.BackgroundImage");
+            btnCustomers.Image = (Image)resources.GetObject("btnCustomers.Image");
+            btnCustomers.Location = new Point(69, 604);
+            btnCustomers.Name = "btnCustomers";
+            btnCustomers.Size = new Size(168, 142);
+            btnCustomers.TabIndex = 5;
+            btnCustomers.Text = "Customers";
+            btnCustomers.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnCustomers.UseVisualStyleBackColor = true;
+            btnCustomers.Click += btnCustomers_Click;
+            // 
+            // lblUser
+            // 
+            lblUser.AutoSize = true;
+            lblUser.BackColor = SystemColors.ButtonHighlight;
+            lblUser.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblUser.Location = new Point(108, 9);
+            lblUser.Name = "lblUser";
+            lblUser.Size = new Size(84, 45);
+            lblUser.TabIndex = 1;
+            lblUser.Text = "User";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.BackColor = SystemColors.ButtonHighlight;
+            label1.Location = new Point(24, 19);
+            label1.Name = "label1";
+            label1.Size = new Size(66, 32);
+            label1.TabIndex = 0;
+            label1.Text = "User:";
+            // 
             // MainMenu
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2236, 1107);
+            ClientSize = new Size(2236, 1286);
             Controls.Add(splitContainer1);
             Name = "MainMenu";
             StartPosition = FormStartPosition.CenterScreen;
             WindowState = FormWindowState.Maximized;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
+            splitContainer1.Panel2.ResumeLayout(false);
+            splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
@@ -200,5 +245,8 @@
         private Button btnExist;
         private Button btnCustomers;
         private Button btnOrders;
+        private Label lblUser;
+        private Label label1;
+        private Button btnPermissions;
     }
 }

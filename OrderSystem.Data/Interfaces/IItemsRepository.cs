@@ -17,6 +17,7 @@ namespace Data.Interfaces
         void Add(Item item, SqlConnection conn, SqlTransaction tran);
         void Edit(Item item, SqlConnection conn, SqlTransaction tran);
         List<Item> GetItemList(SqlConnection conn, ItemType itemType);
-
+        void UpdateProductStock(int value, int quantity, SqlConnection conn, SqlTransaction tran);
+        void UpdateComboStock(int value, int quantity, SqlConnection conn, SqlTransaction tran);
     }
 }

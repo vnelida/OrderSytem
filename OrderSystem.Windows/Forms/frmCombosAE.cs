@@ -121,12 +121,6 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(txtDescription, "The description must be at least 3 characters long.");
             }
-            //if (!System.Text.RegularExpressions.Regex.IsMatch(txtDescription.Text, @"^[a-zA-Z\s]+$"))
-            //{
-            //    valido = false;
-            //    errorProvider1.SetError(txtDescription, "The description must contain only letters and spaces.");
-            //}
-
 
             if (!decimal.TryParse(numPrice.Text, out decimal costPrice)
                 || costPrice <= 0)

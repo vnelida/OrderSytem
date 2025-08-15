@@ -3,12 +3,7 @@ using Entities.Dtos;
 using Entities.Entities;
 using Entities.Enums;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Services
 {
@@ -67,7 +62,7 @@ namespace Services.Services
         {
             using (var conn = new SqlConnection(_cadena))
             {
-                return _repository!.GetList(conn, currentPage, pageSize,order, category);
+                return _repository!.GetList(conn, currentPage, pageSize, order, category);
 
             }
         }
@@ -87,7 +82,7 @@ namespace Services.Services
             {
                 conn.Open();
                 var product = _repository.GetProductById(productId, conn);
-                
+
                 return product;
             }
         }

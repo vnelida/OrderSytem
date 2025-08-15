@@ -6,45 +6,6 @@ namespace Windows.Helpers
 {
     public static class GridHelper
     {
-
-        //public static void MostrarDatosEnGrilla<T>(List<T> lista, DataGridView grid)
-        //{
-        //    GridHelper.LimpiarGrilla(grid); // Limpia la grilla antes de llenarla
-
-        //    if (lista is not null)
-        //    {
-        //        foreach (var item in lista)
-        //        {
-        //            var r = GridHelper.ConstruirFila(grid);
-
-        //            // ¡AQUÍ ESTÁ EL CAMBIO CLAVE!
-        //            // Verificamos si el 'item' es un ViewModel de tipo AddressWithTypeVM o PhonesWithTypeVM.
-        //            // Si lo es, pasamos a SetearFila el objeto de entidad anidado (Address o Phone).
-        //            // De lo contrario, pasamos el 'item' tal cual.
-        //            if (item is AddressWithTypeVM addressVm)
-        //            {
-        //                // Pasamos la ENTIDAD Address al SetearFila
-        //                // Asumo que tu Address.ToString() mostrará todo lo necesario.
-        //                GridHelper.SetearFila(r, addressVm.Address);
-        //            }
-        //            else if (item is PhonesWithTypeVM phoneVm)
-        //            {
-        //                // Pasamos la ENTIDAD Phone al SetearFila
-        //                // Asumo que tu Phone.ToString() mostrará todo lo necesario.
-        //                GridHelper.SetearFila(r, phoneVm.Phone);
-        //            }
-        //            else
-        //            {
-        //                // Para todos los demás tipos (como CustomerListDto en la grilla principal,
-        //                // o si en otros lugares pasas entidades directamente a MostrarDatosEnGrilla)
-        //                // SetearFila(r, item); // Esto es lo que hacía antes
-        //                GridHelper.SetearFila(r, item); // Pasamos el item tal cual (esto es para el caso CustomerListDto)
-        //            }
-
-        //            GridHelper.AgregarFila(r, grid); // Agrega la fila a la grilla
-        //        }
-        //    }
-        //}
         public static void MostrarDatosEnGrilla<T>(List<T> lista, DataGridView dgv) where T : class
         {
             LimpiarGrilla(dgv);
@@ -71,6 +32,21 @@ namespace Windows.Helpers
             Phone? debugPhone = obj as Phone;
             switch (obj)
             {
+                case AddressWithTypeVM addressWithType:
+                    r.Cells[0].Value = addressWithType.AddressId;          
+                    r.Cells[1].Value = addressWithType.AddressTypeDescription; 
+                    r.Cells[2].Value = addressWithType.Street;
+                    r.Cells[3].Value = addressWithType.BuildingNumber;
+                    r.Cells[4].Value = addressWithType.CityName;
+                    r.Cells[5].Value = addressWithType.PostalCode;
+                    r.Cells[6].Value = addressWithType.StateProvinceName;
+                    r.Cells[7].Value = addressWithType.CountryName;
+                    break;
+                case PhonesWithTypeVM phonesWithType:
+                    r.Cells[0].Value = phonesWithType.PhoneId;          
+                    r.Cells[1].Value = phonesWithType.PhoneTypeDescription;
+                    r.Cells[2].Value = phonesWithType.PhoneNumber;                   
+                    break;
                 case Category category:
                     r.Cells[0].Value = category.CategoryId;
                     r.Cells[1].Value = category.CategoryName;
@@ -138,8 +114,8 @@ namespace Windows.Helpers
                 case SaleDetail saleDetails:
                     r.Cells[0].Value = saleDetails.SaleId;
                     r.Cells[1].Value = saleDetails.ProductId is null ? saleDetails.Combo!.Name : saleDetails.Product!.Name;
-                    r.Cells[2].Value = saleDetails.Price;
-                    r.Cells[3].Value = saleDetails.Quantity;
+                    r.Cells[2].Value = saleDetails.Quantity; 
+                    r.Cells[3].Value = saleDetails.Price;
                     r.Cells[4].Value = saleDetails.Quantity * saleDetails.Price;
                     break;
                 case Address address:
@@ -157,17 +133,21 @@ namespace Windows.Helpers
                     r.Cells[3].Value = address.BuildingNumber;
                     r.Cells[4].Value = address.BetweenStreet1;
                     r.Cells[5].Value = address.BetweenStreet2;
-                    r.Cells[6].Value = address.City;
-                    r.Cells[7].Value = address.StateProvince;
-                    r.Cells[8].Value = address.Country;
-                    r.Cells[9].Value = address.PostalCode;
+                    r.Cells[6].Value = address.PostalCode;
+                    r.Cells[7].Value = address.City;
+                    r.Cells[8].Value = address.StateProvince;
+                    r.Cells[9].Value = address.Country;
+                    
                     break;
                 case PhoneListDto phone:
                     r.Cells[0].Value = phone.PhoneId;
                     r.Cells[1].Value = phone.PhoneType;
                     r.Cells[2].Value = phone.PhoneNumber;
                     break;
-                
+                case Permission permission:
+                    r.Cells[0].Value = permission.PermissionId;
+                    r.Cells[1].Value = permission.Menu;
+                    break;
                 default:
                     break;
             }

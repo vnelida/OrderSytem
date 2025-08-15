@@ -3,13 +3,7 @@ using Entities.Dtos;
 using Entities.Entities;
 using Entities.Enums;
 using Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Services.Services
 {
@@ -26,6 +20,19 @@ namespace Services.Services
             _cadena = cadena;
 
         }
+
+        public void DeductStock(SaleDetail item, SqlConnection conn, SqlTransaction tran)
+        {
+            if (item.ProductId != null)
+            {
+                _repository.UpdateProductStock(item.ProductId.Value, -item.Quantity, conn, tran);
+            }
+            else if (item.ComboId != null)
+            {
+                _repository.UpdateComboStock(item.ComboId.Value, -item.Quantity, conn, tran);
+            }
+        }
+
         public void Delete(ItemType itemType, int itemId)
         {
             using (var conn = new SqlConnection(_cadena))
@@ -114,6 +121,22 @@ namespace Services.Services
             }
         }
 
+        public void RevertStock(List<SaleDetail> saleDetails, SqlConnection conn, SqlTransaction tran)
+        {
+            foreach (var detail in saleDetails)
+            {
+                if (detail.ProductId != null)
+                {
+                    _repository.UpdateProductStock(detail.ProductId.Value, detail.Quantity, conn, tran);
+                }
+                else if (detail.ComboId != null)
+                {
+                    _repository.UpdateComboStock(detail.ComboId.Value, detail.Quantity, conn, tran);
+
+                }
+            }
+        }
+
         public void Save(Item item)
         {
             using (var conn = new SqlConnection(_cadena))
@@ -161,5 +184,6 @@ namespace Services.Services
                 }
             }
         }
+
     }
 }

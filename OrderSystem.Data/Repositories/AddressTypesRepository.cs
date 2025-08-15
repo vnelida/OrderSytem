@@ -12,7 +12,6 @@ namespace Data.Repositories
             var selectQuery = @"SELECT AddressTypeId, Description FROM AddressTypes
                     ORDER BY Description";
 
-
             return conn.Query<AddressType>(selectQuery).ToList();
         }
     }

@@ -14,5 +14,7 @@ namespace Data.Interfaces
         int GetPhoneIdIfExist(Phone phone, SqlConnection conn, SqlTransaction tran);
         Phone? GetPhoneById(int phoneId, SqlConnection conn, SqlTransaction? tran = null);
         List<Phone> GetPhonesByCustomerId(int customerId, SqlConnection conn, SqlTransaction? tran = null);
+        void Edit(Phone phone, SqlConnection conn, SqlTransaction tran);
+        bool Exist(string phoneNumber, SqlConnection conn, SqlTransaction? tran = null);
     }
 }

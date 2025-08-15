@@ -44,6 +44,8 @@
             col = new DataGridViewTextBoxColumn();
             colUnitPrice = new DataGridViewTextBoxColumn();
             colTotal = new DataGridViewTextBoxColumn();
+            colDelete = new DataGridViewImageColumn();
+            colEdit = new DataGridViewImageColumn();
             lblTotal = new Label();
             label4 = new Label();
             lblCantidad = new Label();
@@ -175,7 +177,7 @@
             flp.AutoScroll = true;
             flp.Location = new Point(12, 19);
             flp.Name = "flp";
-            flp.Size = new Size(1307, 1118);
+            flp.Size = new Size(1117, 1118);
             flp.TabIndex = 9;
             // 
             // dgv
@@ -184,19 +186,21 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colCustomer, col, colUnitPrice, colTotal });
-            dgv.Location = new Point(1339, 19);
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colCustomer, col, colUnitPrice, colTotal, colDelete, colEdit });
+            dgv.Location = new Point(1167, 19);
             dgv.MultiSelect = false;
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(604, 752);
+            dgv.Size = new Size(776, 752);
             dgv.TabIndex = 26;
+            dgv.CellContentClick += dgvDatos_CellContentClick;
             // 
             // colId
             // 
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colId.HeaderText = "Id";
             colId.MinimumWidth = 10;
             colId.Name = "colId";
@@ -214,7 +218,7 @@
             // 
             // col
             // 
-            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            col.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             col.HeaderText = "Quantity";
             col.MinimumWidth = 10;
             col.Name = "col";
@@ -223,22 +227,45 @@
             // 
             // colUnitPrice
             // 
-            colUnitPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            colUnitPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             colUnitPrice.HeaderText = "Unit Price";
             colUnitPrice.MinimumWidth = 10;
             colUnitPrice.Name = "colUnitPrice";
             colUnitPrice.ReadOnly = true;
-            colUnitPrice.Width = 161;
+            colUnitPrice.SortMode = DataGridViewColumnSortMode.NotSortable;
+            colUnitPrice.Width = 122;
             // 
             // colTotal
             // 
+            colTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             colTotal.FillWeight = 1F;
             colTotal.HeaderText = "Total";
             colTotal.MinimumWidth = 10;
             colTotal.Name = "colTotal";
             colTotal.ReadOnly = true;
-            colTotal.Visible = false;
-            colTotal.Width = 10;
+            colTotal.Width = 110;
+            // 
+            // colDelete
+            // 
+            colDelete.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colDelete.HeaderText = "";
+            colDelete.Image = (Image)resources.GetObject("colDelete.Image");
+            colDelete.MinimumWidth = 10;
+            colDelete.Name = "colDelete";
+            colDelete.ReadOnly = true;
+            colDelete.Resizable = DataGridViewTriState.True;
+            colDelete.Width = 10;
+            // 
+            // colEdit
+            // 
+            colEdit.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colEdit.HeaderText = "";
+            colEdit.Image = (Image)resources.GetObject("colEdit.Image");
+            colEdit.MinimumWidth = 10;
+            colEdit.Name = "colEdit";
+            colEdit.ReadOnly = true;
+            colEdit.Resizable = DataGridViewTriState.True;
+            colEdit.Width = 10;
             // 
             // lblTotal
             // 
@@ -375,14 +402,16 @@
         private Button btnProducts;
         private FlowLayoutPanel flp;
         private ErrorProvider errorProvider1;
+        private Button button2;
+        private Button button1;
+        private ComboBox cboOrderType;
+        private ComboBox cboOrderStatus;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colCustomer;
         private DataGridViewTextBoxColumn col;
         private DataGridViewTextBoxColumn colUnitPrice;
         private DataGridViewTextBoxColumn colTotal;
-        private Button button2;
-        private Button button1;
-        private ComboBox cboOrderType;
-        private ComboBox cboOrderStatus;
+        private DataGridViewImageColumn colDelete;
+        private DataGridViewImageColumn colEdit;
     }
 }

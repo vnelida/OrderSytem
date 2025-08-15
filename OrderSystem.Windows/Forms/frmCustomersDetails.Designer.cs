@@ -45,6 +45,7 @@
             txtLastName = new TextBox();
             txtDocumentNum = new TextBox();
             dgv = new DataGridView();
+            panel3 = new Panel();
             colId = new DataGridViewTextBoxColumn();
             colType = new DataGridViewTextBoxColumn();
             colStreet = new DataGridViewTextBoxColumn();
@@ -55,7 +56,6 @@
             colCity = new DataGridViewTextBoxColumn();
             colState = new DataGridViewTextBoxColumn();
             colCountry = new DataGridViewTextBoxColumn();
-            panel3 = new Panel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -80,7 +80,7 @@
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.BackColor = SystemColors.ButtonHighlight;
-            splitContainer1.Panel1.BackgroundImage = Properties.Resources.Green_Retro_Illustrative_Fast_Food_Logo__2_;
+            splitContainer1.Panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             splitContainer1.Panel1.Controls.Add(btnClose);
             // 
             // splitContainer1.Panel2
@@ -264,6 +264,13 @@
             dgv.Size = new Size(1820, 443);
             dgv.TabIndex = 4;
             // 
+            // panel3
+            // 
+            panel3.Location = new Point(41, 37);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(1908, 526);
+            panel3.TabIndex = 5;
+            // 
             // colId
             // 
             colId.HeaderText = "Id";
@@ -299,7 +306,7 @@
             // 
             // colBS1
             // 
-            colBS1.HeaderText = "";
+            colBS1.HeaderText = "Between Street ";
             colBS1.MinimumWidth = 10;
             colBS1.Name = "colBS1";
             colBS1.ReadOnly = true;
@@ -307,7 +314,7 @@
             // 
             // colBT2
             // 
-            colBT2.HeaderText = "";
+            colBT2.HeaderText = "Between Street ";
             colBT2.MinimumWidth = 10;
             colBT2.Name = "colBT2";
             colBT2.ReadOnly = true;
@@ -344,13 +351,6 @@
             colCountry.Name = "colCountry";
             colCountry.ReadOnly = true;
             colCountry.Width = 200;
-            // 
-            // panel3
-            // 
-            panel3.Location = new Point(41, 37);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(1908, 526);
-            panel3.TabIndex = 5;
             // 
             // frmCustomersDetails
             // 
@@ -396,6 +396,15 @@
         private TextBox txtLastName;
         private TextBox txtFirstName;
         private DataGridView dgv;
+        private Button btnClose;
+        private Panel panel1;
+        private Panel panel2;
+        private DataGridView dgvPhones;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn colPhoneType;
+        private Panel panel3;
+        private MaskedTextBox maskedTextBox1;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colType;
         private DataGridViewTextBoxColumn colStreet;
@@ -406,14 +415,5 @@
         private DataGridViewTextBoxColumn colCity;
         private DataGridViewTextBoxColumn colState;
         private DataGridViewTextBoxColumn colCountry;
-        private Button btnClose;
-        private Panel panel1;
-        private Panel panel2;
-        private DataGridView dgvPhones;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private DataGridViewTextBoxColumn colPhoneType;
-        private Panel panel3;
-        private MaskedTextBox maskedTextBox1;
     }
 }

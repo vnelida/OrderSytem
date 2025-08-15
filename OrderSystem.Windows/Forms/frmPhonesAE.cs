@@ -1,5 +1,7 @@
-﻿using Entities.Entities;
-using Entities.ViewModels;
+﻿using Data.Interfaces;
+using Entities.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Services.Interfaces;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -7,32 +9,48 @@ namespace Windows.Forms
     public partial class frmPhonesAE : Form
     {
         private readonly IServiceProvider? _serviceProvider;
-        //private PhonesWithTypeVM? phoneTypeVm;
-        private Phone? _phoneToEdit;
+        private CustomerPhone? _customerPhone;
+        private ICustomersServices? _customersService;
+        private readonly IPhoneService _phoneService;
+
+
         public frmPhonesAE(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
+            _phoneService = serviceProvider.GetRequiredService<IPhoneService>();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            CombosHelper.LoadPhoneTypesComboBox(ref cboPhoneType, _serviceProvider);
-            // ¡AJUSTAR ESTA CONDICIÓN PARA USAR _phoneToEdit!
-            if (_phoneToEdit != null)
+
+            CombosHelper.LoadPhoneTypesComboBox(ref cboPhoneType, _serviceProvider!);
+
+            if (_customerPhone == null)
             {
-                cboPhoneType.SelectedValue = _phoneToEdit.PhoneType?.PhoneTypeId;
-                txtPhone.Text = _phoneToEdit.PhoneNumber;
+                _customerPhone = new CustomerPhone { Phone = new Phone(), PhoneType = new PhoneType() };
+                txtPhone.Text = string.Empty;
+                cboPhoneType.SelectedIndex = -1;
             }
+            else
+            {
+                txtPhone.Text = _customerPhone.Phone?.PhoneNumber;
+
+                if (_customerPhone.PhoneType?.PhoneTypeId > 0)
+                {
+                    cboPhoneType.SelectedValue = _customerPhone.PhoneType.PhoneTypeId;
+                }
+                else
+                {
+                    cboPhoneType.SelectedIndex = -1;
+                }
+            }
+            txtPhone.Focus();
         }
-        //public PhonesWithTypeVM? GetPhone1()
-        //{
-        //    return phoneTypeVm;
-        //}
-        public Phone? GetPhone() // Ahora devuelve la entidad Phone (con PhoneType dentro)
+        public CustomerPhone? GetCustomerPhone()
         {
-            return _phoneToEdit;
+            return _customerPhone;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -44,37 +62,31 @@ namespace Windows.Forms
         {
             if (ValidarDatos())
             {
-                if (_phoneToEdit is null)
+                if (_customerPhone.Phone != null)
                 {
-                    _phoneToEdit = new Phone();
+                    _customerPhone.Phone.PhoneNumber = txtPhone.Text;
+                }
+                else
+                {
+                    _customerPhone.Phone = new Phone { PhoneNumber = txtPhone.Text };
                 }
 
-                _phoneToEdit.PhoneNumber = txtPhone.Text;
-                _phoneToEdit.PhoneType = cboPhoneType.SelectedItem as PhoneType;
+                if (_customerPhone.Phone.PhoneId == 0)
+                {
+                    if (_phoneService.Exist(txtPhone.Text))
+                    {
+                        MessageBox.Show("This phone number is already associated with another customer.", "Error", MessageBoxButtons.OK);
+                        errorProvider1.SetError(txtPhone, "Error");
+                        return;
+                    }
+                }
+
+                PhoneType selectedPhoneType = (PhoneType)cboPhoneType.SelectedItem;
+                _customerPhone.PhoneType = selectedPhoneType;
+                _customerPhone.PhoneTypeId = selectedPhoneType.PhoneTypeId;
 
                 DialogResult = DialogResult.OK;
             }
-            //if (ValidarDatos()) // Si los datos son válidos
-            //{
-            //    // ¡ELIMINA ESTA CONDICIÓN! No la necesitas.
-            //    // if (phoneTypeVm is not null) 
-            //    // {
-
-            //    // Aquí el código que crea o actualiza phoneTypeVm SIEMPRE se ejecutará
-            //    var phone = new Phone
-            //    {
-            //        PhoneNumber = txtPhone.Text,
-            //    };
-
-            //    var typePhone = (PhoneType?)cboPhoneType.SelectedItem;
-
-            //    // Si es "Agregar", phoneTypeVm será null y se asignará una nueva instancia.
-            //    // Si es "Editar", phoneTypeVm ya tendrá un valor y se actualizará.
-            //    phoneTypeVm = new PhonesWithTypeVM(phone, typePhone);
-
-            //    DialogResult = DialogResult.OK; // El formulario se cierra con OK
-            //                                    // } // Cierra el 'if' que comentaste
-            //}
         }
 
 
@@ -113,9 +125,22 @@ namespace Windows.Forms
             return valido;
         }
 
-        internal void SetPhone(Phone phone)
+        internal void SetCustomerPhone(CustomerPhone customerPhone)
         {
-            _phoneToEdit=phone;
+            _customerPhone = customerPhone;
+
+            if (_customerPhone.Phone == null)
+            {
+                _customerPhone.Phone = new Phone();
+            }
+
+            txtPhone.Text = _customerPhone.Phone.PhoneNumber;
+
+        }
+
+        private void frmPhonesAE_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

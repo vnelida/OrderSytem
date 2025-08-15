@@ -293,7 +293,7 @@
             // 
             // panel1
             // 
-            panel1.BackgroundImage = Properties.Resources.Green_Retro_Illustrative_Fast_Food_Logo__2_;
+            panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             panel1.Controls.Add(txtApart);
             panel1.Location = new Point(25, 35);
             panel1.Name = "panel1";

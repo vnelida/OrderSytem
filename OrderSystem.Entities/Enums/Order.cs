@@ -18,6 +18,16 @@
         CountryAZ,
         CountryZA,
         StateProvinceAZ,
-        StateProvinceZA
+        StateProvinceZA,
+        Total,
+        TotalDesc,
+        SaleDate,
+        SaleDateDesc,
+        CustomerName,
+        CustomerNameDesc,
+        OrderStatus,
+        OrderStatusDesc,
+        OrderType,
+        OrderTypeDesc
     }
 }

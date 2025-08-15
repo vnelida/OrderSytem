@@ -14,14 +14,14 @@ namespace Windows.Forms
         private List<ItemListDto>? list;
 
         private int currentPage = 1;
-        private int pageSize = 6;
+        private int pageSize = 20;
         private int totalPages = 0;
         private int totalRecords = 0;
         private Order order = Order.ProductZA;
         private Product? productFilter = null;
         private bool filterOn = false;
         private Func<ItemListDto, bool>? filter = null;
-        private DateTime? currentDate =null;
+        private DateTime? currentDate = null;
         private Category? categoryFilter = null;
 
         private ItemType itemType = ItemType.Combo;
@@ -47,7 +47,7 @@ namespace Windows.Forms
         }
         private void LoadData()
         {
-            list = _service!.GetList(currentPage, pageSize, itemType, order,categoryFilter, currentDate);
+            list = _service!.GetList(currentPage, pageSize, itemType, order, categoryFilter, currentDate);
             MostrarDatosEnGrilla();
             if (cboPages.Items.Count != totalPages)
             {
@@ -163,7 +163,7 @@ namespace Windows.Forms
             }
             var r = dgv.SelectedRows[0];
             if (r.Tag == null) { return; }
-            var productDto = (ProductListDto)r.Tag;
+            var productDto = (ComboListDto)r.Tag;
 
             DialogResult dr = MessageBox.Show($"Are you sure you want to delete the product '{productDto.Name}'?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (dr == DialogResult.No)

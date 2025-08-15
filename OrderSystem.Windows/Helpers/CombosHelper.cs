@@ -137,20 +137,25 @@ namespace Windows.Helpers
 
         internal static void LoadOrderStatusComboBx(ref ComboBox cbo, IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
-            IOrderStatusService? service = _serviceProvider?.GetService<IOrderStatusService>();
+            IOrderStatusService? service = serviceProvider.GetService<IOrderStatusService>();
+            var allStatuses = service?.GetListOrderStatus();
 
-            var list = service?.GetListOrderStatus();
-            var defaultStatus = new OrderStatus()
+            var filteredList = allStatuses?.Where(s => s.StatusName == "Pending" || s.StatusName == "Completed")
+                                          .ToList();
+
+            var defaultStatus = new Entities.Entities.OrderStatus()
             {
                 OrderStatusId = 0,
                 StatusName = "Seleccione"
             };
-            list?.Insert(0, defaultStatus);
-            cbo.DataSource = list;
+
+            filteredList?.Insert(0, defaultStatus);
+
+            cbo.DataSource = filteredList;
             cbo.DisplayMember = "StatusName";
             cbo.ValueMember = "OrderStatusId";
-            cbo.SelectedIndex = 0;
+
+            cbo.SelectedIndex = 0;        
         }
 
         internal static void LoadOrderTypesComboBx(ref ComboBox cbo, IServiceProvider serviceProvider)
@@ -255,6 +260,25 @@ namespace Windows.Helpers
             cbo.DisplayMember = "Description";
             cbo.ValueMember = "PhoneTypeId";
             cbo.SelectedIndex = 0;
+        }
+
+        public static void LoadComboRoles(ref ComboBox cbo, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IRoleService? service = _serviceProvider?.GetService<IRoleService>();
+
+            var list = service?.GetAllRoles();
+            var defaultCategory = new Rol()
+            {
+                RoleId = 0,
+                RoleName = "Select"
+            };
+            list?.Insert(0, defaultCategory);
+            cbo.DataSource = list;
+            cbo.DisplayMember = "RoleName";
+            cbo.ValueMember = "RoleId";
+            cbo.SelectedIndex = 0;
+
         }
     }
 }

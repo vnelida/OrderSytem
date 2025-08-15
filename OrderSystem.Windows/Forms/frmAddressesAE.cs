@@ -1,5 +1,4 @@
 ﻿using Entities.Entities;
-using Entities.ViewModels;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -7,10 +6,7 @@ namespace Windows.Forms
     public partial class frmAddressesAE : Form
     {
         private readonly IServiceProvider? _serviceProvider;
-
-        private AddressWithTypeVM? addressTypeVm;
-        private Address? address;
-
+        private CustomerAddress? _customerAddress;
         private Country? country;
         private StateProvince? stateProvince;
         private City? city;
@@ -20,51 +16,148 @@ namespace Windows.Forms
             InitializeComponent();
             _serviceProvider = serviceProvider;
         }
-
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            CombosHelper.LaodAddressTypesComboBox(ref cboAddressTypes, _serviceProvider);
-            CombosHelper.LoadCountriesComboBox(ref cboCountries, _serviceProvider);
-        }
-        private void btnCancelar_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
+            CombosHelper.LaodAddressTypesComboBox(ref cboAddressTypes, _serviceProvider!);
+            CombosHelper.LoadCountriesComboBox(ref cboCountries, _serviceProvider!);
+
+            if (_customerAddress == null)
+            {
+                _customerAddress = new CustomerAddress
+                {
+                    Address = new Address(),     
+                    AddressType = new AddressType()
+                };
+                cboAddressTypes.SelectedIndex = 0;
+                cboCountries.SelectedIndex = 0;
+               
+            }
+            else 
+            {                
+                txtStreet.Text = _customerAddress.Address?.Street;
+                txtBuildingNumber.Text = _customerAddress.Address?.BuildingNumber;
+                txtBetweenStreet1.Text = _customerAddress.Address?.BetweenStreet1;
+                txtBetweenStreet2.Text = _customerAddress.Address?.BetweenStreet2;
+                txtFloor.Text = _customerAddress.Address?.FloorNumber?.ToString();
+                txtApart.Text = _customerAddress.Address?.ApartmentUnit;
+                txtPostalCode.Text = _customerAddress.Address?.PostalCode;
+
+                if (_customerAddress.AddressType?.AddressTypeId > 0)
+                {
+                    cboAddressTypes.SelectedValue = _customerAddress.AddressType.AddressTypeId;
+                }
+                else
+                {
+                    cboAddressTypes.SelectedIndex = 0;
+                }
+
+                if (_customerAddress.Address?.Country?.CountryId > 0)
+                {
+                    cboCountries.SelectedValue = _customerAddress.Address.Country.CountryId;
+                    cboStates.SelectedValue = _customerAddress.Address.StateProvince.StateProvinceId;
+                    cboCities.SelectedValue = _customerAddress.Address.City.CityId;
+                }
+                else
+                {
+                    cboCountries.SelectedIndex = 0;
+                }
+            }
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             if (ValidarDatos())
             {
-                if (address is null)
+                if (_customerAddress == null)
                 {
-                    address = new Address();
+                    return;
+                }
+                if (_customerAddress.Address == null)
+                {
+                    _customerAddress.Address = new Address(); 
                 }
 
-                address.Street = txtStreet.Text;
-                address.BuildingNumber = txtBuildingNumber.Text;
-                address.BetweenStreet1 = txtBetweenStreet1.Text;
-                address.BetweenStreet2 = txtBetweenStreet2.Text;
-                address.FloorNumber = string.IsNullOrEmpty(txtFloor.Text) ? null : int.Parse(txtFloor.Text);
-                address.ApartmentUnit = txtApart.Text;
-                address.CountryId = country?.CountryId ?? 0;
-                address.Country = country;
-                address.StateProvinceId = stateProvince?.StateProvinceId ?? 0;
-                address.StateProvince = stateProvince;
-                address.City = city;
-                address.CityId = city?.CityId ?? 0;
-                address.PostalCode = txtPostalCode.Text;
+               
+                _customerAddress.Address.Street = txtStreet.Text;
+                _customerAddress.Address.BuildingNumber = txtBuildingNumber.Text;
+                _customerAddress.Address.BetweenStreet1 = txtBetweenStreet1.Text;
+                _customerAddress.Address.BetweenStreet2 = txtBetweenStreet2.Text;
+                _customerAddress.Address.FloorNumber = string.IsNullOrEmpty(txtFloor.Text) ? null : int.Parse(txtFloor.Text);
+                _customerAddress.Address.ApartmentUnit = txtApart.Text;
+                _customerAddress.Address.PostalCode = txtPostalCode.Text;
 
+                
+                _customerAddress.Address.Country = (Country)cboCountries.SelectedItem;
+                _customerAddress.Address.CountryId = _customerAddress.Address.Country.CountryId; 
 
-                var addressType = (AddressType?)cboAddressTypes.SelectedItem;
+                _customerAddress.Address.StateProvince = (StateProvince)cboStates.SelectedItem;
+                _customerAddress.Address.StateProvinceId = _customerAddress.Address.StateProvince.StateProvinceId; 
 
+                _customerAddress.Address.City = (City)cboCities.SelectedItem;
+                _customerAddress.Address.CityId = _customerAddress.Address.City.CityId; 
 
-                addressTypeVm = new AddressWithTypeVM(address, addressType);
+                AddressType selectedAddressType = (AddressType)cboAddressTypes.SelectedItem;
+                _customerAddress.AddressType = selectedAddressType;
+                _customerAddress.AddressTypeId = selectedAddressType.AddressTypeId;
+
                 DialogResult = DialogResult.OK;
-
+                Close();
             }
         }
 
+        private void cboCountries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            country = cboCountries.SelectedIndex > 0 ?
+                (Country?)cboCountries.SelectedItem : null;
+            if (country is not null)
+            {
+                CombosHelper.LoadStatesComboBox(ref cboStates, country, _serviceProvider);
+            }
+            else
+            {
+                cboStates.DataSource = null;
+            }
+        }
+
+        private void cboStatesProvinces_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            stateProvince = cboStates.SelectedIndex > 0 ?
+                (StateProvince?)cboStates.SelectedItem : null;
+            if (stateProvince is not null)
+            {
+                CombosHelper.LoadCitiesComboBox(ref cboCities, country, stateProvince, _serviceProvider);
+            }
+            else
+            {
+                cboCities.DataSource = null;
+            }
+        }
+        private void cboCities_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            city = cboCities.SelectedIndex > 0 ?
+                (City?)cboCities.SelectedItem : null;
+        }
+
+        private void cboAddressTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            addressType = cboAddressTypes.SelectedIndex > 0 ?
+                (AddressType?)cboAddressTypes.SelectedItem : null;
+        }
+
+        public CustomerAddress? GetCustomerAddress()
+        {
+            return _customerAddress;
+        }
+
+        internal void SetCustomerAddress(CustomerAddress customerAddress)
+        {
+            _customerAddress = customerAddress;
+        }
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
         private bool ValidarDatos()
         {
             bool valido = true;
@@ -207,52 +300,5 @@ namespace Windows.Forms
 
             return valido;
         }
-
-        private void cboCountries_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            country = cboCountries.SelectedIndex > 0 ?
-                (Country?)cboCountries.SelectedItem : null;
-            if (country is not null)
-            {
-                CombosHelper.LoadStatesComboBox(ref cboStates, country, _serviceProvider);
-            }
-            else
-            {
-                cboStates.DataSource = null;
-            }
-        }
-
-        private void cboStatesProvinces_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            stateProvince = cboStates.SelectedIndex > 0 ?
-                (StateProvince?)cboStates.SelectedItem : null;
-            if (stateProvince is not null)
-            {
-                CombosHelper.LoadCitiesComboBox(ref cboCities, country, stateProvince, _serviceProvider);
-            }
-            else
-            {
-                cboCities.DataSource = null;
-            }
-
-        }
-
-        private void cboCities_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            city = cboCities.SelectedIndex > 0 ?
-                (City?)cboCities.SelectedItem : null;
-        }
-
-        private void cboAddressTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            addressType = cboAddressTypes.SelectedIndex > 0 ?
-                (AddressType?)cboAddressTypes.SelectedItem : null;
-        }
-
-        public AddressWithTypeVM? GetAddress()
-        {
-            return addressTypeVm;
-        }
-
     }
 }

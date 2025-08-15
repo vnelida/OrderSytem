@@ -14,7 +14,7 @@ namespace Windows.Forms
         private List<EmployeeListDto>? list;
         private int currentPage = 1;
         private int totalPages = 0;
-        private int pageSize = 10;
+        private int pageSize = 20;
         private int totalRecords = 0;
         private Genre? genreFiltro = null;
         private bool filterOn = false;
@@ -43,32 +43,27 @@ namespace Windows.Forms
         }
 
         private void LoadData()
-        {    // Obtener el conteo de registros en base al filtro actual
+        {
             totalRecords = _service!.GetCount(genreFiltro);
             totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
 
-            // Ajustar la página actual si excede el total de páginas
             if (currentPage > totalPages)
             {
-                currentPage = 1; // Reiniciar a la primera página si está fuera del rango
+                currentPage = 1;
             }
 
-            // Obtener la lista de empleados en base al filtro, página actual, y orden
             list = _service.GetList(currentPage, pageSize, order, genreFiltro);
 
-            // Mostrar los datos en la grilla
             MostrarDatosEnGrilla();
 
-            // Actualizar el combo de páginas y la visualización del conteo total de páginas
             if (cboPages.Items.Count != totalPages)
             {
                 CombosHelper.CargarComboPaginas(ref cboPages, totalPages);
             }
             txtPageCount.Text = totalPages.ToString();
 
-            // Establecer el índice seleccionado solo si hay páginas disponibles
             cboPages.SelectedIndexChanged -= cboPages_SelectedIndexChanged;
-            if (totalPages > 0) // Asegurar que hay páginas
+            if (totalPages > 0)
             {
                 cboPages.SelectedIndex = currentPage - 1;
             }
@@ -153,7 +148,7 @@ namespace Windows.Forms
                     employee = frm.GetTipo();
                     if (!_service.Exist(employee))
                     {
-                        _service.Save(employee); 
+                        _service.Save(employee);
                         LoadData();
                         int row = GridHelper.ObtenerRowIndex(dgv, employee.EmployeeId);
                         GridHelper.MarcarRow(dgv, row);

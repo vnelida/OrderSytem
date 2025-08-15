@@ -2,20 +2,15 @@
 using Data.Interfaces;
 using Entities.Entities;
 using Entities.Enums;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
     public class CategoriesRepository : ICategoriesRepository
-    {        
+    {
         public CategoriesRepository()
         {
-            
+
         }
 
         public void Add(Category category, SqlConnection conn, SqlTransaction? tran = null)
@@ -95,18 +90,18 @@ namespace Data.Repositories
             }
         }
 
-        public List<Category> GetList(SqlConnection conn, int? currentPage=0, int? pageSize=0, Order? order = Order.None, SqlTransaction? tran = null)
+        public List<Category> GetList(SqlConnection conn, int? currentPage = 0, int? pageSize = 0, Order? order = Order.None, SqlTransaction? tran = null)
         {
             var selectQuery = @"SELECT CategoryId, CategoryName FROM 
-                    Categories"; 
-                        
+                    Categories";
+
             string orderBy = string.Empty;
 
             switch (order)
             {
                 case Order.None:
                     orderBy = " ORDER BY CategoryId DESC ";
-                    break;                
+                    break;
                 case Order.CategoryAZ:
                     orderBy = " ORDER BY CategoryName ";
                     break;
@@ -137,7 +132,7 @@ namespace Data.Repositories
         public int GetCount(SqlConnection conn)
         {
             var query = "SELECT COUNT(*) FROM Categories";
-            
+
             return conn.ExecuteScalar<int>(query);
 
         }

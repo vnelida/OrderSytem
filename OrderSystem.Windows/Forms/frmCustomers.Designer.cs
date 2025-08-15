@@ -33,9 +33,11 @@
             btnNew = new ToolStripButton();
             btnDelete = new ToolStripButton();
             btnEdit = new ToolStripButton();
+            toolStripButton1 = new ToolStripButton();
             btnOrder = new ToolStripDropDownButton();
             NameAZ = new ToolStripMenuItem();
             NameZA = new ToolStripMenuItem();
+            toolStripButton2 = new ToolStripButton();
             btnRefresh = new ToolStripButton();
             btnDetails = new ToolStripButton();
             btnClose = new ToolStripButton();
@@ -66,7 +68,7 @@
             // 
             toolStrip1.BackColor = SystemColors.ButtonHighlight;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, btnOrder, btnRefresh, btnDetails, btnClose });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit, toolStripButton1, btnOrder, toolStripButton2, btnRefresh, btnDetails, btnClose });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1974, 106);
@@ -75,7 +77,7 @@
             // 
             // btnNew
             // 
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.Image = Properties.Resources.icons8_add_64;
             btnNew.ImageScaling = ToolStripItemImageScaling.None;
             btnNew.ImageTransparentColor = Color.Magenta;
             btnNew.Name = "btnNew";
@@ -86,7 +88,7 @@
             // 
             // btnDelete
             // 
-            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.Image = Properties.Resources.icons8_cancel_64;
             btnDelete.ImageScaling = ToolStripItemImageScaling.None;
             btnDelete.ImageTransparentColor = Color.Magenta;
             btnDelete.Name = "btnDelete";
@@ -97,7 +99,7 @@
             // 
             // btnEdit
             // 
-            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
+            btnEdit.Image = Properties.Resources.icons8_edit_64;
             btnEdit.ImageScaling = ToolStripItemImageScaling.None;
             btnEdit.ImageTransparentColor = Color.Magenta;
             btnEdit.Name = "btnEdit";
@@ -105,6 +107,15 @@
             btnEdit.Text = "Edit";
             btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
             btnEdit.Click += btnEdit_Click;
+            // 
+            // toolStripButton1
+            // 
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.None;
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(46, 100);
+            toolStripButton1.Text = "toolStripButton1";
             // 
             // btnOrder
             // 
@@ -119,24 +130,36 @@
             // NameAZ
             // 
             NameAZ.Name = "NameAZ";
-            NameAZ.Size = new Size(360, 44);
-            NameAZ.Text = "Category Name A-Z";
+            NameAZ.Size = new Size(359, 44);
+            NameAZ.Text = "Customer A-Z";
+            NameAZ.Click += NameAZ_Click;
             // 
             // NameZA
             // 
             NameZA.Name = "NameZA";
-            NameZA.Size = new Size(360, 44);
-            NameZA.Text = "Category Name Z-A";
+            NameZA.Size = new Size(359, 44);
+            NameZA.Text = "Customer Z-A";
+            NameZA.Click += NameZA_Click;
+            // 
+            // toolStripButton2
+            // 
+            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.None;
+            toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
+            toolStripButton2.ImageTransparentColor = Color.Magenta;
+            toolStripButton2.Name = "toolStripButton2";
+            toolStripButton2.Size = new Size(46, 100);
+            toolStripButton2.Text = "toolStripButton1";
             // 
             // btnRefresh
             // 
-            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
+            btnRefresh.Image = Properties.Resources.aiconreset;
             btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
             btnRefresh.ImageTransparentColor = Color.Magenta;
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 100);
-            btnRefresh.Text = "Refresh";
+            btnRefresh.Size = new Size(109, 100);
+            btnRefresh.Text = "Reset All";
             btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // btnDetails
             // 
@@ -386,5 +409,7 @@
         private DataGridViewTextBoxColumn colAddress;
         private DataGridViewTextBoxColumn colPhone;
         private ToolStripButton btnRefresh;
+        private ToolStripButton toolStripButton1;
+        private ToolStripButton toolStripButton2;
     }
 }

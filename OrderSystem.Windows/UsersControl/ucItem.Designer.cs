@@ -67,6 +67,7 @@ namespace Windows.UsersControl
             // 
             // picImage
             // 
+            picImage.BorderStyle = BorderStyle.FixedSingle;
             picImage.Location = new Point(27, 19);
             picImage.Margin = new Padding(6);
             picImage.Name = "picImage";

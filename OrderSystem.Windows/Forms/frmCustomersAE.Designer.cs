@@ -44,6 +44,12 @@
             dgv = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colType = new DataGridViewTextBoxColumn();
+            Column1 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Column3 = new DataGridViewTextBoxColumn();
+            Column4 = new DataGridViewTextBoxColumn();
+            Column5 = new DataGridViewTextBoxColumn();
+            Column6 = new DataGridViewTextBoxColumn();
             btnEditAddresses = new ToolStrip();
             btnAdd = new ToolStripButton();
             btnDelete = new ToolStripButton();
@@ -58,6 +64,8 @@
             dgvPhones = new DataGridView();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            Column10 = new DataGridViewTextBoxColumn();
+            PhoneTypeId = new DataGridViewTextBoxColumn();
             btnOk = new Button();
             btnCancel = new Button();
             errorProvider1 = new ErrorProvider(components);
@@ -195,7 +203,7 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colType });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colType, Column1, Column2, Column3, Column4, Column5, Column6 });
             dgv.Location = new Point(6, 143);
             dgv.MultiSelect = false;
             dgv.Name = "dgv";
@@ -218,10 +226,58 @@
             // colType
             // 
             colType.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colType.HeaderText = "Address";
+            colType.HeaderText = "AddressType";
             colType.MinimumWidth = 10;
             colType.Name = "colType";
             colType.ReadOnly = true;
+            // 
+            // Column1
+            // 
+            Column1.HeaderText = "Street";
+            Column1.MinimumWidth = 10;
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 200;
+            // 
+            // Column2
+            // 
+            Column2.HeaderText = "Building Number";
+            Column2.MinimumWidth = 10;
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Width = 200;
+            // 
+            // Column3
+            // 
+            Column3.HeaderText = "City";
+            Column3.MinimumWidth = 10;
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            Column3.Width = 200;
+            // 
+            // Column4
+            // 
+            Column4.HeaderText = "Postal Code";
+            Column4.MinimumWidth = 10;
+            Column4.Name = "Column4";
+            Column4.ReadOnly = true;
+            Column4.Width = 200;
+            // 
+            // Column5
+            // 
+            Column5.HeaderText = "State";
+            Column5.MinimumWidth = 10;
+            Column5.Name = "Column5";
+            Column5.ReadOnly = true;
+            Column5.Width = 200;
+            // 
+            // Column6
+            // 
+            Column6.HeaderText = "Country";
+            Column6.MinimumWidth = 10;
+            Column6.Name = "Column6";
+            Column6.ReadOnly = true;
+            Column6.Width = 200;
             // 
             // btnEditAddresses
             // 
@@ -233,7 +289,6 @@
             btnEditAddresses.Size = new Size(1444, 106);
             btnEditAddresses.TabIndex = 3;
             btnEditAddresses.Text = "toolStrip1";
-            btnEditAddresses.Click += btnEditAddresses_Click;
             // 
             // btnAdd
             // 
@@ -266,6 +321,7 @@
             btnEdit.Size = new Size(58, 100);
             btnEdit.Text = "Edit";
             btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEditAddresses_Click;
             // 
             // btnClose
             // 
@@ -352,7 +408,7 @@
             dgvPhones.AllowUserToDeleteRows = false;
             dgvPhones.BackgroundColor = Color.White;
             dgvPhones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPhones.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2 });
+            dgvPhones.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, Column10, PhoneTypeId });
             dgvPhones.Location = new Point(12, 139);
             dgvPhones.MultiSelect = false;
             dgvPhones.Name = "dgvPhones";
@@ -375,10 +431,27 @@
             // dataGridViewTextBoxColumn2
             // 
             dataGridViewTextBoxColumn2.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewTextBoxColumn2.HeaderText = "Phones";
+            dataGridViewTextBoxColumn2.HeaderText = "Phone Type";
             dataGridViewTextBoxColumn2.MinimumWidth = 10;
             dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             dataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // Column10
+            // 
+            Column10.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Column10.HeaderText = "Phone";
+            Column10.MinimumWidth = 10;
+            Column10.Name = "Column10";
+            Column10.ReadOnly = true;
+            // 
+            // PhoneTypeId
+            // 
+            PhoneTypeId.HeaderText = "PhoneTypeId";
+            PhoneTypeId.MinimumWidth = 10;
+            PhoneTypeId.Name = "PhoneTypeId";
+            PhoneTypeId.ReadOnly = true;
+            PhoneTypeId.Visible = false;
+            PhoneTypeId.Width = 200;
             // 
             // btnOk
             // 
@@ -419,7 +492,6 @@
             Name = "frmCustomersAE";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmCustomersAE";
-            Load += frmCustomersAE_Load;
             tabAddresses.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage1.PerformLayout();
@@ -468,7 +540,15 @@
         private DataGridView dgv;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colType;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column3;
+        private DataGridViewTextBoxColumn Column4;
+        private DataGridViewTextBoxColumn Column5;
+        private DataGridViewTextBoxColumn Column6;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn Column10;
+        private DataGridViewTextBoxColumn PhoneTypeId;
     }
 }

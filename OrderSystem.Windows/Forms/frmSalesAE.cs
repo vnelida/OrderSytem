@@ -69,11 +69,17 @@ namespace Windows.Forms
                 Item item = (Item)button.Tag!;
                 int? quantitySale = GetSaleQuantity(1);
                 if (quantitySale is null) return;
-                //Consulto el producto para ver su stock disponible
 
                 var itemInOrder = _itemService!.GetItemById(itemType, item.ItemId);
 
-                if (quantitySale <= itemInOrder!.Stock)
+                var quantityAlreadyInCart = sale!.Details
+                    .Where(sd => (itemType == ItemType.Product && sd.ProductId == itemInOrder.ItemId) ||
+                                 (itemType == ItemType.Combo && sd.ComboId == itemInOrder.ItemId))
+                    .Sum(sd => sd.Quantity);
+
+                var availableStock = itemInOrder.Stock - quantityAlreadyInCart;
+
+                if (quantitySale.Value <= availableStock)
                 {
                     SaleDetail detail = new SaleDetail
                     {
@@ -84,38 +90,69 @@ namespace Windows.Forms
                         Price = itemInOrder.SalePrice,
                         Quantity = quantitySale.Value
                     };
-                    sale!.Add(detail);
 
-                    //actualizo el producto con el stock en pedido
-                    itemInOrder.OnOrderQuantity += detail.Quantity;
-                    _itemService!.Save(itemInOrder);
+                    sale!.Add(detail);
 
                     GridHelper.MostrarDatosEnGrilla<SaleDetail>(sale.Details, dgv);
                     MostrarTotales();
-
                 }
                 else
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Stock Insuficiente" + Environment.NewLine);
-                    sb.AppendFormat($"Stock disponible: {itemInOrder.Stock}");
-                    MessageBox.Show(sb.ToString(), "Advertencia",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    sb.AppendLine("Insufficient stock." + Environment.NewLine);
+                    sb.AppendFormat($"Available stock: {availableStock}");
+                    MessageBox.Show(sb.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+            //if (sender is not null)
+            //{
+            //    Button button = (Button)sender;
+            //    Item item = (Item)button.Tag!;
+            //    int? quantitySale = GetSaleQuantity(1);
+            //    if (quantitySale is null) return;
+
+            //    var itemInOrder = _itemService!.GetItemById(itemType, item.ItemId);
+
+            //    if (quantitySale <= itemInOrder!.Stock)
+            //    {
+            //        SaleDetail detail = new SaleDetail
+            //        {
+            //            ProductId = itemInOrder is Product ? itemInOrder.ItemId : null,
+            //            ComboId = itemInOrder is Combo ? itemInOrder.ItemId : null,
+            //            Product = itemInOrder is Product product ? product : null,
+            //            Combo = itemInOrder is Combo combo ? combo : null,
+            //            Price = itemInOrder.SalePrice,
+            //            Quantity = quantitySale.Value
+            //        };
+            //        sale!.Add(detail);
+            //        itemInOrder.OnOrderQuantity += detail.Quantity;
+            //        _itemService!.Save(itemInOrder);
+
+            //        GridHelper.MostrarDatosEnGrilla<SaleDetail>(sale.Details, dgv);
+            //        MostrarTotales();
+
+            //    }
+            //    else
+            //    {
+            //        StringBuilder sb = new StringBuilder();
+            //        sb.AppendLine("Insufficient stock" + Environment.NewLine);
+            //        sb.AppendFormat($"Available stock: {itemInOrder.Stock}");
+            //        MessageBox.Show(sb.ToString(), "Warning",
+            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    }
+            //}
         }
 
         private int? GetSaleQuantity(int cantidadDefault)
         {
             while (true)
             {
-                var stringCantidad = Microsoft.VisualBasic.Interaction.InputBox("Ingrese la cantidad que compra",
-                        "Cantidad del Producto", cantidadDefault.ToString());
+                var stringCantidad = Microsoft.VisualBasic.Interaction.InputBox("Purchase Quantity",
+                        "Quantity", cantidadDefault.ToString());
                 if (stringCantidad == null || stringCantidad == string.Empty) return null;
                 if (!int.TryParse(stringCantidad, out int cantidad) || (cantidad <= 0))
                 {
-                    MessageBox.Show("Cantidad mal Ingresada", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Invalid quantity", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -143,7 +180,7 @@ namespace Windows.Forms
             if (sale.GetQuantity() == 0)
             {
                 valido = false;
-                errorProvider1.SetError(dgv, "Ingresar al menos un ítem");
+                errorProvider1.SetError(dgv, "You must enter at least one item.");
             }
             return valido;
         }
@@ -165,14 +202,10 @@ namespace Windows.Forms
                 var filaSeleccionada = e.RowIndex;
                 var r = dgv.Rows[filaSeleccionada];
                 SaleDetail dt = (SaleDetail)r.Tag!;
-                DialogResult dr = MessageBox.Show("¿Anula el item seleccionado?",
-                    "Confirmar",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question,
-                    MessageBoxDefaultButton.Button2);
+                DialogResult dr = MessageBox.Show("Remove selected item?",
+                    "Confirm",MessageBoxButtons.YesNo,MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
                 if (dr == DialogResult.No) return;
 
-                //Datos para consultar el producto en pedido
                 var itemType = dt.ProductId is null ? ItemType.Combo : ItemType.Product;
                 var itemId = dt.ProductId ?? dt.ComboId;
                 var itemInOrder = _itemService!.GetItemById(itemType, itemId!.Value);
@@ -208,9 +241,9 @@ namespace Windows.Forms
                 else
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("Stock Insuficiente" + Environment.NewLine);
-                    sb.AppendFormat($"Stock disponible: {itemOnOrder.Stock}");
-                    MessageBox.Show(sb.ToString(), "Advertencia",
+                    sb.AppendLine("Insufficient stock." + Environment.NewLine);
+                    sb.AppendFormat($"Available stock: {itemOnOrder.Stock}");
+                    MessageBox.Show(sb.ToString(), "Warning",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 }
@@ -245,7 +278,7 @@ namespace Windows.Forms
                 sale.Customer = customer;
                 sale.SaleDate = DateTime.Now;
 
-                sale.OrderStatusId = (int)cboOrderStatus.SelectedValue; // Corregido: 'Status' con 't'
+                sale.OrderStatusId = (int)cboOrderStatus.SelectedValue;
                 sale.OrderTypeId = (int)cboOrderType.SelectedValue;
 
                 sale.TotalAmount = sale.GetTotal();

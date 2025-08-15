@@ -12,8 +12,6 @@ namespace Entities.Dtos
         public int DocumentNumber { get; set; }
         public string LastName { get; set; } = null!;
         public string FirstName { get; set; } = null!;
-
-        // Relaciones
         public List<AddressListDto> Addresses { get; set; } = new List<AddressListDto>();
         public List<PhoneListDto> Phones { get; set; } = new List<PhoneListDto>();
     }

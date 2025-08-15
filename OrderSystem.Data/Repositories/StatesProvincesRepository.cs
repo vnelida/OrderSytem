@@ -118,11 +118,6 @@ namespace Data.Repositories
 
             }
             selectQuery += orderBy;
-            //if(orden==Orden.ProvinciaEstadoAZ || orden == null)
-            //{
-            //    selectQuery += " ORDER BY pe.NombreProvinciaEstado ";
-            //}
-
             if (currentPage.HasValue && pageSize.HasValue)
             {
                 var offSet = (currentPage.Value - 1) * pageSize;

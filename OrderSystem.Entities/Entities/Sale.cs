@@ -33,8 +33,5 @@
         {
             Details.Remove(dt);
         }
-        //public SaleStatus Status { get; set; }
-        //public bool IsGift { get; set; }
-
     }
 }

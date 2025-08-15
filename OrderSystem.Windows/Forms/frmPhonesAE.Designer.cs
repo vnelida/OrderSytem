@@ -55,7 +55,7 @@ namespace Windows.Forms
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
+            splitContainer1.Panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             splitContainer1.Panel1.Controls.Add(label1);
             splitContainer1.Panel1.Controls.Add(txtPhone);
             splitContainer1.Panel1.Controls.Add(cboPhoneType);
@@ -149,6 +149,7 @@ namespace Windows.Forms
             Name = "frmPhonesAE";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmPhonesAE";
+            Load += frmPhonesAE_Load;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);

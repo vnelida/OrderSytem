@@ -2,12 +2,15 @@
 using Data.Interfaces;
 using Entities.Dtos;
 using Entities.Entities;
+using Entities.Enums;
 using System.Data.SqlClient;
+using System.Text;
 
 namespace Data.Repositories
 {
     public class SalesRepository : ISalesRepository
     {
+      
         public void Add(Sale sale, SqlConnection conn, SqlTransaction tran)
         {
             string insertQuery = @"INSERT INTO Sales 
@@ -26,7 +29,16 @@ namespace Data.Repositories
 
         public void Edit(Sale sale, SqlConnection conn, SqlTransaction tran)
         {
-            throw new NotImplementedException();
+            string updateQuery = @"UPDATE Sales 
+                                   SET OrderStatusId = @OrderStatusId
+                                   WHERE SaleId = @SaleId";
+
+            int affectedRows = conn.Execute(updateQuery, sale, tran);
+
+            if (affectedRows == 0)
+            {
+                throw new Exception("Sale could not be updated.");
+            }
         }
 
         public int GetCaount(SqlConnection conn, Func<SalesListDto, bool>? filter)
@@ -167,7 +179,149 @@ namespace Data.Repositories
                 transaction: tran
             ).ToList();
 
-            return salesDictionary.Values.FirstOrDefault();            
+            return salesDictionary.Values.FirstOrDefault();
+        }
+
+        public List<SaleDetail> GetSaleDetailsBySaleId(int saleId, SqlConnection conn, SqlTransaction tran)
+        {
+            var sql = @"SELECT
+                                sd.SaleDetailId, sd.SaleId, sd.ProductId, sd.ComboId, sd.Quantity, sd.Price,
+                                p.ProductId AS ItemId, p.ProductName AS Name, p.Stock, -- Alias para mapear a la clase base Item
+                                c.ComboId AS ItemId, c.ComboName AS Name, c.CostPrice, c.SalePrice, c.Stock, c.Size, c.StartDate, c.EndDate -- <<<--- Columnas agregadas
+                            FROM SaleDetails sd
+                            LEFT JOIN Products p ON sd.ProductId = p.ProductId
+                            LEFT JOIN Combos c ON sd.ComboId = c.ComboId
+                            WHERE sd.SaleId = @SaleId;
+                        ";
+
+            var saleDetails = conn.Query<SaleDetail, Product, Combo, SaleDetail>(
+                sql,
+                (saleDetail, product, combo) =>
+                {
+                    saleDetail.Product = product;
+                    saleDetail.Combo = combo;
+                    return saleDetail;
+                },
+                param: new { SaleId = saleId },
+                transaction: tran,
+                splitOn: "ItemId, ItemId"
+            ).ToList();
+
+            return saleDetails;
+        }
+
+        public List<SalesListDto> GetSalesListt(SqlConnection conn, int currentPage, int pageSize, OrderTypes? orderType = null, OrderStatuses? status = null, Order? order = null, SqlTransaction? tran = null)
+        {
+            var selectQuery = new StringBuilder(@"
+                                        SELECT
+                                        v.SaleId,
+                                        COALESCE(v.CustomerId, 999999) AS CustomerId,
+                                        v.SaleDate,
+                                        v.TotalAmount,
+                                        v.OrderTypeId,
+                                        ot.TypeName AS OrderType,
+                                        v.OrderStatusId,
+                                        os.StatusName AS OrderStatus,
+                                        COALESCE(c.FirstName + ' ' + c.LastName, 'Consumidor Final') AS Customer
+                                    FROM
+                                        Sales AS v
+                                    LEFT JOIN
+                                        Customers AS c ON v.CustomerId = c.CustomerId
+                                    LEFT JOIN
+                                        OrderTypes AS ot ON v.OrderTypeId = ot.OrderTypeId
+                                    LEFT JOIN
+                                        OrderStatuses AS os ON v.OrderStatusId = os.OrderStatusId");
+
+            var parameters = new DynamicParameters();
+            var conditions = new List<string>();
+
+            if (orderType.HasValue && orderType.Value != OrderTypes.None)
+            {
+                conditions.Add("v.OrderTypeId = @OrderTypeId");
+                parameters.Add("OrderTypeId", (int)orderType.Value);
+            }
+
+            if (status.HasValue && status.Value != OrderStatuses.None)
+            {
+                conditions.Add("v.OrderStatusId = @OrderStatusId");
+                parameters.Add("OrderStatusId", (int)status.Value);
+            }
+
+            if (conditions.Any())
+            {
+                selectQuery.Append(" WHERE " + string.Join(" AND ", conditions));
+            }
+
+            var orderBy = " ORDER BY v.SaleId "; 
+            switch (order)
+            {
+                case Order.None:
+                    break;
+                case Order.CustomerName:
+                    orderBy = " ORDER BY c.Customer ASC ";
+                    break;
+                case Order.CustomerNameDesc:
+                    orderBy = " ORDER BY c.Customer DESC ";
+                    break;
+                case Order.SaleDate:
+                    orderBy = " ORDER BY v.SaleDate ASC ";
+                    break;
+                case Order.SaleDateDesc:
+                    orderBy = " ORDER BY v.SaleDate DESC ";
+                    break;
+                case Order.Total:
+                    orderBy = " ORDER BY v.TotalAmount ASC ";
+                    break;
+                case Order.TotalDesc:
+                    orderBy = " ORDER BY v.TotalAmount DESC ";
+                    break;
+                default:
+                    break;
+            }
+            selectQuery.Append(orderBy);
+
+            selectQuery.Append(" OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+            parameters.Add("Offset", (currentPage - 1) * pageSize);
+            parameters.Add("PageSize", pageSize);
+
+            return conn.Query<SalesListDto>(selectQuery.ToString(), parameters, tran).ToList();
+        }
+
+        public int GetSalesCountt(SqlConnection conn, OrderTypes? orderType = null, OrderStatuses? status = null, SqlTransaction? tran = null)
+        {
+            var selectQuery = new StringBuilder(@"
+            SELECT COUNT(*) FROM Sales AS v
+            -- ... (tus LEFT JOINs)
+        ");
+
+            var parameters = new DynamicParameters();
+            var conditions = new List<string>();
+
+            if (orderType.HasValue && orderType.Value != OrderTypes.None)
+            {
+                conditions.Add("v.OrderTypeId = @OrderTypeId");
+                parameters.Add("OrderTypeId", (int)orderType.Value);
+            }
+
+            if (status.HasValue && status.Value != OrderStatuses.None)
+            {
+                conditions.Add("v.OrderStatusId = @OrderStatusId");
+                parameters.Add("OrderStatusId", (int)status.Value);
+            }
+
+            if (conditions.Any())
+            {
+                selectQuery.Append(" WHERE " + string.Join(" AND ", conditions));
+            }
+
+            return conn.QuerySingle<int>(selectQuery.ToString(), parameters, tran);
+        }
+
+        public void UpdateSaleStatus(int saleId, int statusId, SqlConnection conn, SqlTransaction tran)
+        {
+            var sql = "UPDATE Sales SET OrderStatusId = @StatusId WHERE SaleId = @SaleId;";
+            conn.Execute(sql, new { SaleId = saleId, StatusId = statusId }, transaction: tran);
+
         }
     }
 }

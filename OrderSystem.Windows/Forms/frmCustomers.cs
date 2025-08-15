@@ -1,5 +1,6 @@
 ﻿using Entities.Dtos;
 using Entities.Entities;
+using Entities.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
 using Windows.Helpers;
@@ -27,6 +28,8 @@ namespace Windows.Forms
         private int totalPages = 0;
         private int pageSize = 20;
         private int totalRecords = 0;
+
+        Order selectedOrder=Order.None;
         private void frmCustomers_Load(object sender, EventArgs e)
         {
             try
@@ -52,7 +55,7 @@ namespace Windows.Forms
             {
                 if (_service is null)
                 {
-                    throw new ApplicationException("Dependencias no cargadas");
+                    throw new ApplicationException("dependencies no loaded");
                 }
                 _service.Save(customer);
             }
@@ -67,7 +70,7 @@ namespace Windows.Forms
         {
             try
             {
-                lista = _service!.GetList(currentPage, pageSize);
+                lista = _service!.GetList(currentPage, pageSize, selectedOrder);
                 MostrarDatosEnGrilla(lista);
                 if (cboPages.Items.Count != totalPages)
                 {
@@ -145,11 +148,8 @@ namespace Windows.Forms
 
             try
             {
-                DialogResult dr = MessageBox.Show($@"¿Desea dar de baja al cliente {customerDto.FullName}?",
-                        "Confirmar Baja",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question,
-                        MessageBoxDefaultButton.Button2);
+                DialogResult dr = MessageBox.Show($@"Do you want to unsubscribe {customerDto.FullName}?",
+                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
                 if (dr == DialogResult.No)
                 {
                     return;
@@ -161,35 +161,21 @@ namespace Windows.Forms
                     {
                         _service!.Delete(customerDto.CustomerId);
                         GridHelper.QuitarFila(r, dgvDatos);
-                        MessageBox.Show("Registro eliminado",
-                            "Mensaje",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                        MessageBox.Show("Record deleted successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    MessageBox.Show("Rehistro relacionado. Eliminacion denegada",
-                            "Mensaje",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                    MessageBox.Show("Cannot delete record. It is related to other records", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-
 
                 else
                 {
-                    MessageBox.Show("Baja Denegada",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    MessageBox.Show("Request Denied", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 }
             }
             catch (Exception ex)
             {
 
-                MessageBox.Show(ex.Message,
-                            "Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             }
         }
@@ -216,27 +202,17 @@ namespace Windows.Forms
             {
                 if (!_service!.Exist(customer))
                 {
-                    _service!.Save(customer);
-                    //TODO:Hacer manejo de la edición
-                    MessageBox.Show("Registro editado",
-                                    "Mensaje",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                    _service!.SaveCustomerFullDetails(customer);
+                    MessageBox.Show("Record edited successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Registro existente\nEdición denegada",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                    MessageBox.Show("Record already exists. Edit denied", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,
-                "Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -244,7 +220,7 @@ namespace Windows.Forms
         {
             try
             {
-                lista = _service!?.GetList(currentPage, pageSize);
+                lista = _service!?.GetList(currentPage, pageSize, selectedOrder);
                 if (lista is not null)
                 {
                     MostrarDatosEnGrilla(lista);
@@ -284,5 +260,22 @@ namespace Windows.Forms
             }
         }
 
+        private void NameAZ_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.CustomerName;
+            LoadData();
+        }
+
+        private void NameZA_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.CustomerNameDesc;
+            LoadData();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.None;
+            LoadData();
+        }
     }
 }

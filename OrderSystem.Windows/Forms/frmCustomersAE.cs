@@ -11,12 +11,10 @@ namespace Windows.Forms
     public partial class frmCustomersAE : Form
     {
         private readonly IServiceProvider? _serviceProvider;
-        private List<AddressWithTypeVM> addresses = new();
-        private List<PhonesWithTypeVM> phones = new();
-        private List<Address> addressesList = new();
-        private List<Phone> phonesList = new();
+        private List<AddressWithTypeVM> _addressVMs = new List<AddressWithTypeVM>();
+        private List<PhonesWithTypeVM> _phoneVMs = new List<PhonesWithTypeVM>();
         private readonly ICustomersServices _customersService;
-        Customer? customer;
+        private Customer? _customer;
 
         public frmCustomersAE(IServiceProvider? serviceProvider)
         {
@@ -30,103 +28,246 @@ namespace Windows.Forms
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-            if (customer != null) // Modo "Editar cliente existente"
+            if (_customer == null)
             {
-                txtFirstName.Text = customer.FirstName;
-                txtLastName.Text = customer.LastName;
-                txtDocumentNum.Text = customer.DocumentNumber.ToString();
-
-                phones = customer.CustomerPhones
-                                 .Select(cp => new PhonesWithTypeVM(cp.Phone, cp.PhoneType)) 
-                                 .ToList();
-                phonesList = phones.Select(pvm => pvm.Phone) 
-                                   .Where(p => p != null)     
-                                   .ToList()!;
-                GridHelper.MostrarDatosEnGrilla<Phone>(phonesList, dgvPhones); // Pasa List<Phone>
-
-
-                addresses = customer.CustomerAdresses
-                              .Select(ca => new AddressWithTypeVM(ca.Address, ca.AddressType))
-                              .ToList();
-
-                // 2. Convertir la lista 'addresses' (VMs) a 'addressesList' (entidades Address) para la grilla
-                addressesList = addresses.Select(avm => avm.Address) // Extrae la entidad Address de cada ViewModel
-                                         .Where(a => a != null)     // Asegura que no haya nulos
-                                         .ToList()!;
-
-                // 3. Mostrar los datos en la grilla de direcciones usando 'addressesList' (List<Address>)
-                GridHelper.MostrarDatosEnGrilla<Address>(addressesList, dgv); // <-- Pasa List<Address>
-
-
+                _customer = new Customer();
+                _customer.CustomerId = 0;
+                _addressVMs = _customer.CustomerAdresses.Select(ca => new AddressWithTypeVM(ca)).ToList();
+                _phoneVMs = _customer.CustomerPhones.Select(cp => new PhonesWithTypeVM(cp)).ToList();
             }
-            
-            //base.OnLoad(e);
-
-            //if (customer != null) // Modo Edición (customer ya fue establecido por SetCustomer)
-            //{
-            //    txtFirstName.Text = customer.FirstName;
-            //    txtLastName.Text = customer.LastName;
-            //    txtDocumentNum.Text = customer.DocumentNumber.ToString();
-            //    // Llamar al nuevo método de servicio que trae el cliente completo
-            //    // Reemplaza esto si tu SetCustomer ya carga directamente el customer con todo
-            //    // customer = _customersService.GetCustomerFullDetails(customer.CustomerId); // Si customer no se carga aquí, descomenta esto
-
-            //    // Verificar que el cliente y sus listas estén poblados
-            //    if (customer != null && customer.CustomerAdresses != null && customer.CustomerPhones != null)
-            //    {
-            //        // Cargar las listas locales de ViewModels a partir del Customer cargado
-            //        addresses = customer.CustomerAdresses
-            //                        .Select(ca => new AddressWithTypeVM(ca.Address, ca.AddressType))
-            //                        .ToList();
-            //        phones = customer.CustomerPhones
-            //                        .Select(cp => new PhonesWithTypeVM(cp.Phone, cp.PhoneType))
-            //                        .ToList();
-
-            //        // Mostrar los datos en las grillas usando las listas de ViewModels
-            //        GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(addresses, dgv);
-            //        GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(phones, dgvPhones);
-            //    }
-            //    else
-            //    {
-            //        // Esto podría ocurrir si GetCustomerFullDetails devuelve null o las listas son null
-            //        MessageBox.Show("No se pudieron cargar los detalles del cliente.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        // Puedes limpiar las grillas si quieres:
-            //        // addresses.Clear(); phones.Clear(); GridHelper.LimpiarGrilla(dgv); GridHelper.LimpiarGrilla(dgvPhones);
-            //    }
-            //}
-            //else // Modo "Agregar nuevo cliente"
-            //{
-            //    customer = new Customer(); // Inicializa el cliente vacío
-            //    customer.CustomerAdresses = new List<CustomerAddress>();
-            //    customer.CustomerPhones = new List<CustomerPhone>();
-            //    addresses = new List<AddressWithTypeVM>(); // Asegúrate de que estas listas también se inicialicen
-            //    phones = new List<PhonesWithTypeVM>();
-            //}
+            else 
+            {
+                txtDocumentNum.Text = _customer.DocumentNumber.ToString();
+                _addressVMs = _customer.CustomerAdresses.Select(ca => new AddressWithTypeVM(ca)).ToList();
+                _phoneVMs = _customer.CustomerPhones.Select(cp => new PhonesWithTypeVM(cp)).ToList();
+            }
+            GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(_addressVMs, dgv);
+            GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(_phoneVMs, dgvPhones);
         }
 
         private void btnAddAddress_Click(object sender, EventArgs e)
         {
-            frmAddressesAE frm = new frmAddressesAE(_serviceProvider);
-            DialogResult dr = frm.ShowDialog(this);
-            if (dr == DialogResult.Cancel) return;
-
-            AddressWithTypeVM? addressWithType = frm.GetAddress();
-            if (addressWithType is null) return;
-            // Verifica si la dirección ya existe en la lista
-            if (addresses.Any(dt => dt.Address
-                .Equals(addressWithType?.Address)))
+            CustomerAddress newCustomerAddressEntity = new CustomerAddress
             {
-                MessageBox.Show("La dirección ya existe en la lista.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                CustomerId = _customer?.CustomerId ?? 0, 
+                Address = new Address(),                 
+                AddressType = new AddressType()          
+            };
+            frmAddressesAE frm = new frmAddressesAE(_serviceProvider!); 
+            frm.Text = "Add Address";
+            frm.SetCustomerAddress(newCustomerAddressEntity);
+
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.Cancel) return; 
+
+            if (_customer!.CustomerAdresses.Any(ca => ca.Address?.Equals(newCustomerAddressEntity.Address) ?? false))
+            {
+                MessageBox.Show("This address is already on file for this client.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            addresses.Add(addressWithType);
-            var r = GridHelper.ConstruirFila(dgv);
-            GridHelper.SetearFila(r, addressWithType.Address);
-            GridHelper.AgregarFila(r, dgv);
+            newCustomerAddressEntity.Address!.AddressId = 0; 
+            newCustomerAddressEntity.AddressId = 0;          
+
+            _customer.CustomerAdresses.Add(newCustomerAddressEntity);
+
+            AddressWithTypeVM newAddressVm = new AddressWithTypeVM(newCustomerAddressEntity);
+            _addressVMs.Add(newAddressVm); 
+
+            GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(_addressVMs, dgv);
+
+            MessageBox.Show("Address added successfully. Don't forget to save the client's changes.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
+        private void btnEditAddresses_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0) return;
 
+            var r = dgv.SelectedRows[0];
+            AddressWithTypeVM? addressToEditVm = r.Tag as AddressWithTypeVM;
+            if (addressToEditVm?.CustomerAddressEntity is null)
+            {
+                MessageBox.Show("Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            CustomerAddress originalCustomerAddressEntity = addressToEditVm.CustomerAddressEntity;
+
+            frmAddressesAE frm = new frmAddressesAE(_serviceProvider!);
+            frm.Text = "Edit Address";
+            frm.SetCustomerAddress(originalCustomerAddressEntity); 
+
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.OK)
+            {
+                AddressWithTypeVM updatedVmForGrid = new AddressWithTypeVM(originalCustomerAddressEntity);
+                int index = _addressVMs.IndexOf(addressToEditVm); 
+                if (index != -1)
+                {
+                    _addressVMs[index] = updatedVmForGrid; 
+                    GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(_addressVMs, dgv); 
+                    MessageBox.Show("Address updated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnDeleteAddress_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0) return;
+
+            var r = dgv.SelectedRows[0];
+            AddressWithTypeVM? addressToDeleteVm = r.Tag as AddressWithTypeVM;
+            if (addressToDeleteVm?.CustomerAddressEntity is null)
+            {
+                MessageBox.Show("Error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure you want to delete this address?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _customer?.CustomerAdresses.Remove(addressToDeleteVm.CustomerAddressEntity); 
+                _addressVMs.Remove(addressToDeleteVm); 
+                GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(_addressVMs, dgv);
+                MessageBox.Show("The address has been removed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+
+
+        private void btnAddPhone_Click(object sender, EventArgs e)
+        {
+            CustomerPhone newCustomerPhoneEntity = new CustomerPhone
+            {
+                CustomerId = _customer?.CustomerId ?? 0,
+                Phone = new Phone(), 
+                PhoneType = new PhoneType() 
+            };
+
+            frmPhonesAE frm = new frmPhonesAE(_serviceProvider!); 
+            frm.Text = "Add Phone";
+            frm.SetCustomerPhone(newCustomerPhoneEntity);
+
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.OK)
+            {
+                
+
+                if (_customer?.CustomerPhones.Any(cp => cp.Phone?.PhoneNumber == newCustomerPhoneEntity.Phone?.PhoneNumber) ?? false)
+                {
+                    MessageBox.Show("El número de teléfono ya existe en la lista para este cliente.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; // Salir del método sin agregar el teléfono
+                }
+                newCustomerPhoneEntity.Phone!.PhoneId = 0;
+                newCustomerPhoneEntity.PhoneId = 0;       
+
+                _customer?.CustomerPhones.Add(newCustomerPhoneEntity);
+                _phoneVMs.Add(new PhonesWithTypeVM(newCustomerPhoneEntity));
+                GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(_phoneVMs, dgvPhones);
+                MessageBox.Show("Phone number added successfully.", "Notification ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private void btnOk_Click_1(object sender, EventArgs e)
+        {
+            if (ValidarDatos())
+            {
+                if (_customer is null)
+                {
+                    _customer = new Customer();
+                }
+
+                _customer.DocumentNumber = int.Parse(txtDocumentNum.Text); 
+                _customer.LastName = txtLastName.Text;
+                _customer.FirstName = txtFirstName.Text;
+
+                _customer.CustomerAdresses = _addressVMs.Select(vm => vm.CustomerAddressEntity)
+                                                        .Where(entity => entity != null) 
+                                                        .ToList()!; 
+
+                _customer.CustomerPhones = _phoneVMs.Select(vm => vm.CustomerPhoneEntity)
+                                                      .Where(entity => entity != null) 
+                                                      .ToList()!; 
+
+                DialogResult = DialogResult.OK;
+            }
+        }
+        private void btnEditPhones_Click(object sender, EventArgs e)
+        {
+            if (dgvPhones.SelectedRows.Count == 0) return;
+
+            var r = dgvPhones.SelectedRows[0];
+            PhonesWithTypeVM? phoneToEditVm = r.Tag as PhonesWithTypeVM;
+            if (phoneToEditVm?.CustomerPhoneEntity is null) return;
+
+            CustomerPhone originalCustomerPhoneEntity = phoneToEditVm.CustomerPhoneEntity;
+
+            frmPhonesAE frm = new frmPhonesAE(_serviceProvider!);
+            frm.Text = "Edit Phone";
+            frm.SetCustomerPhone(originalCustomerPhoneEntity);
+
+            DialogResult dr = frm.ShowDialog(this);
+            if (dr == DialogResult.OK)
+            {
+                PhonesWithTypeVM updatedVmForGrid = new PhonesWithTypeVM(originalCustomerPhoneEntity);
+                
+                int index = _phoneVMs.IndexOf(phoneToEditVm);
+                if (index != -1)
+                {
+                    _phoneVMs[index] = updatedVmForGrid;
+                    GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(_phoneVMs, dgvPhones);
+                    MessageBox.Show("Phone updated.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        private void btnDeletePhone_Click(object sender, EventArgs e)
+        {
+            if (dgvPhones.SelectedRows.Count == 0) return;
+
+            var r = dgvPhones.SelectedRows[0];
+            PhonesWithTypeVM? phoneToDeleteVm = r.Tag as PhonesWithTypeVM;
+            if (phoneToDeleteVm?.CustomerPhoneEntity is null) return;
+
+            if (MessageBox.Show("Are you sure you want to delete this phone number?","Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _customer?.CustomerPhones.Remove(phoneToDeleteVm.CustomerPhoneEntity);
+                _phoneVMs.Remove(phoneToDeleteVm);
+                GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(_phoneVMs, dgvPhones);
+                MessageBox.Show("Phone number removed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        internal void SetCustomer(Customer customer)
+        {
+            _customer = customer;           
+            txtFirstName.Text = _customer.FirstName;
+            txtLastName.Text = _customer.LastName;
+
+            _addressVMs = _customer.CustomerAdresses.Select(ca => new AddressWithTypeVM(ca)).ToList();
+            GridHelper.MostrarDatosEnGrilla<AddressWithTypeVM>(_addressVMs, dgv); 
+
+            _phoneVMs = _customer.CustomerPhones.Select(cp => new PhonesWithTypeVM(cp)).ToList();
+            GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(_phoneVMs, dgvPhones); 
+
+        }
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+        public Customer? GetCustomer()
+        {
+            if (_customer == null) return null; 
+
+            _customer.DocumentNumber = int.Parse(txtDocumentNum.Text);
+            _customer.FirstName = txtFirstName.Text;
+            _customer.LastName = txtLastName.Text;
+
+            return _customer;
+        }
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -138,285 +279,25 @@ namespace Windows.Forms
             if (!Regex.IsMatch(txtDocumentNum.Text, @"^\d{8}$"))
             {
                 valido = false;
-                errorProvider1.SetError(txtDocumentNum, "Documento debe tener exactamente 8 caracteres numéricos.");
+                errorProvider1.SetError(txtDocumentNum, "Document must have exactly 8 numeric characters.");
             }
             if (string.IsNullOrEmpty(txtLastName.Text.Trim()))
             {
                 valido = false;
-                errorProvider1.SetError(txtLastName, "Apellido es requerido");
+                errorProvider1.SetError(txtLastName, "Last name is required");
             }
             if (string.IsNullOrEmpty(txtFirstName.Text.Trim()))
             {
                 valido = false;
-                errorProvider1.SetError(txtFirstName, "Nombre es requerido");
+                errorProvider1.SetError(txtFirstName, "First name is required");
             }
-            if (addresses.Count == 0)
+            if (_addressVMs.Count == 0)
             {
                 valido = false;
-                errorProvider1.SetError(lblAddresses,
-                    "Debe ingresar al menos una dirección");
+                errorProvider1.SetError(lblAddresses, "You must enter at least one address");
             }
 
             return valido;
-        }
-
-        private void btnDeleteAddress_Click(object sender, EventArgs e)
-        {
-            if (dgv.SelectedRows.Count == 0) return;
-            var r = dgv.SelectedRows[0];
-            if (r is null) return;
-
-            AddressWithTypeVM? addressWithTypeVM = (AddressWithTypeVM?)r.Tag;
-            if (addressWithTypeVM is null) return;
-
-            DialogResult dr = MessageBox.Show("¿Desea borrar la dirección?",
-                "Confirmar", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2);
-            if (dr == DialogResult.No) return;
-
-            addresses.Remove(addressWithTypeVM);
-            GridHelper.QuitarFila(r, dgv);
-        }
-
-        public Customer? GetCustomer()
-        {
-            // ... (Asignaciones de campos principales) ...
-
-            // Convertir List<PhonesWithTypeVM> a List<CustomerPhone> para guardar
-            // Esto es crucial porque el servicio espera CustomerPhone
-            customer.CustomerPhones = phones.Select(vm => new CustomerPhone
-            {
-                CustomerId = customer.CustomerId, // Asigna el CustomerId del cliente
-                PhoneId = vm.Phone?.PhoneId ?? 0, // ID del Phone
-                PhoneTypeId = vm.PhoneType?.PhoneTypeId ?? 0, // ID del PhoneType (¡no se perderá!)
-                Phone = vm.Phone, // Objeto Phone completo (con su PhoneType dentro)
-                PhoneType = vm.PhoneType // Objeto PhoneType completo
-            }).ToList();
-
-            // ... (Asignaciones para direcciones - similar si usas AddressWithTypeVM en 'addresses') ...
-
-            return customer;
-        }
-        //private void btnAddPhone_Click(object sender, EventArgs e)
-        //{
-        //    frmPhonesAE frm = new frmPhonesAE(_serviceProvider);
-        //    DialogResult dr = frm.ShowDialog(this);
-        //    if (dr == DialogResult.Cancel) return;
-
-        //    Phone? newPhoneEntity = frm.GetPhone(); // <-- ¡Aquí obtienes la entidad Phone pura!
-        //    if (newPhoneEntity is null) return;
-
-        //    // *** CONVERTIR Phone (entidad) a PhonesWithTypeVM (ViewModel) ***
-        //    // Si la entidad Phone ahora tiene la propiedad PhoneType (como acordamos), esto funciona.
-        //    PhonesWithTypeVM phonesWithType = new PhonesWithTypeVM(newPhoneEntity, newPhoneEntity.PhoneType);
-
-        //    // Verifica si ya existe en la lista PRINCIPAL (List<PhonesWithTypeVM>)
-        //    if (phones.Any(dt => dt.Phone?.Equals(phonesWithType.Phone) ?? false))
-        //    {
-        //        MessageBox.Show("Teléfono ya existe en la lista.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //        return;
-        //    }
-
-        //    phones.Add(phonesWithType); // Añade el ViewModel a la lista de ViewModels
-
-        //    // Refrescar la grilla (MostrarDatosEnGrilla ahora ya sabe que item es un VM)
-        //    GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(phones, dgvPhones);
-
-        //}
-
-        private void btnAddPhone_Click(object sender, EventArgs e)
-        {
-            frmPhonesAE frm = new frmPhonesAE(_serviceProvider);
-            DialogResult dr = frm.ShowDialog(this);
-            if (dr == DialogResult.Cancel) return;
-
-            // ¡CAMBIO CLAVE AQUÍ! Llamar a GetPhone() que devuelve la entidad Phone.
-            Phone? newPhoneEntity = frm.GetPhone(); // <-- ¡Ahora obtienes la entidad Phone pura!
-            if (newPhoneEntity is null) return;
-
-            // *** CONVERTIR Phone (entidad) a PhonesWithTypeVM (ViewModel) ***
-            // Esto es necesario porque tu lista 'phones' es List<PhonesWithTypeVM>.
-            PhonesWithTypeVM phonesWithType = new PhonesWithTypeVM(newPhoneEntity, newPhoneEntity.PhoneType);
-
-            // Verifica si ya existe en la lista PRINCIPAL (List<PhonesWithTypeVM>)
-            if (phones.Any(dt => dt.Phone?.Equals(phonesWithType.Phone) ?? false))
-            {
-                MessageBox.Show("Teléfono ya existe en la lista.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            phones.Add(phonesWithType); // Añade el ViewModel a la lista de ViewModels
-
-            // GridHelper.SetearFila(r, phonesWithType.Phone); // Esto sigue bien, pasa la entidad Phone
-            var r = GridHelper.ConstruirFila(dgvPhones);
-            GridHelper.SetearFila(r, phonesWithType.Phone); // <--- Esto pasa la ENTIDAD Phone pura
-            GridHelper.AgregarFila(r, dgvPhones);
-            //frmPhonesAE frm = new frmPhonesAE(_serviceProvider);
-            //DialogResult dr = frm.ShowDialog(this);
-            //if (dr == DialogResult.Cancel) return;
-
-            //PhonesWithTypeVM? phonesWithType = frm.GetPhone1();
-            //if (phonesWithType is null) return;
-            //// Verifica si la dirección ya existe en la lista
-            //if (phones.Any(dt => dt.Phone
-            //    .Equals(phonesWithType?.Phone)))
-            //{
-            //    MessageBox.Show("Teléfono ya existe en la lista.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-            //phones.Add(phonesWithType);
-            //var r = GridHelper.ConstruirFila(dgvPhones);
-            //GridHelper.SetearFila(r, phonesWithType.Phone);
-            //GridHelper.AgregarFila(r, dgvPhones);
-        }
-
-        internal void SetCustomer(Customer customer)
-        {
-            this.customer = customer;
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void btnOk_Click_1(object sender, EventArgs e)
-        {
-            if (ValidarDatos()) // Primero, validamos todos los datos del formulario
-            {
-                // 1. Obtener el objeto 'customer' con todos los datos actualizados del formulario y las grillas.
-                // El método GetCustomer() ya se encarga de llenar customer.Addresses y customer.Phones.
-                // customer (el campo de la clase) es el objeto que estamos editando.
-                Customer? customerToSave = GetCustomer(); // Asegúrate de que GetCustomer() devuelva el objeto actualizado.
-
-                if (customerToSave is null)
-                {
-                    MessageBox.Show("Error: No se pudo preparar los datos del cliente para guardar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // 2. Llamar al servicio para guardar el cliente completo.
-                try
-                {
-                    _customersService.SaveCustomerFullDetails(customerToSave); // <-- ¡Llamada al servicio!
-                    DialogResult = DialogResult.OK; // Si todo salió bien, cerrar el formulario con OK
-                }
-                catch (Exception ex)
-                {
-                    // Manejar errores de guardado (ej. problemas de base de datos, validaciones de negocio en servicio)
-                    MessageBox.Show($"Error al guardar el cliente: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    // No establecemos DialogResult.OK si hay error, el formulario se mantiene abierto.
-                }
-            }
-            // else: Si ValidarDatos() falla, los errores se muestran en el formulario y este permanece abierto.
-        }
-        //private void btnOk_Click_1(object sender, EventArgs e)
-        //{
-        //    if (ValidarDatos())
-        //    {
-        //        if (customer is null)
-        //        {
-        //            customer = new Customer();
-        //        }
-        //        customer.DocumentNumber = int.Parse(txtDocumentNum.Text);
-        //        customer.LastName = txtLastName.Text;
-        //        customer.FirstName = txtFirstName.Text;
-        //        customer.CustomerAdresses = addresses.Select(dt => new CustomerAddress
-        //        {
-        //            AddressTypeId = dt.AddressType?.AddressTypeId ?? 0,
-        //            Address = dt.Address,
-        //            AddressType = dt.AddressType
-        //        }).ToList();
-        //        customer.CustomerPhones = phones.Select(dt => new CustomerPhone
-        //        {
-        //            PhoneTypeId = dt.PhoneType?.PhoneTypeId ?? 0,
-        //            Phone = dt.Phone,
-        //            PhoneType = dt.PhoneType
-        //        }).ToList();
-        //        DialogResult = DialogResult.OK;
-        //    }
-        //}
-
-        private void frmCustomersAE_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnEditPhones_Click(object sender, EventArgs e)
-        {
-            if (dgvPhones.SelectedRows.Count == 0) return;
-            var r = dgvPhones.SelectedRows[0];
-
-            // El Tag ahora guarda la entidad Phone pura (como Phone?)
-            Phone? phoneToEditEntity = (Phone?)r.Tag;
-            if (phoneToEditEntity is null)
-            {
-                MessageBox.Show("No se pudo obtener el teléfono seleccionado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Cargar el objeto Phone completo y más reciente desde el servicio
-            Phone? latestPhoneEntity = null;
-            try { latestPhoneEntity = _customersService.GetPhoneDetails(phoneToEditEntity.PhoneId); }
-            catch (Exception ex) { MessageBox.Show($"Error al cargar los detalles del teléfono: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-            if (latestPhoneEntity is null) { MessageBox.Show("Teléfono no encontrado en la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-
-            frmPhonesAE frm = new frmPhonesAE(_serviceProvider);
-            frm.SetPhone(latestPhoneEntity); // Pasamos la entidad Phone completa
-            DialogResult dr = frm.ShowDialog(this);
-            if (dr == DialogResult.Cancel) return;
-
-            Phone? updatedPhoneEntity = frm.GetPhone(); // <-- Aquí obtienes la entidad Phone pura actualizada
-            if (updatedPhoneEntity is null) { MessageBox.Show("No se pudo obtener el teléfono actualizado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-
-            // Encontrar el ViewModel original en la lista 'phones' (List<PhonesWithTypeVM>)
-            // para actualizarlo con la entidad Phone pura que regresó.
-            PhonesWithTypeVM? originalVmInList = phones.FirstOrDefault(pvm => pvm.Phone?.PhoneId == phoneToEditEntity.PhoneId);
-
-            if (originalVmInList != null)
-            {
-                // Actualiza las propiedades Phone y PhoneType del ViewModel existente con la nueva entidad
-                originalVmInList.Phone = updatedPhoneEntity;
-                originalVmInList.PhoneType = updatedPhoneEntity.PhoneType;
-            }
-            else
-            {
-                MessageBox.Show("Error: El teléfono original no fue encontrado para actualizar en la lista principal.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            GridHelper.MostrarDatosEnGrilla<PhonesWithTypeVM>(phones, dgvPhones); // Refresca la grilla con List<PhonesWithTypeVM>
-            MessageBox.Show("Teléfono actualizado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        private void btnDeletePhone_Click(object sender, EventArgs e)
-        {
-            if (dgvPhones.SelectedRows.Count == 0) return;
-            var r = dgvPhones.SelectedRows[0];
-            // El Tag guarda la entidad Phone pura
-            Phone? phoneToDelete = (Phone?)r.Tag;
-            if (phoneToDelete is null) return;
-
-            DialogResult dr = MessageBox.Show("¿Desea borrar el teléfono?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
-            if (dr == DialogResult.No) return;
-
-            // Encontrar y eliminar el ViewModel correspondiente de la lista PRINCIPAL
-            PhonesWithTypeVM? vmToDelete = phones.FirstOrDefault(pvm => pvm.Phone?.PhoneId == phoneToDelete.PhoneId);
-            if (vmToDelete != null)
-            {
-                phones.Remove(vmToDelete); // Eliminar de la lista de ViewModels
-            }
-
-            // Sincronizar 'phonesList' (List<Phone>) para la visualización
-            phonesList = phones.Select(pvm => pvm.Phone).Where(p => p != null).ToList()!;
-
-            GridHelper.MostrarDatosEnGrilla<Phone>(phonesList, dgvPhones); // Refrescar grilla con 'phonesList'
-            MessageBox.Show("Teléfono eliminado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnEditAddresses_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

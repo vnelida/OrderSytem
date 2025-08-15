@@ -15,7 +15,7 @@
         public string PostalCode { get; set; } = null!;
         public override string ToString()
         {
-            return $"{Street} {BuildingNumber} - {City} - {StateProvince} - {Country}";
+            return $"{Street} - {BuildingNumber} - {City} - {StateProvince} - {Country}";
         }
     }
 }

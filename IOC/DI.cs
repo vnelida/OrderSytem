@@ -93,6 +93,12 @@ namespace IOC
                 var repository = new PhoneTypesRepository();
                 return new PhoneTypesService(repository, cadena);
             });
+            service.AddScoped<IPhonesRepository, PhonesRepository>();
+            service.AddScoped<IPhoneService>(sp =>
+            {
+                var repository = new PhonesRepository();
+                return new PhoneService(repository, cadena);
+            });
 
             service.AddScoped<ICustomerPhonesRepository, CustomerPhonesRepository>();
             service.AddScoped<ICustomerAddressesRepository, CustomerAddressesRepository>();
@@ -127,13 +133,28 @@ namespace IOC
 
 
             service.AddScoped<ISalesRepository, SalesRepository>();
+
             service.AddScoped<ISalesService>(sp =>
             {
                 var repository = new SalesRepository();
                 var repositoryDetails = new SaleDetailsRepository();
-                return new SalesService(repository, repositoryDetails, cadena);
+                var itemsService = sp.GetRequiredService<IItemsService>(); 
+
+                return new SalesService(repository, repositoryDetails, itemsService, cadena);
             });
 
+            service.AddScoped<IUsersService>(sp =>
+            {
+                var repositorio = new UsersRepository();
+                return new UsersService(repositorio, cadena);
+            });
+
+            service.AddScoped<IRoleRepository, RoleRepository>();
+            service.AddScoped<IRoleService>(sp =>
+            {
+                var repository = new RoleRepository();
+                return new RoleService(repository, cadena);
+            });
 
             return service.BuildServiceProvider();
         }

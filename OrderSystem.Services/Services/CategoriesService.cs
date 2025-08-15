@@ -67,7 +67,7 @@ namespace Services.Services
             }
         }
 
-        public List<Category> GetList(int? currentPage = 0, int? pageSize=0, Order? order = Order.None)
+        public List<Category> GetList(int? currentPage = 0, int? pageSize = 0, Order? order = Order.None)
         {
             using (var conn = new SqlConnection(_cadena))
             {

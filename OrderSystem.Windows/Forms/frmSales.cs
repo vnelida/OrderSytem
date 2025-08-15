@@ -1,5 +1,6 @@
 ﻿using Entities.Dtos;
 using Entities.Entities;
+using Entities.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
 using Windows.Helpers;
@@ -14,8 +15,12 @@ namespace Windows.Forms
 
         private int currentPage = 1;
         private int totalPages = 0;
-        private int pageSize = 10;
+        private int pageSize = 20;
         private int totalRecords = 0;
+
+        private OrderStatuses selectedOrderStatus = OrderStatuses.None;
+        private OrderTypes selectedOrderType = OrderTypes.None;
+        private Order? selectedOrder = Order.None;
 
         private Func<SalesListDto, bool>? filter = null;
         public frmSales(IServiceProvider serviceProvider)
@@ -30,7 +35,7 @@ namespace Windows.Forms
         {
             try
             {
-                totalRecords = _service!.GetCount(filter);
+                totalRecords = _service!.GetCountt(selectedOrderType, selectedOrderStatus);
                 totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
                 LoadData(filter);
             }
@@ -45,7 +50,8 @@ namespace Windows.Forms
         {
             try
             {
-                list = _service!.GetList(currentPage, pageSize, filter);
+
+                list = _service!.GetListt(currentPage, pageSize, selectedOrderType, selectedOrderStatus, selectedOrder);
                 if (list.Count > 0)
                 {
                     GridHelper.MostrarDatosEnGrilla<SalesListDto>(list, dgv);
@@ -61,14 +67,9 @@ namespace Windows.Forms
                 }
                 else
                 {
-                    MessageBox.Show("No se encontraron registros!!!", "Mensaje",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    MessageBox.Show("No hay registros", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("No records were found.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     currentPage = 1;
                     filter = null;
-                    btnFilter.Enabled = true;
-                    btnFilter.BackColor = SystemColors.Control;
-                    RecargarGrilla();
                 }
             }
             catch (Exception)
@@ -112,30 +113,14 @@ namespace Windows.Forms
             currentPage = int.Parse(cboPages.Text);
             LoadData(filter);
         }
-
-
-
-
-        private void tsbActualizar_Click(object sender, EventArgs e)
-        {
-            filter = null;
-            currentPage = 1;
-            btnFilter.Enabled = true;
-            btnFilter.BackColor = SystemColors.Control;
-            RecargarGrilla();
-        }
-
-
         private void frmSales_Load(object sender, EventArgs e)
         {
             RecargarGrilla();
         }
-
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
         }
-
         private void btnNew_Click(object sender, EventArgs e)
         {
             frmSalesAE frm = new frmSalesAE(_serviceProvider) { Text = "New Order" };
@@ -153,8 +138,8 @@ namespace Windows.Forms
                 int row = GridHelper.ObtenerRowIndex(dgv, sale.SaleId);
                 GridHelper.MarcarRow(dgv, row);
 
-                MessageBox.Show("Registro agregado",
-                    "Mensaje",
+                MessageBox.Show("Combo meal added",
+                    "Notification",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
@@ -162,10 +147,7 @@ namespace Windows.Forms
             catch (Exception ex)
             {
 
-                MessageBox.Show(ex.Message,
-                    "Mensaje",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Notification", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -178,6 +160,167 @@ namespace Windows.Forms
             frmSaleDetails frm = new frmSaleDetails();
             frm.SetSale(sale);
             frm.ShowDialog(this);
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0) return;
+
+            var r = dgv.SelectedRows[0];
+            int saleId = (int)r.Cells["SaleId"].Value;
+
+            string currentStatus = r.Cells["colStatus"].Value.ToString();
+
+            if (currentStatus == "Cancelled")
+            {
+                MessageBox.Show("This order has already been canceled and cannot be canceled again.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show("Are you sure you want to cancel this order?", "Confirm Cancellation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                try
+                {
+                    _service.CancelSale(saleId);
+
+                    MessageBox.Show("Order canceled successfully.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void totalDesc_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.TotalDesc;
+            LoadData();
+        }
+
+        private void totalAsc_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.Total;
+            RecargarGrilla();
+        }
+
+        private void dateAcs_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.SaleDate;
+            RecargarGrilla();
+        }
+
+        private void dateDesc_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.SaleDateDesc;
+            RecargarGrilla();
+        }
+
+        private void customerACSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.CustomerName;
+            RecargarGrilla();
+        }
+
+        private void customerDESCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            selectedOrder = Order.CustomerNameDesc;
+            RecargarGrilla();
+        }
+
+        private void filterCompleted_Click(object sender, EventArgs e)
+        {
+            selectedOrderStatus = OrderStatuses.Completed;
+            RecargarGrilla();
+        }
+
+        private void filterPending_Click(object sender, EventArgs e)
+        {
+            selectedOrderStatus = OrderStatuses.Pending;
+            RecargarGrilla();
+        }
+
+        private void filterPreparing_Click(object sender, EventArgs e)
+        {
+            selectedOrderStatus = OrderStatuses.Preparing;
+            RecargarGrilla();
+        }
+
+        private void filterSent_Click(object sender, EventArgs e)
+        {
+            selectedOrderStatus = OrderStatuses.Sent;
+            RecargarGrilla();
+        }
+
+        private void filterCancelled_Click(object sender, EventArgs e)
+        {
+            selectedOrderStatus = OrderStatuses.Cancelled;
+            RecargarGrilla();
+        }
+
+        private void InStoreFilter_Click(object sender, EventArgs e)
+        {
+            selectedOrderType = OrderTypes.InStore;
+            RecargarGrilla();
+        }
+
+        private void TakeAwayFilter_Click(object sender, EventArgs e)
+        {
+            selectedOrderType = OrderTypes.TakeAway;
+            RecargarGrilla();
+        }
+
+        private void DeliveryFilter_Click(object sender, EventArgs e)
+        {
+            selectedOrderType = OrderTypes.Delivery;
+            RecargarGrilla();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            selectedOrder = null;
+            selectedOrderStatus = OrderStatuses.None;
+            selectedOrderType = OrderTypes.None;
+            currentPage = 1;
+            RecargarGrilla();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count == 0) return;
+
+            var r = dgv.SelectedRows[0];
+            SalesListDto saleDto = (SalesListDto)r.Tag!;
+            int saleId = saleDto.SaleId;
+
+            string currentStatus = r.Cells["colStatus"].Value.ToString();
+
+            if (currentStatus != "Pending" && currentStatus != "Preparing")
+            {
+                MessageBox.Show("The selected order cannot be updated.'.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult dr = MessageBox.Show("Update to Completed?", "Confirm Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                try
+                {
+                    _service.UpdateOrderStatus(saleId, OrderStatuses.Completed);
+
+                    MessageBox.Show("Update completed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    RecargarGrilla();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

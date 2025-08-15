@@ -34,5 +34,35 @@ namespace Data.Repositories
                 throw new Exception("The detail could not be deleted.");
             }
         }
+
+        public IEnumerable<ComboDetail> GetComboDetails(int comboId, SqlConnection conn, SqlTransaction tran)
+        {
+            var sql = @"
+        SELECT
+            cd.ComboDetailId,
+            cd.ComboId,
+            cd.ProductId,
+            cd.Quantity,
+            p.ProductId,
+            p.ProductName,
+            p.Stock
+        FROM ComboDetails cd
+        INNER JOIN Products p ON cd.ProductId = p.ProductId
+        WHERE cd.ComboId = @ComboId;
+    ";
+
+            return conn.Query<ComboDetail, Product, ComboDetail>(
+                sql,
+                (comboDetail, product) =>
+                {
+                    // Asigna el objeto Product poblado a la propiedad anidada en ComboDetail.
+                    comboDetail.Product = product;
+                    return comboDetail;
+                },
+                param: new { ComboId = comboId },
+                transaction: tran,
+                splitOn: "ProductId"
+            );
+        }
     }
 }

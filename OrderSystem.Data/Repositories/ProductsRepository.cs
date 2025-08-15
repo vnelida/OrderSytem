@@ -3,9 +3,7 @@ using Data.Interfaces;
 using Entities.Dtos;
 using Entities.Entities;
 using Entities.Enums;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace Data.Repositories
 {
@@ -66,7 +64,7 @@ namespace Data.Repositories
                 query += " WHERE CategoryId = @CategoryId";
                 return conn.ExecuteScalar<int>(query, new { CategoryId = category.CategoryId });
             }
-            return conn.ExecuteScalar<int>(query);            
+            return conn.ExecuteScalar<int>(query);
         }
 
         public List<ProductListDto> GetList(SqlConnection conn, int currentPage, int pageSize, Order? order = Order.None, Category? category = null, SqlTransaction? tran = null)
@@ -74,7 +72,7 @@ namespace Data.Repositories
             var selectQuery = @"SELECT p.ProductId, p.ProductName, p.Description, 
                                 p.CostPrice, p.Stock, c.CategoryName
                                 FROM Products p INNER JOIN Categories c ON 
-                                p.CategoryId = c.CategoryId"; 
+                                p.CategoryId = c.CategoryId";
 
             List<string> conditions = new List<string>();
 
@@ -112,21 +110,11 @@ namespace Data.Repositories
             }
             selectQuery += orderBy;
 
-            //if (currentPage.HasValue && pageSize.HasValue)
-            //{
-            //    var offSet = (currentPage.Value - 1) * pageSize;
-            //    selectQuery += $" OFFSET {offSet} ROWS FETCH NEXT {pageSize.Value} ROWS ONLY";
-            //}
-            //return conn.Query<ProductDto>(selectQuery, new { CategoryId = category?.CategoryId }).ToList();
+            
             var lista = conn.Query<ProductListDto>(selectQuery, new { CategoryId = category?.CategoryId }).ToList();
 
             return lista.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-            //var offset = (currentPage - 1) * pageSize;
-            //selectQuery += $" OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY";
-
-            //return conn.Query<ProductDto>(selectQuery, new { CategoryId = category?.CategoryId }, tran).ToList();
-
-
+          
         }
 
         public int GetPageByRecord(SqlConnection conn, string productName, int pageSize)

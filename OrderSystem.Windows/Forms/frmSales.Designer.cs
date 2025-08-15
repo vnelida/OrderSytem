@@ -40,7 +40,7 @@
             button4 = new Button();
             panelGrilla = new Panel();
             dgv = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
+            SaleId = new DataGridViewTextBoxColumn();
             colCustomer = new DataGridViewTextBoxColumn();
             colDate = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
@@ -50,15 +50,29 @@
             btnClose = new ToolStripButton();
             btnNew = new ToolStripButton();
             btnDelete = new ToolStripButton();
-            btnEdit = new ToolStripButton();
-            btnOrder = new ToolStripDropDownButton();
-            productAZToolStripMenuItem = new ToolStripMenuItem();
-            productZAToolStripMenuItem = new ToolStripMenuItem();
-            categoryAZToolStripMenuItem = new ToolStripMenuItem();
-            categoryZAToolStripMenuItem = new ToolStripMenuItem();
-            btnFilter = new ToolStripComboBox();
-            btnRefresh = new ToolStripButton();
+            btnUpdate = new ToolStripButton();
+            toolStripButton1 = new ToolStripButton();
             btnDetails = new ToolStripButton();
+            toolStripButton3 = new ToolStripButton();
+            btnOrder = new ToolStripDropDownButton();
+            totalAsc = new ToolStripMenuItem();
+            totalDesc = new ToolStripMenuItem();
+            dateAcs = new ToolStripMenuItem();
+            dateDesc = new ToolStripMenuItem();
+            customerACSToolStripMenuItem = new ToolStripMenuItem();
+            customerDESCToolStripMenuItem = new ToolStripMenuItem();
+            toolStripButton2 = new ToolStripButton();
+            btnFilterStatus = new ToolStripDropDownButton();
+            filterCompleted = new ToolStripMenuItem();
+            filterPending = new ToolStripMenuItem();
+            filterPreparing = new ToolStripMenuItem();
+            filterSent = new ToolStripMenuItem();
+            filterCancelled = new ToolStripMenuItem();
+            filterOrderType = new ToolStripDropDownButton();
+            InStoreFilter = new ToolStripMenuItem();
+            TakeAwayFilter = new ToolStripMenuItem();
+            DeliveryFilter = new ToolStripMenuItem();
+            btnRefresh = new ToolStripButton();
             panelNavegacion.SuspendLayout();
             panelGrilla.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
@@ -192,7 +206,7 @@
             dgv.AllowUserToDeleteRows = false;
             dgv.BackgroundColor = Color.White;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colCustomer, colDate, colStatus, colOrderType, colTotal });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { SaleId, colCustomer, colDate, colStatus, colOrderType, colTotal });
             dgv.Dock = DockStyle.Fill;
             dgv.Location = new Point(0, 0);
             dgv.MultiSelect = false;
@@ -204,14 +218,14 @@
             dgv.Size = new Size(1974, 1223);
             dgv.TabIndex = 7;
             // 
-            // colId
+            // SaleId
             // 
-            colId.HeaderText = "Id";
-            colId.MinimumWidth = 10;
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            colId.Width = 200;
+            SaleId.HeaderText = "SaleId";
+            SaleId.MinimumWidth = 10;
+            SaleId.Name = "SaleId";
+            SaleId.ReadOnly = true;
+            SaleId.Visible = false;
+            SaleId.Width = 200;
             // 
             // colCustomer
             // 
@@ -257,7 +271,7 @@
             // 
             toolStrip1.BackColor = Color.White;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnEdit, btnOrder, btnFilter, btnRefresh, btnDetails });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnUpdate, toolStripButton1, btnDetails, toolStripButton3, btnOrder, toolStripButton2, btnFilterStatus, filterOrderType, btnRefresh });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1974, 106);
@@ -278,7 +292,7 @@
             // 
             // btnNew
             // 
-            btnNew.Image = (Image)resources.GetObject("btnNew.Image");
+            btnNew.Image = Properties.Resources.icons8_add_64;
             btnNew.ImageScaling = ToolStripItemImageScaling.None;
             btnNew.ImageTransparentColor = Color.Magenta;
             btnNew.Name = "btnNew";
@@ -289,73 +303,34 @@
             // 
             // btnDelete
             // 
-            btnDelete.Image = (Image)resources.GetObject("btnDelete.Image");
+            btnDelete.Image = Properties.Resources.icons8_cancel_64;
             btnDelete.ImageScaling = ToolStripItemImageScaling.None;
             btnDelete.ImageTransparentColor = Color.Magenta;
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(88, 100);
-            btnDelete.Text = "Delete";
+            btnDelete.Size = new Size(89, 100);
+            btnDelete.Text = "Cancel";
             btnDelete.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnDelete.Click += btnCancel_Click;
             // 
-            // btnEdit
+            // btnUpdate
             // 
-            btnEdit.Image = (Image)resources.GetObject("btnEdit.Image");
-            btnEdit.ImageScaling = ToolStripItemImageScaling.None;
-            btnEdit.ImageTransparentColor = Color.Magenta;
-            btnEdit.Name = "btnEdit";
-            btnEdit.Size = new Size(68, 100);
-            btnEdit.Text = "Edit";
-            btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnUpdate.Image = Properties.Resources.icons8_edit_64;
+            btnUpdate.ImageScaling = ToolStripItemImageScaling.None;
+            btnUpdate.ImageTransparentColor = Color.Magenta;
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(95, 100);
+            btnUpdate.Text = "Update";
+            btnUpdate.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnUpdate.Click += btnUpdate_Click;
             // 
-            // btnOrder
+            // toolStripButton1
             // 
-            btnOrder.DropDownItems.AddRange(new ToolStripItem[] { productAZToolStripMenuItem, productZAToolStripMenuItem, categoryAZToolStripMenuItem, categoryZAToolStripMenuItem });
-            btnOrder.Image = (Image)resources.GetObject("btnOrder.Image");
-            btnOrder.ImageScaling = ToolStripItemImageScaling.None;
-            btnOrder.Name = "btnOrder";
-            btnOrder.Size = new Size(97, 100);
-            btnOrder.Text = "Order";
-            btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // productAZToolStripMenuItem
-            // 
-            productAZToolStripMenuItem.Name = "productAZToolStripMenuItem";
-            productAZToolStripMenuItem.Size = new Size(313, 44);
-            productAZToolStripMenuItem.Text = "Product A-Z";
-            // 
-            // productZAToolStripMenuItem
-            // 
-            productZAToolStripMenuItem.Name = "productZAToolStripMenuItem";
-            productZAToolStripMenuItem.Size = new Size(313, 44);
-            productZAToolStripMenuItem.Text = "Product Z-A";
-            // 
-            // categoryAZToolStripMenuItem
-            // 
-            categoryAZToolStripMenuItem.Name = "categoryAZToolStripMenuItem";
-            categoryAZToolStripMenuItem.Size = new Size(313, 44);
-            categoryAZToolStripMenuItem.Text = "Sale Price";
-            // 
-            // categoryZAToolStripMenuItem
-            // 
-            categoryZAToolStripMenuItem.Name = "categoryZAToolStripMenuItem";
-            categoryZAToolStripMenuItem.Size = new Size(313, 44);
-            categoryZAToolStripMenuItem.Text = "Sale Price DESC";
-            // 
-            // btnFilter
-            // 
-            btnFilter.DropDownStyle = ComboBoxStyle.DropDownList;
-            btnFilter.Name = "btnFilter";
-            btnFilter.Size = new Size(130, 106);
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.Image = (Image)resources.GetObject("btnRefresh.Image");
-            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
-            btnRefresh.ImageTransparentColor = Color.Magenta;
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(97, 100);
-            btnRefresh.Text = "Refresh";
-            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.None;
+            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(46, 100);
+            toolStripButton1.Text = "toolStripButton1";
             // 
             // btnDetails
             // 
@@ -367,6 +342,163 @@
             btnDetails.Text = "Details";
             btnDetails.TextImageRelation = TextImageRelation.ImageAboveText;
             btnDetails.Click += btnDetails_Click;
+            // 
+            // toolStripButton3
+            // 
+            toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.None;
+            toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
+            toolStripButton3.ImageTransparentColor = Color.Magenta;
+            toolStripButton3.Name = "toolStripButton3";
+            toolStripButton3.Size = new Size(46, 100);
+            toolStripButton3.Text = "toolStripButton1";
+            // 
+            // btnOrder
+            // 
+            btnOrder.DropDownItems.AddRange(new ToolStripItem[] { totalAsc, totalDesc, dateAcs, dateDesc, customerACSToolStripMenuItem, customerDESCToolStripMenuItem });
+            btnOrder.Image = Properties.Resources.icons8_sorting_64;
+            btnOrder.ImageScaling = ToolStripItemImageScaling.None;
+            btnOrder.Name = "btnOrder";
+            btnOrder.Size = new Size(97, 100);
+            btnOrder.Text = "Order";
+            btnOrder.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // totalAsc
+            // 
+            totalAsc.Name = "totalAsc";
+            totalAsc.Size = new Size(314, 44);
+            totalAsc.Text = "Total ";
+            totalAsc.Click += totalAsc_Click;
+            // 
+            // totalDesc
+            // 
+            totalDesc.Name = "totalDesc";
+            totalDesc.Size = new Size(314, 44);
+            totalDesc.Text = "Total DESC";
+            totalDesc.Click += totalDesc_Click;
+            // 
+            // dateAcs
+            // 
+            dateAcs.Name = "dateAcs";
+            dateAcs.Size = new Size(314, 44);
+            dateAcs.Text = "Date ";
+            dateAcs.Click += dateAcs_Click;
+            // 
+            // dateDesc
+            // 
+            dateDesc.Name = "dateDesc";
+            dateDesc.Size = new Size(314, 44);
+            dateDesc.Text = "Date Decs";
+            dateDesc.Click += dateDesc_Click;
+            // 
+            // customerACSToolStripMenuItem
+            // 
+            customerACSToolStripMenuItem.Name = "customerACSToolStripMenuItem";
+            customerACSToolStripMenuItem.Size = new Size(314, 44);
+            customerACSToolStripMenuItem.Text = "Customer ";
+            customerACSToolStripMenuItem.Click += customerACSToolStripMenuItem_Click;
+            // 
+            // customerDESCToolStripMenuItem
+            // 
+            customerDESCToolStripMenuItem.Name = "customerDESCToolStripMenuItem";
+            customerDESCToolStripMenuItem.Size = new Size(314, 44);
+            customerDESCToolStripMenuItem.Text = "Customer DESC";
+            customerDESCToolStripMenuItem.Click += customerDESCToolStripMenuItem_Click;
+            // 
+            // toolStripButton2
+            // 
+            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.None;
+            toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
+            toolStripButton2.ImageTransparentColor = Color.Magenta;
+            toolStripButton2.Name = "toolStripButton2";
+            toolStripButton2.Size = new Size(46, 100);
+            toolStripButton2.Text = "toolStripButton1";
+            // 
+            // btnFilterStatus
+            // 
+            btnFilterStatus.DropDownItems.AddRange(new ToolStripItem[] { filterCompleted, filterPending, filterPreparing, filterSent, filterCancelled });
+            btnFilterStatus.Image = (Image)resources.GetObject("btnFilterStatus.Image");
+            btnFilterStatus.ImageScaling = ToolStripItemImageScaling.None;
+            btnFilterStatus.Name = "btnFilterStatus";
+            btnFilterStatus.Size = new Size(168, 100);
+            btnFilterStatus.Text = "Order Status";
+            btnFilterStatus.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // filterCompleted
+            // 
+            filterCompleted.Name = "filterCompleted";
+            filterCompleted.Size = new Size(265, 44);
+            filterCompleted.Text = "Completed";
+            filterCompleted.Click += filterCompleted_Click;
+            // 
+            // filterPending
+            // 
+            filterPending.Name = "filterPending";
+            filterPending.Size = new Size(265, 44);
+            filterPending.Text = "Pending";
+            filterPending.Click += filterPending_Click;
+            // 
+            // filterPreparing
+            // 
+            filterPreparing.Name = "filterPreparing";
+            filterPreparing.Size = new Size(265, 44);
+            filterPreparing.Text = "Preparing";
+            filterPreparing.Click += filterPreparing_Click;
+            // 
+            // filterSent
+            // 
+            filterSent.Name = "filterSent";
+            filterSent.Size = new Size(265, 44);
+            filterSent.Text = "Sent";
+            filterSent.Click += filterSent_Click;
+            // 
+            // filterCancelled
+            // 
+            filterCancelled.Name = "filterCancelled";
+            filterCancelled.Size = new Size(265, 44);
+            filterCancelled.Text = "Cancelled";
+            filterCancelled.Click += filterCancelled_Click;
+            // 
+            // filterOrderType
+            // 
+            filterOrderType.DropDownItems.AddRange(new ToolStripItem[] { InStoreFilter, TakeAwayFilter, DeliveryFilter });
+            filterOrderType.Image = (Image)resources.GetObject("filterOrderType.Image");
+            filterOrderType.ImageScaling = ToolStripItemImageScaling.None;
+            filterOrderType.Name = "filterOrderType";
+            filterOrderType.Size = new Size(155, 100);
+            filterOrderType.Text = "Order Type";
+            filterOrderType.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // InStoreFilter
+            // 
+            InStoreFilter.Name = "InStoreFilter";
+            InStoreFilter.Size = new Size(257, 44);
+            InStoreFilter.Text = "In Store";
+            InStoreFilter.Click += InStoreFilter_Click;
+            // 
+            // TakeAwayFilter
+            // 
+            TakeAwayFilter.Name = "TakeAwayFilter";
+            TakeAwayFilter.Size = new Size(257, 44);
+            TakeAwayFilter.Text = "Take Away";
+            TakeAwayFilter.Click += TakeAwayFilter_Click;
+            // 
+            // DeliveryFilter
+            // 
+            DeliveryFilter.Name = "DeliveryFilter";
+            DeliveryFilter.Size = new Size(257, 44);
+            DeliveryFilter.Text = "Delivery";
+            DeliveryFilter.Click += DeliveryFilter_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Image = Properties.Resources.aiconreset;
+            btnRefresh.ImageScaling = ToolStripItemImageScaling.None;
+            btnRefresh.ImageTransparentColor = Color.Magenta;
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(109, 100);
+            btnRefresh.Text = "Reset All";
+            btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // frmSales
             // 
@@ -402,13 +534,12 @@
         private ToolStripButton btnClose;
         private ToolStripButton btnNew;
         private ToolStripButton btnDelete;
-        private ToolStripButton btnEdit;
+        private ToolStripButton btnUpdate;
         private ToolStripDropDownButton btnOrder;
-        private ToolStripMenuItem productAZToolStripMenuItem;
-        private ToolStripMenuItem productZAToolStripMenuItem;
-        private ToolStripMenuItem categoryAZToolStripMenuItem;
-        private ToolStripMenuItem categoryZAToolStripMenuItem;
-        private ToolStripComboBox btnFilter;
+        private ToolStripMenuItem totalAsc;
+        private ToolStripMenuItem totalDesc;
+        private ToolStripMenuItem dateAcs;
+        private ToolStripMenuItem dateDesc;
         private ToolStripButton btnRefresh;
         private Button button1;
         private Button button2;
@@ -418,12 +549,28 @@
         private ComboBox cboPages;
         private Label label2;
         private Label label1;
+        private ToolStripButton btnDetails;
+        private ToolStripButton toolStripButton1;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colCustomer;
         private DataGridViewTextBoxColumn colDate;
         private DataGridViewTextBoxColumn colStatus;
         private DataGridViewTextBoxColumn colOrderType;
         private DataGridViewTextBoxColumn colTotal;
-        private ToolStripButton btnDetails;
+        private DataGridViewTextBoxColumn SaleId;
+        private ToolStripMenuItem customerACSToolStripMenuItem;
+        private ToolStripMenuItem customerDESCToolStripMenuItem;
+        private ToolStripDropDownButton btnFilterStatus;
+        private ToolStripMenuItem filterCompleted;
+        private ToolStripMenuItem filterPending;
+        private ToolStripMenuItem filterPreparing;
+        private ToolStripMenuItem filterSent;
+        private ToolStripMenuItem filterCancelled;
+        private ToolStripDropDownButton filterOrderType;
+        private ToolStripMenuItem InStoreFilter;
+        private ToolStripMenuItem TakeAwayFilter;
+        private ToolStripMenuItem DeliveryFilter;
+        private ToolStripButton toolStripButton3;
+        private ToolStripButton toolStripButton2;
     }
 }

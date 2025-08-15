@@ -1,3 +1,4 @@
+using Entities.Entities;
 using Windows.Forms;
 
 namespace OrderSystem.Windows
@@ -5,12 +6,36 @@ namespace OrderSystem.Windows
     public partial class MainMenu : Form
     {
         private readonly IServiceProvider? _serviceProvider;
+        private User? user;
         public MainMenu(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
         }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            lblUser.Text = user.UserName;
+            HabilitarMenu();
+        }
 
+        private void HabilitarMenu()
+        {
+            foreach (Control control in splitContainer1.Panel1.Controls)
+            {
+                
+                if (control is Button button)
+                {
+                    if (button.Text == "Exit")
+                    {
+                        continue; 
+                    }
+                    bool tienePermiso = user.Rol.Permissions.Any(p => p.Permission.Menu == button.Text);
+
+                    button.Enabled = tienePermiso;
+                }
+            }
+        }
         private void btnCategories_Click(object sender, EventArgs e)
         {
             frmCategories frm = new frmCategories(_serviceProvider);
@@ -49,6 +74,17 @@ namespace OrderSystem.Windows
         private void btnOrders_Click(object sender, EventArgs e)
         {
             frmSales frm = new frmSales(_serviceProvider);
+            frm.ShowDialog();
+        }
+
+        internal void SetUser(User users)
+        {
+            user = users;
+        }
+
+        private void btnPermissions_Click(object sender, EventArgs e)
+        {
+            frmPermissions frm = new frmPermissions(_serviceProvider);
             frm.ShowDialog();
         }
     }
