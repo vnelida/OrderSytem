@@ -1,152 +1,191 @@
 ﻿using Entities.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
+using Services.Services;
 using Windows.Helpers;
 
 namespace Windows.Forms
 {
     public partial class frmPermissions : Form
     {
+        private List<Permission>? lista;
+        private List<Permission>? listaB;
+        private Rol? selectedRole;
+        private IPermissionService _permissionService;
         private readonly IRoleService _roleService;
         private readonly IServiceProvider? _serviceProvider;
         public frmPermissions(IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _serviceProvider = serviceProvider;
-            _roleService = serviceProvider?.GetService<IRoleService>() ?? throw new ApplicationException("Unloaded dependencies"); ;
-
+            _roleService = serviceProvider?.GetService<IRoleService>() ?? throw new ApplicationException("Unloaded dependencies");
+            _permissionService = serviceProvider?.GetService<IPermissionService>() ?? throw new ApplicationException("Unloaded dependencies");
         }
+
         private void PermissionsForm_Load(object sender, EventArgs e)
         {
             CombosHelper.LoadComboRoles(ref cboRoles, _serviceProvider!);
+
+
         }
 
-
-        private void cmbRoles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboRoles.SelectedIndex > 0) // O si el RoleId es mayor que 0
-            {
-                if (cboRoles.SelectedItem is Rol selectedRole)
-                {
-                    LoadPermissions(selectedRole.RoleId);
-                }
-            }
-            else
-            {
-                // Limpia las grillas si se selecciona el item "Select"
-                dgvAssigned.DataSource = null;
-                dgvAvailable.DataSource = null;
-            }
-            //if (cboRoles.SelectedItem is Rol selectedRole)
-            //{
-            //    LoadPermissions(selectedRole.RoleId);
-            //}
-        }
-
-        private void LoadPermissions(int roleId)
+        private void LoadData(int roleId)
         {
             try
             {
-                // Obtener los datos de forma normal
-                var allPermissions = _roleService.GetAllPermissions().ToList();
-                var assignedPermissions = _roleService.GetPermissionsByRoleId(roleId).ToList();
+                lista = _permissionService!.GetListAssigned(roleId);
+                listaB = _permissionService!.GetListUnassigned(roleId);
+                MostrarDatosEnGrilla(lista);
+                MostrarDatosEnGrillaUnassigned(listaB);
 
-                var assignedIds = new HashSet<int>(assignedPermissions.Select(p => p.PermissionId));
+            }
+            catch (Exception)
+            {
 
-                var availablePermissions = allPermissions
-                    .Where(p => !assignedIds.Contains(p.PermissionId))
-                    .ToList();
+                throw;
+            }
+        }
 
-                // Simplemente asigna las listas al DataSource.
-                // El DataGridView usará las columnas que configuraste en el diseñador.
-                dgvAssigned.DataSource = assignedPermissions;
-                dgvAvailable.DataSource = availablePermissions;
-
-                if (dgvAssigned.Columns.Contains("PermissionId"))
+        private void MostrarDatosEnGrillaUnassigned(List<Permission>? listaB)
+        {
+            GridHelper.LimpiarGrilla(dgvUnassigned);
+            if (lista is not null)
+            {
+                foreach (var c in listaB!)
                 {
-                    dgvAssigned.Columns["PermissionId"].Visible = false;
-                }
-                if (dgvAvailable.Columns.Contains("PermissionId"))
-                {
-                    dgvAvailable.Columns["PermissionId"].Visible = false;
+                    var r = GridHelper.ConstruirFila(dgvUnassigned);
+                    GridHelper.SetearFila(r, c);
+                    GridHelper.AgregarFila(r, dgvUnassigned);
                 }
             }
-            catch (Exception ex)
+        }
+
+        private void MostrarDatosEnGrilla(List<Permission>? lista)
+        {
+            GridHelper.LimpiarGrilla(dgvAssigned);
+            if (lista is not null)
             {
-                MessageBox.Show($"Error al cargar permisos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                foreach (var c in lista)
+                {
+                    var r = GridHelper.ConstruirFila(dgvAssigned);
+                    GridHelper.SetearFila(r, c);
+                    GridHelper.AgregarFila(r, dgvAssigned);
+                }
+            }
+        }
+
+        private void cmbRoles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboRoles.SelectedValue is int roleId && roleId > 0)
+            {
+                selectedRole = (Rol)cboRoles.SelectedItem;
+                LoadData(roleId);
+            }
+            else
+            {
+                GridHelper.LimpiarGrilla(dgvAssigned);
+                GridHelper.LimpiarGrilla(dgvUnassigned);
             }
         }
 
         private void btnAssign_Click(object sender, EventArgs e)
         {
-            if (cboRoles.SelectedItem is Rol selectedRole && dgvAvailable.SelectedRows.Count > 0)
+            if (dgvUnassigned.SelectedRows.Count == 0)
             {
-                try
-                {
-                    var selectedPermissions = new List<Permission>();
-                    foreach (DataGridViewRow row in dgvAvailable.SelectedRows)
-                    {
-                        if (row.DataBoundItem is Permission permission)
-                        {
-                            selectedPermissions.Add(permission);
-                        }
-                    }
+                return;
+            }
+            var r = dgvUnassigned.SelectedRows[0];
+            if (r.Tag is null) return;
 
-                    foreach (var permission in selectedPermissions)
-                    {
-                        _roleService.AddPermissionToRole(selectedRole.RoleId, permission.PermissionId);
-                    }
-                    LoadPermissions(selectedRole.RoleId);
-                }
-                catch (Exception ex)
+            var permission = (Permission)r.Tag;
+
+            try
+            {
+                DialogResult dr = MessageBox.Show($@"Do you want to assign this permission?",
+                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                if (dr == DialogResult.No)
                 {
-                    MessageBox.Show($"Error al asignar permisos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+
+                if (dr == DialogResult.Yes)
+                {
+                    _permissionService.AddPermissionToRol(selectedRole.RoleId, permission.PermissionId);
+
+                    GridHelper.QuitarFila(r, dgvUnassigned);
+                    MessageBox.Show("Permission assigned", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    r = GridHelper.ConstruirFila(dgvAssigned);
+                    GridHelper.SetearFila(r, permission);
+                    GridHelper.AgregarFila(r, dgvAssigned);
+                }
+
+                else
+                {
+                    MessageBox.Show("Request Denied", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            if (cboRoles.SelectedItem is Rol selectedRole && dgvAssigned.SelectedRows.Count > 0)
+            if (dgvAssigned.SelectedRows.Count == 0)
             {
-                try
-                {
-                    var selectedPermissions = new List<Permission>();
-                    foreach (DataGridViewRow row in dgvAssigned.SelectedRows)
-                    {
-                        if (row.DataBoundItem is Permission permission)
-                        {
-                            selectedPermissions.Add(permission);
-                        }
-                    }
+                return;
+            }
+            var r = dgvAssigned.SelectedRows[0];
+            if (r.Tag is null) return;
 
-                    foreach (var permission in selectedPermissions)
-                    {
-                        _roleService.RemovePermissionFromRole(selectedRole.RoleId, permission.PermissionId);
-                    }
-                    LoadPermissions(selectedRole.RoleId);
-                }
-                catch (Exception ex)
+            var permission = (Permission)r.Tag;
+
+            try
+            {
+                DialogResult dr = MessageBox.Show($@"Do you want to remove this permission?",
+                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                if (dr == DialogResult.No)
                 {
-                    MessageBox.Show($"Error al quitar permisos: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+
+                if (dr == DialogResult.Yes)
+                {
+                    _permissionService.RemovePermissionFromRol(selectedRole.RoleId, permission.PermissionId);
+
+                    GridHelper.QuitarFila(r, dgvAssigned);
+                    MessageBox.Show("Permission removed.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    r = GridHelper.ConstruirFila(dgvUnassigned);
+                    GridHelper.SetearFila(r, permission);
+                    GridHelper.AgregarFila(r, dgvUnassigned);
+ }
+
+                else
+                {
+                    MessageBox.Show("Request Denied", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Cambios guardados con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Close();
+
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void splitContainer3_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-
         }
     }
 }

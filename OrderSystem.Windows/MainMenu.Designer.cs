@@ -40,6 +40,7 @@
             btnCustomers = new Button();
             lblUser = new Label();
             label1 = new Label();
+            btnUsers = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -118,6 +119,7 @@
             // 
             splitContainer1.Panel1.BackColor = SystemColors.ButtonHighlight;
             splitContainer1.Panel1.BackgroundImage = (Image)resources.GetObject("splitContainer1.Panel1.BackgroundImage");
+            splitContainer1.Panel1.Controls.Add(btnUsers);
             splitContainer1.Panel1.Controls.Add(btnPermissions);
             splitContainer1.Panel1.Controls.Add(btnOrders);
             splitContainer1.Panel1.Controls.Add(btnExist);
@@ -133,7 +135,7 @@
             splitContainer1.Panel2.BackgroundImageLayout = ImageLayout.Stretch;
             splitContainer1.Panel2.Controls.Add(lblUser);
             splitContainer1.Panel2.Controls.Add(label1);
-            splitContainer1.Size = new Size(2236, 1286);
+            splitContainer1.Size = new Size(2236, 1432);
             splitContainer1.SplitterDistance = 249;
             splitContainer1.TabIndex = 4;
             // 
@@ -172,7 +174,7 @@
             btnExist.Anchor = AnchorStyles.Bottom;
             btnExist.BackgroundImage = (Image)resources.GetObject("btnExist.BackgroundImage");
             btnExist.Image = (Image)resources.GetObject("btnExist.Image");
-            btnExist.Location = new Point(69, 1132);
+            btnExist.Location = new Point(69, 1278);
             btnExist.Name = "btnExist";
             btnExist.Size = new Size(168, 142);
             btnExist.TabIndex = 4;
@@ -217,11 +219,26 @@
             label1.TabIndex = 0;
             label1.Text = "User:";
             // 
+            // btnUsers
+            // 
+            btnUsers.Anchor = AnchorStyles.Top;
+            btnUsers.AutoSize = true;
+            btnUsers.BackgroundImage = (Image)resources.GetObject("btnUsers.BackgroundImage");
+            btnUsers.Image = (Image)resources.GetObject("btnUsers.Image");
+            btnUsers.Location = new Point(69, 1048);
+            btnUsers.Name = "btnUsers";
+            btnUsers.Size = new Size(168, 142);
+            btnUsers.TabIndex = 8;
+            btnUsers.Text = "Users";
+            btnUsers.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnUsers.UseVisualStyleBackColor = true;
+            btnUsers.Click += btnUsers_Click;
+            // 
             // MainMenu
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(2236, 1286);
+            ClientSize = new Size(2236, 1432);
             Controls.Add(splitContainer1);
             Name = "MainMenu";
             StartPosition = FormStartPosition.CenterScreen;
@@ -248,5 +265,6 @@
         private Label lblUser;
         private Label label1;
         private Button btnPermissions;
+        private Button btnUsers;
     }
 }

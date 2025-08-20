@@ -163,6 +163,7 @@
             btnRefresh.Size = new Size(109, 100);
             btnRefresh.Text = "Reset All";
             btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // btnClose
             // 

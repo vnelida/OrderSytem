@@ -215,7 +215,6 @@ namespace Windows.Forms
                 picImage.Image = Image.FromFile(openFileDialog1.FileName);
                 archivoImagen = openFileDialog1.FileName;
             }
-
         }
         private void label1_Click(object sender, EventArgs e)
         {

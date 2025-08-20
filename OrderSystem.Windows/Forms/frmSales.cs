@@ -130,7 +130,7 @@ namespace Windows.Forms
             {
                 Sale? sale = frm.GetSale();
                 if (sale is null) return;
-                _service.Save(sale);
+                _service?.Save(sale);
                 totalRecords = _service!.GetCount(null);
                 totalPages = (int)Math.Ceiling((decimal)totalRecords / pageSize);
                 currentPage = totalPages;
@@ -321,6 +321,12 @@ namespace Windows.Forms
                     MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnReports_Click(object sender, EventArgs e)
+        {
+            frmFilterDateReport frm = new frmFilterDateReport(_serviceProvider);
+            frm.ShowDialog();
         }
     }
 }

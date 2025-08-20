@@ -93,6 +93,16 @@ namespace Windows.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Green_Retro_Illustrative_Fast_Food_Logo__1_1 {
+            get {
+                object obj = ResourceManager.GetObject("Green Retro Illustrative Fast Food Logo (1)1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Green_Retro_Illustrative_Fast_Food_Logo__2_ {
             get {
                 object obj = ResourceManager.GetObject("Green Retro Illustrative Fast Food Logo (2)", resourceCulture);

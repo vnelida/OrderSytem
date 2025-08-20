@@ -73,6 +73,7 @@
             TakeAwayFilter = new ToolStripMenuItem();
             DeliveryFilter = new ToolStripMenuItem();
             btnRefresh = new ToolStripButton();
+            btnReports = new ToolStripButton();
             panelNavegacion.SuspendLayout();
             panelGrilla.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
@@ -271,7 +272,7 @@
             // 
             toolStrip1.BackColor = Color.White;
             toolStrip1.ImageScalingSize = new Size(32, 32);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnUpdate, toolStripButton1, btnDetails, toolStripButton3, btnOrder, toolStripButton2, btnFilterStatus, filterOrderType, btnRefresh });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnClose, btnNew, btnDelete, btnUpdate, toolStripButton1, btnDetails, toolStripButton3, btnOrder, toolStripButton2, btnFilterStatus, filterOrderType, btnRefresh, btnReports });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1974, 106);
@@ -500,6 +501,17 @@
             btnRefresh.TextImageRelation = TextImageRelation.ImageAboveText;
             btnRefresh.Click += btnRefresh_Click;
             // 
+            // btnReports
+            // 
+            btnReports.Image = (Image)resources.GetObject("btnReports.Image");
+            btnReports.ImageScaling = ToolStripItemImageScaling.None;
+            btnReports.ImageTransparentColor = Color.Magenta;
+            btnReports.Name = "btnReports";
+            btnReports.Size = new Size(88, 100);
+            btnReports.Text = "Report";
+            btnReports.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnReports.Click += btnReports_Click;
+            // 
             // frmSales
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -572,5 +584,6 @@
         private ToolStripMenuItem DeliveryFilter;
         private ToolStripButton toolStripButton3;
         private ToolStripButton toolStripButton2;
+        private ToolStripButton btnReports;
     }
 }

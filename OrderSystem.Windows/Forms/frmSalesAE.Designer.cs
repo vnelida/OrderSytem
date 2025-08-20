@@ -51,10 +51,10 @@
             lblCantidad = new Label();
             label3 = new Label();
             label2 = new Label();
-            btnCancel = new Button();
-            btnOk = new Button();
             splitter1 = new Splitter();
             errorProvider1 = new ErrorProvider(components);
+            button3 = new Button();
+            btnAdd = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -83,6 +83,8 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.BackColor = SystemColors.ControlLightLight;
+            splitContainer1.Panel2.Controls.Add(button3);
+            splitContainer1.Panel2.Controls.Add(btnAdd);
             splitContainer1.Panel2.Controls.Add(flp);
             splitContainer1.Panel2.Controls.Add(dgv);
             splitContainer1.Panel2.Controls.Add(lblTotal);
@@ -90,8 +92,6 @@
             splitContainer1.Panel2.Controls.Add(lblCantidad);
             splitContainer1.Panel2.Controls.Add(label3);
             splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Panel2.Controls.Add(btnCancel);
-            splitContainer1.Panel2.Controls.Add(btnOk);
             splitContainer1.Panel2.Controls.Add(splitter1);
             splitContainer1.Size = new Size(1974, 1329);
             splitContainer1.SplitterDistance = 176;
@@ -99,6 +99,7 @@
             // 
             // cboOrderType
             // 
+            cboOrderType.DropDownStyle = ComboBoxStyle.DropDownList;
             cboOrderType.FormattingEnabled = true;
             cboOrderType.Location = new Point(1558, 107);
             cboOrderType.Name = "cboOrderType";
@@ -108,6 +109,7 @@
             // 
             // cboOrderStatus
             // 
+            cboOrderStatus.DropDownStyle = ComboBoxStyle.DropDownList;
             cboOrderStatus.FormattingEnabled = true;
             cboOrderStatus.Location = new Point(1558, 30);
             cboOrderStatus.Name = "cboOrderStatus";
@@ -327,43 +329,40 @@
             label2.TabIndex = 25;
             label2.Text = "Totales:";
             // 
-            // btnCancel
-            // 
-            btnCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCancel.Location = new Point(1692, 986);
-            btnCancel.Margin = new Padding(6);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(148, 88);
-            btnCancel.TabIndex = 20;
-            btnCancel.Text = "Cancel";
-            btnCancel.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnCancel.UseVisualStyleBackColor = true;
-            btnCancel.Click += btnCancel_Click;
-            // 
-            // btnOk
-            // 
-            btnOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnOk.Location = new Point(1501, 986);
-            btnOk.Margin = new Padding(6);
-            btnOk.Name = "btnOk";
-            btnOk.Size = new Size(148, 88);
-            btnOk.TabIndex = 19;
-            btnOk.Text = "Ok";
-            btnOk.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnOk.UseVisualStyleBackColor = true;
-            btnOk.Click += btnOk_Click_1;
-            // 
             // splitter1
             // 
             splitter1.Location = new Point(0, 0);
             splitter1.Name = "splitter1";
-            splitter1.Size = new Size(1361, 1149);
+            splitter1.Size = new Size(1161, 1149);
             splitter1.TabIndex = 0;
             splitter1.TabStop = false;
             // 
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
+            // 
+            // button3
+            // 
+            button3.BackColor = Color.IndianRed;
+            button3.ForeColor = SystemColors.ButtonHighlight;
+            button3.Location = new Point(1623, 981);
+            button3.Name = "button3";
+            button3.Size = new Size(162, 89);
+            button3.TabIndex = 29;
+            button3.Text = "Cancel";
+            button3.UseVisualStyleBackColor = false;
+            button3.Click += btnCancel_Click;
+            // 
+            // btnAdd
+            // 
+            btnAdd.BackgroundImage = (Image)resources.GetObject("btnAdd.BackgroundImage");
+            btnAdd.Location = new Point(1400, 981);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(162, 89);
+            btnAdd.TabIndex = 28;
+            btnAdd.Text = "Ok";
+            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.Click += btnSave_Click;
             // 
             // frmSalesAE
             // 
@@ -395,8 +394,6 @@
         private Label lblCantidad;
         private Label label3;
         private Label label2;
-        private Button btnCancel;
-        private Button btnOk;
         private DataGridView dgv;
         private Button btnCombos;
         private Button btnProducts;
@@ -413,5 +410,7 @@
         private DataGridViewTextBoxColumn colTotal;
         private DataGridViewImageColumn colDelete;
         private DataGridViewImageColumn colEdit;
+        private Button button3;
+        private Button btnAdd;
     }
 }

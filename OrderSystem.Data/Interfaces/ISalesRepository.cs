@@ -21,5 +21,7 @@ namespace Data.Interfaces
         List<SalesListDto> GetSalesListt(SqlConnection conn, int currentPage, int pageSize, OrderTypes? orderType = null, OrderStatuses? status = null, Order? order = null, SqlTransaction? tran = null);
         int GetSalesCountt(SqlConnection conn, OrderTypes? orderType = null, OrderStatuses? status = null, SqlTransaction? tran = null);
         void UpdateSaleStatus(int saleId, int cancelled, SqlConnection conn, SqlTransaction tran);
+        void SavePayment(Payment payment, SqlConnection conn, SqlTransaction tran);
+        List<PaymentReportDto> GetPaymentReport(SqlConnection conn, DateTime firstDate, DateTime secDate);
     }
 }

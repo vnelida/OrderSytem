@@ -23,12 +23,12 @@ namespace OrderSystem.Windows
         {
             foreach (Control control in splitContainer1.Panel1.Controls)
             {
-                
+
                 if (control is Button button)
                 {
-                    if (button.Text == "Exit")
+                    if (button.Text == "Exit" || button.Text == "Permissions")
                     {
-                        continue; 
+                        continue;
                     }
                     bool tienePermiso = user.Rol.Permissions.Any(p => p.Permission.Menu == button.Text);
 
@@ -85,6 +85,12 @@ namespace OrderSystem.Windows
         private void btnPermissions_Click(object sender, EventArgs e)
         {
             frmPermissions frm = new frmPermissions(_serviceProvider);
+            frm.ShowDialog();
+        }
+
+        private void btnUsers_Click(object sender, EventArgs e)
+        {
+            frmUsers frm = new frmUsers(_serviceProvider);
             frm.ShowDialog();
         }
     }

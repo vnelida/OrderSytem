@@ -148,6 +148,20 @@ namespace Windows.Helpers
                     r.Cells[0].Value = permission.PermissionId;
                     r.Cells[1].Value = permission.Menu;
                     break;
+                case UserListDto userDto:
+                    r.Cells[0].Value = userDto.UserId;
+                    r.Cells[1].Value = userDto.UserName;
+                    r.Cells[2].Value = userDto.RoleName;
+                    r.Cells[3].Value = userDto.IsActive;
+                    break;
+                case PaymentReportDto report:
+                    r.Cells[0].Value = report.SaleId;
+                    r.Cells[1].Value = report.SaleDate;
+                    r.Cells[2].Value = report.CashAmount;
+                    r.Cells[3].Value = report.CardAmount;
+                    r.Cells[4].Value = report.CouponAmount;
+                    r.Cells[5].Value = report.TransferAmount;
+                    break;
                 default:
                     break;
             }

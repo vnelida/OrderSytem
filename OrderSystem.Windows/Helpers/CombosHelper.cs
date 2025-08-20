@@ -280,6 +280,27 @@ namespace Windows.Helpers
             cbo.SelectedIndex = 0;
 
         }
+
+        public static void LoadComboPaymentMethods(ref ComboBox cbo, IServiceProvider? serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            IPaymentMethodService? service = _serviceProvider?.GetService<IPaymentMethodService>();
+            var list = service?.GetList();
+            var filteredList = list?.Where(pm => pm.PaymentMethodName != "Cash").ToList();
+
+            var defaultlist = new PaymentMethod()
+            {
+                PaymentMethodID = 0,
+                PaymentMethodName = "Select"
+            };            
+            filteredList?.Insert(0, defaultlist);
+
+            cbo.DataSource = filteredList;
+            cbo.DisplayMember = "PaymentMethodName";
+            cbo.ValueMember = "PaymentMethodID";
+            cbo.SelectedIndex = 0;
+
+        }
     }
 }
 

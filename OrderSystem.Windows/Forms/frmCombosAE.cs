@@ -1,6 +1,7 @@
 ﻿using Entities.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
+using System.Windows.Forms;
 using Windows.Helpers;
 
 namespace Windows.Forms
@@ -10,6 +11,12 @@ namespace Windows.Forms
         private readonly IServiceProvider? _serviceProvider;
         private readonly IItemsService? _services;
         private Combo? combo;
+
+        private string imagenNoDisponible = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado1.jpg";
+        private string archivoNoEncontrado = Environment.CurrentDirectory + @"\Imagenes\ArchivoNoEncontrado1.jpg";
+        private string? archivoImagen = string.Empty;
+        private string carpetaImagen = Environment.CurrentDirectory + @"\Imagenes\";
+
 
         public frmCombosAE(IServiceProvider serviceProvider)
         {
@@ -29,6 +36,23 @@ namespace Windows.Forms
             {
                 ShowDataInCombo();
                 GridHelper.MostrarDatosEnGrilla<ComboDetail>(combo.Details, dgv);
+                if (combo.Image != string.Empty)
+                {
+                    if (!File.Exists($"{carpetaImagen}{combo.Image}"))
+                    {
+                        picImage.Image = Image.FromFile(archivoNoEncontrado);
+                    }
+                    else
+                    {
+                        picImage.Image = Image.FromFile($"{carpetaImagen}{combo.Image}");
+                        archivoImagen = combo.Image;
+                        picImage.SizeMode = PictureBoxSizeMode.Zoom;
+                    }
+                }
+                else
+                {
+                    picImage.Image = Image.FromFile(imagenNoDisponible);
+                }
             }
         }
 
@@ -70,6 +94,37 @@ namespace Windows.Forms
                 combo.StartDate = dtpStartDate.Value;
                 combo.EndDate = dtpEndDate.Value;
 
+                if (!string.IsNullOrEmpty(archivoImagen))
+                {
+                    string destino = Path.Combine(carpetaImagen, Path.GetFileName(archivoImagen));
+
+                    if (!File.Exists(destino))
+                    {
+                        File.Copy(archivoImagen, destino);
+                    }
+
+                    combo.Image = Path.GetFileName(destino);
+                }
+
+                if (!string.IsNullOrEmpty(combo.Image))
+                {
+                    string rutaImagenExistente = Path.Combine(carpetaImagen, combo.Image);
+
+                    if (!File.Exists(rutaImagenExistente))
+                    {
+                        picImage.Image = Image.FromFile(archivoNoEncontrado);
+                    }
+                    else
+                    {
+                        picImage.Image = Image.FromFile(rutaImagenExistente);
+                    }
+                    picImage.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+                else
+                {
+                    picImage.Image = Image.FromFile(imagenNoDisponible);
+                    picImage.SizeMode = PictureBoxSizeMode.Zoom;
+                }
 
                 DialogResult = DialogResult.OK;
             }
@@ -217,6 +272,26 @@ namespace Windows.Forms
             GridHelper.SetearFila(r, detail!);
             MessageBox.Show("Item updated", "Success",
                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnSearchImages_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Multiselect = false;
+            openFileDialog1.InitialDirectory = Environment.CurrentDirectory + @"\Imagenes\";
+            openFileDialog1.Filter = @"Archivos jpg (*.jpg) | *.jpg |Archivos png (*.png) | *.png |Archivos jfif (*.jfif) | *.jfif | 
+                Todos (*.*) | *.*";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+            DialogResult dr = openFileDialog1.ShowDialog(this);
+            if (dr == DialogResult.OK)
+            {
+                if (openFileDialog1.FileName == null)
+                {
+                    return;
+                }
+                picImage.Image = Image.FromFile(openFileDialog1.FileName);
+                archivoImagen = openFileDialog1.FileName;
+            }
         }
     }
 }

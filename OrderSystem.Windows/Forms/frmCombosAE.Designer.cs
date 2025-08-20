@@ -50,6 +50,9 @@
             dtpEndDate = new DateTimePicker();
             errorProvider1 = new ErrorProvider(components);
             splitContainer1 = new SplitContainer();
+            groupBox1 = new GroupBox();
+            picImage = new PictureBox();
+            btnSearchImages = new Button();
             txtDescription = new RichTextBox();
             splitContainer2 = new SplitContainer();
             dgv = new DataGridView();
@@ -60,6 +63,7 @@
             btnNew = new ToolStripButton();
             btnDelete = new ToolStripButton();
             btnEdit = new ToolStripButton();
+            openFileDialog1 = new OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)numSalePrice).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numReorderLevel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numStock).BeginInit();
@@ -69,6 +73,8 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picImage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
@@ -81,7 +87,7 @@
             // 
             checkBoxSuspended.AutoSize = true;
             checkBoxSuspended.BackColor = Color.Transparent;
-            checkBoxSuspended.Location = new Point(307, 823);
+            checkBoxSuspended.Location = new Point(625, 444);
             checkBoxSuspended.Name = "checkBoxSuspended";
             checkBoxSuspended.Size = new Size(165, 36);
             checkBoxSuspended.TabIndex = 8;
@@ -91,7 +97,7 @@
             // numSalePrice
             // 
             numSalePrice.DecimalPlaces = 2;
-            numSalePrice.Location = new Point(307, 715);
+            numSalePrice.Location = new Point(212, 696);
             numSalePrice.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numSalePrice.Name = "numSalePrice";
             numSalePrice.Size = new Size(240, 39);
@@ -101,7 +107,7 @@
             // 
             label7.AutoSize = true;
             label7.BackColor = Color.Transparent;
-            label7.Location = new Point(160, 715);
+            label7.Location = new Point(65, 696);
             label7.Margin = new Padding(6, 0, 6, 0);
             label7.Name = "label7";
             label7.Size = new Size(131, 32);
@@ -110,7 +116,7 @@
             // 
             // numReorderLevel
             // 
-            numReorderLevel.Location = new Point(307, 642);
+            numReorderLevel.Location = new Point(212, 623);
             numReorderLevel.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numReorderLevel.Name = "numReorderLevel";
             numReorderLevel.Size = new Size(240, 39);
@@ -120,7 +126,7 @@
             // 
             label6.AutoSize = true;
             label6.BackColor = Color.Transparent;
-            label6.Location = new Point(134, 644);
+            label6.Location = new Point(39, 625);
             label6.Margin = new Padding(6, 0, 6, 0);
             label6.Name = "label6";
             label6.Size = new Size(164, 32);
@@ -152,7 +158,7 @@
             // 
             // numStock
             // 
-            numStock.Location = new Point(307, 456);
+            numStock.Location = new Point(212, 437);
             numStock.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numStock.Name = "numStock";
             numStock.Size = new Size(240, 39);
@@ -161,7 +167,7 @@
             // numPrice
             // 
             numPrice.DecimalPlaces = 2;
-            numPrice.Location = new Point(307, 527);
+            numPrice.Location = new Point(212, 508);
             numPrice.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             numPrice.Name = "numPrice";
             numPrice.Size = new Size(240, 39);
@@ -171,7 +177,7 @@
             // 
             label5.AutoSize = true;
             label5.BackColor = Color.Transparent;
-            label5.Location = new Point(222, 463);
+            label5.Location = new Point(127, 444);
             label5.Margin = new Padding(6, 0, 6, 0);
             label5.Name = "label5";
             label5.Size = new Size(76, 32);
@@ -202,7 +208,7 @@
             // 
             label3.AutoSize = true;
             label3.BackColor = Color.Transparent;
-            label3.Location = new Point(171, 532);
+            label3.Location = new Point(76, 513);
             label3.Margin = new Padding(6, 0, 6, 0);
             label3.Name = "label3";
             label3.Size = new Size(124, 32);
@@ -271,6 +277,7 @@
             // 
             splitContainer1.Panel1.BackColor = SystemColors.ButtonHighlight;
             splitContainer1.Panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
+            splitContainer1.Panel1.Controls.Add(groupBox1);
             splitContainer1.Panel1.Controls.Add(txtDescription);
             splitContainer1.Panel1.Controls.Add(label4);
             splitContainer1.Panel1.Controls.Add(checkBoxSuspended);
@@ -292,9 +299,40 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Size = new Size(1935, 912);
-            splitContainer1.SplitterDistance = 807;
+            splitContainer1.Size = new Size(1974, 1329);
+            splitContainer1.SplitterDistance = 823;
             splitContainer1.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            groupBox1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
+            groupBox1.Controls.Add(picImage);
+            groupBox1.Controls.Add(btnSearchImages);
+            groupBox1.Location = new Point(76, 786);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(656, 504);
+            groupBox1.TabIndex = 63;
+            groupBox1.TabStop = false;
+            // 
+            // picImage
+            // 
+            picImage.BackColor = Color.White;
+            picImage.Location = new Point(136, 74);
+            picImage.Name = "picImage";
+            picImage.Size = new Size(409, 334);
+            picImage.SizeMode = PictureBoxSizeMode.CenterImage;
+            picImage.TabIndex = 41;
+            picImage.TabStop = false;
+            // 
+            // btnSearchImages
+            // 
+            btnSearchImages.Location = new Point(229, 424);
+            btnSearchImages.Name = "btnSearchImages";
+            btnSearchImages.Size = new Size(215, 46);
+            btnSearchImages.TabIndex = 9;
+            btnSearchImages.Text = "Search Images";
+            btnSearchImages.UseVisualStyleBackColor = true;
+            btnSearchImages.Click += btnSearchImages_Click;
             // 
             // txtDescription
             // 
@@ -321,8 +359,8 @@
             splitContainer2.Panel2.BackgroundImage = (Image)resources.GetObject("splitContainer2.Panel2.BackgroundImage");
             splitContainer2.Panel2.Controls.Add(btnOk);
             splitContainer2.Panel2.Controls.Add(btnCancel);
-            splitContainer2.Size = new Size(1124, 912);
-            splitContainer2.SplitterDistance = 757;
+            splitContainer2.Size = new Size(1147, 1329);
+            splitContainer2.SplitterDistance = 1103;
             splitContainer2.TabIndex = 9;
             // 
             // dgv
@@ -339,7 +377,7 @@
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new Size(1124, 651);
+            dgv.Size = new Size(1147, 997);
             dgv.TabIndex = 1;
             // 
             // colId
@@ -374,7 +412,7 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { btnNew, btnDelete, btnEdit });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1124, 106);
+            toolStrip1.Size = new Size(1147, 106);
             toolStrip1.TabIndex = 1;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -411,14 +449,18 @@
             btnEdit.TextImageRelation = TextImageRelation.ImageAboveText;
             btnEdit.Click += btnEditProduct_Click;
             // 
+            // openFileDialog1
+            // 
+            openFileDialog1.FileName = "openFileDialog1";
+            // 
             // frmCombosAE
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1935, 912);
+            ClientSize = new Size(1974, 1329);
             Controls.Add(splitContainer1);
-            MaximumSize = new Size(1961, 983);
-            MinimumSize = new Size(1961, 983);
+            MaximumSize = new Size(2000, 1400);
+            MinimumSize = new Size(2000, 1400);
             Name = "frmCombosAE";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmCombosAE";
@@ -433,6 +475,8 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picImage).EndInit();
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel1.PerformLayout();
             splitContainer2.Panel2.ResumeLayout(false);
@@ -476,5 +520,9 @@
         private ToolStripButton btnDelete;
         private ToolStripButton btnEdit;
         private RichTextBox txtDescription;
+        private GroupBox groupBox1;
+        private PictureBox picImage;
+        private Button btnSearchImages;
+        private OpenFileDialog openFileDialog1;
     }
 }

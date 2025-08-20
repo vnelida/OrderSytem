@@ -258,10 +258,10 @@ namespace Data.Repositories
                 case Order.None:
                     break;
                 case Order.CustomerName:
-                    orderBy = " ORDER BY c.Customer ASC ";
+                    orderBy = " ORDER BY c.LastName ASC ";
                     break;
                 case Order.CustomerNameDesc:
-                    orderBy = " ORDER BY c.Customer DESC ";
+                    orderBy = " ORDER BY c.LastName DESC ";
                     break;
                 case Order.SaleDate:
                     orderBy = " ORDER BY v.SaleDate ASC ";
@@ -321,6 +321,45 @@ namespace Data.Repositories
         {
             var sql = "UPDATE Sales SET OrderStatusId = @StatusId WHERE SaleId = @SaleId;";
             conn.Execute(sql, new { SaleId = saleId, StatusId = statusId }, transaction: tran);
+
+        }
+
+        public void SavePayment(Payment payment, SqlConnection conn, SqlTransaction tran)
+        {
+            string insertQuery = @"INSERT INTO Payments
+            (SaleId, PaymentMethodID, Amount, PaymentDate)
+            VALUES (@SaleId, @PaymentMethodID, @Amount, @PaymentDate);";
+
+            int rowsAffected = conn.Execute(insertQuery, payment, tran);
+
+            if (rowsAffected == 0)
+            {
+                throw new Exception("Payment could not be added.");
+            }
+        }
+
+        public List<PaymentReportDto> GetPaymentReport(SqlConnection conn, DateTime firstDate, DateTime secDate)
+        {
+            var sql = @"
+        SELECT s.SaleId AS SaleId,
+               s.SaleDate AS SaleDate,
+               SUM(CASE WHEN pm.PaymentMethodID = 1 THEN p.Amount ELSE 0 END) AS CashAmount,
+               SUM(CASE WHEN pm.PaymentMethodID = 2 THEN p.Amount ELSE 0 END) AS CardAmount,
+               SUM(CASE WHEN pm.PaymentMethodID = 3 THEN p.Amount ELSE 0 END) AS TransferAmount,
+               SUM(CASE WHEN pm.PaymentMethodID = 4 THEN p.Amount ELSE 0 END) AS CouponAmount
+        FROM
+            Sales AS s
+        INNER JOIN
+            Payments AS p ON s.SaleId = p.SaleId
+        INNER JOIN
+            PaymentMethods AS pm ON p.PaymentMethodID = pm.PaymentMethodID
+        WHERE
+             s.SaleDate >= @StartDate AND s.SaleDate < @EndDate
+        GROUP BY
+            s.SaleId, s.SaleDate;
+    ";
+
+            return conn.Query<PaymentReportDto>(sql, new { StartDate = firstDate, EndDate = secDate }).ToList();
 
         }
     }

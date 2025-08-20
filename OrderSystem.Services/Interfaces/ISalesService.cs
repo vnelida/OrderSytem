@@ -14,5 +14,7 @@ namespace Services.Interfaces
         Sale? GetSaleById(int saleId);
         void Save(Sale? sale);
         void UpdateOrderStatus(int saleId, OrderStatuses completed);
+        void SavePayment(Payment payment);
+        List<PaymentReportDto> GetPaymentReport(DateTime firstDate, DateTime secDate);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Data.Interfaces;
-using Data.Repositories;
 using Entities.Dtos;
 using Entities.Entities;
 using Entities.Enums;
@@ -13,12 +12,14 @@ namespace Services.Services
         private readonly ISalesRepository _repository;
         private readonly ISaleDetailsRepository? _repositoryDetails;
         private readonly IItemsService _itemsService;
+        private readonly IPaymentRepository _paymentRepository;
         private readonly string? _cadena;
-        public SalesService(ISalesRepository? repository, ISaleDetailsRepository repositoryDetails, IItemsService itemsService, string? cadena)
+        public SalesService(ISalesRepository? repository, ISaleDetailsRepository repositoryDetails, IItemsService itemsService, IPaymentRepository paymentRepository, string? cadena)
         {
             _repository = repository ?? throw new ApplicationException("Dependencies not loaded");
             _repositoryDetails = repositoryDetails ?? throw new ApplicationException("Dependencies not loaded");
-            _itemsService= itemsService ?? throw new ApplicationException("items");
+            _itemsService = itemsService ?? throw new ApplicationException("items");
+            _paymentRepository = paymentRepository ?? throw new ApplicationException();
             _cadena = cadena;
         }
         public List<SalesListDto> GetListt(int currentPage, int pageSize, OrderTypes? orderType = null, OrderStatuses? status = null, Order? order = null)
@@ -105,9 +106,9 @@ namespace Services.Services
                     if (saleToUpdate == null)
                     {
                         throw new ApplicationException("Sale not found.");
-                    }                    
+                    }
                     saleToUpdate.OrderStatusId = (int)newStatus;
-                    
+
                     _repository.Edit(saleToUpdate, conn, tran);
 
                     tran.Commit();
@@ -139,12 +140,17 @@ namespace Services.Services
                                 _itemsService!.DeductStock(item, conn, tran);
                                 _repositoryDetails!.Add(item, conn, tran);
                             }
-
+                            foreach (var payment in sale.Payments)
+                            {
+                                payment.SaleId = sale.SaleId;
+                                _paymentRepository.Add(payment, conn, tran);
+                            }
                         }
+
                         else
                         {
 
-                            _repository!.Edit(sale, conn, tran);                         
+                            _repository!.Edit(sale, conn, tran);
                         }
 
                         tran.Commit();
@@ -155,6 +161,37 @@ namespace Services.Services
                         throw;
                     }
                 }
+            }
+        }
+
+        public void SavePayment(Payment payment)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        _repository.SavePayment(payment, conn, tran);
+
+                        tran.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        throw new Exception("Error", ex);
+                    }
+                }
+            }
+        }
+
+        public List<PaymentReportDto> GetPaymentReport(DateTime firstDate, DateTime secDate)
+        {
+            using (var conn = new SqlConnection(_cadena))
+            {
+                conn.Open();
+                return _repository.GetPaymentReport(conn, firstDate, secDate);
             }
         }
     }

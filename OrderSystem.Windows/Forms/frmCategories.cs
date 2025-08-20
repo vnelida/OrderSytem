@@ -233,5 +233,10 @@ namespace Windows.Forms
             currentPage = int.Parse(cboPages.Text);
             LoadData();
         }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadData();
+        }
     }
 }

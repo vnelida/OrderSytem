@@ -104,50 +104,13 @@ namespace Windows.Forms
                     MessageBox.Show(sb.ToString(), "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            //if (sender is not null)
-            //{
-            //    Button button = (Button)sender;
-            //    Item item = (Item)button.Tag!;
-            //    int? quantitySale = GetSaleQuantity(1);
-            //    if (quantitySale is null) return;
-
-            //    var itemInOrder = _itemService!.GetItemById(itemType, item.ItemId);
-
-            //    if (quantitySale <= itemInOrder!.Stock)
-            //    {
-            //        SaleDetail detail = new SaleDetail
-            //        {
-            //            ProductId = itemInOrder is Product ? itemInOrder.ItemId : null,
-            //            ComboId = itemInOrder is Combo ? itemInOrder.ItemId : null,
-            //            Product = itemInOrder is Product product ? product : null,
-            //            Combo = itemInOrder is Combo combo ? combo : null,
-            //            Price = itemInOrder.SalePrice,
-            //            Quantity = quantitySale.Value
-            //        };
-            //        sale!.Add(detail);
-            //        itemInOrder.OnOrderQuantity += detail.Quantity;
-            //        _itemService!.Save(itemInOrder);
-
-            //        GridHelper.MostrarDatosEnGrilla<SaleDetail>(sale.Details, dgv);
-            //        MostrarTotales();
-
-            //    }
-            //    else
-            //    {
-            //        StringBuilder sb = new StringBuilder();
-            //        sb.AppendLine("Insufficient stock" + Environment.NewLine);
-            //        sb.AppendFormat($"Available stock: {itemInOrder.Stock}");
-            //        MessageBox.Show(sb.ToString(), "Warning",
-            //            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    }
-            //}
         }
 
         private int? GetSaleQuantity(int cantidadDefault)
         {
             while (true)
             {
-                var stringCantidad = Microsoft.VisualBasic.Interaction.InputBox("Purchase Quantity",
+                var stringCantidad = Microsoft.VisualBasic.Interaction.InputBox("Quantity",
                         "Quantity", cantidadDefault.ToString());
                 if (stringCantidad == null || stringCantidad == string.Empty) return null;
                 if (!int.TryParse(stringCantidad, out int cantidad) || (cantidad <= 0))
@@ -182,6 +145,17 @@ namespace Windows.Forms
                 valido = false;
                 errorProvider1.SetError(dgv, "You must enter at least one item.");
             }
+            if (cboOrderType.SelectedIndex == 0)
+            {
+                valido = false;
+                errorProvider1.SetError(cboOrderType, "You must select an order type.");
+            }
+
+            if (cboOrderStatus.SelectedIndex == 0)
+            {
+                valido = false;
+                errorProvider1.SetError(cboOrderStatus, "You must select an order status.");
+            }
             return valido;
         }
 
@@ -203,7 +177,7 @@ namespace Windows.Forms
                 var r = dgv.Rows[filaSeleccionada];
                 SaleDetail dt = (SaleDetail)r.Tag!;
                 DialogResult dr = MessageBox.Show("Remove selected item?",
-                    "Confirm",MessageBoxButtons.YesNo,MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
                 if (dr == DialogResult.No) return;
 
                 var itemType = dt.ProductId is null ? ItemType.Combo : ItemType.Product;
@@ -262,7 +236,7 @@ namespace Windows.Forms
             RecargarGrilla();
         }
 
-        private void btnOk_Click_1(object sender, EventArgs e)
+        private void btnOk_Click(object sender, EventArgs e)
         {
             if (ValidarDatos())
             {
@@ -282,10 +256,43 @@ namespace Windows.Forms
                 sale.OrderTypeId = (int)cboOrderType.SelectedValue;
 
                 sale.TotalAmount = sale.GetTotal();
+
                 DialogResult = DialogResult.OK;
             }
         }
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (ValidarDatos())
+            {
+                frmSelectCustomer frmCustomer = new frmSelectCustomer(_serviceProvider) { Text = "Seleccionar Cliente" };
+                DialogResult drCustomer = frmCustomer.ShowDialog(this);
 
+                if (drCustomer == DialogResult.OK)
+                {
+                    Customer? customer = frmCustomer.GetCustomer();
+                    sale!.CustomerId = customer!.CustomerId != 99999 ? customer.CustomerId : null;
+                    sale.Customer = customer;
+                    sale.SaleDate = DateTime.Now;
+                    sale.OrderStatusId = (int)cboOrderStatus.SelectedValue;
+                    sale.OrderTypeId = (int)cboOrderType.SelectedValue;
+                    sale.TotalAmount = sale.GetTotal();
+
+                    frmPayment frmPayment = new frmPayment(sale, _serviceProvider);
+                    DialogResult drPayment = frmPayment.ShowDialog(this);
+
+                    if (drPayment == DialogResult.OK)
+                    {
+                       DialogResult = DialogResult.OK;
+                       Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("El proceso de pago fue cancelado. La venta no se guardará.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+
+        }
         private void btnCancel_Click(object sender, EventArgs e)
         {
             CancelarCompra();
@@ -300,6 +307,6 @@ namespace Windows.Forms
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-        }
+        }                
     }
 }

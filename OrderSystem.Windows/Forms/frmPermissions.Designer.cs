@@ -31,21 +31,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPermissions));
             btnAssign = new Button();
             btnRemove = new Button();
-            dgvAvailable = new DataGridView();
+            dgvUnassigned = new DataGridView();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            colMenu = new DataGridViewTextBoxColumn();
             dgvAssigned = new DataGridView();
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            col2 = new DataGridViewTextBoxColumn();
             splitContainer3 = new SplitContainer();
             panel1 = new Panel();
             cboRoles = new ComboBox();
             label1 = new Label();
-            btnCancel = new Button();
-            btnSave = new Button();
-            ((System.ComponentModel.ISupportInitialize)dgvAvailable).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvUnassigned).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvAssigned).BeginInit();
             ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
             splitContainer3.Panel1.SuspendLayout();
-            splitContainer3.Panel2.SuspendLayout();
             splitContainer3.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -76,23 +75,23 @@
             btnRemove.UseVisualStyleBackColor = true;
             btnRemove.Click += btnRemove_Click;
             // 
-            // dgvAvailable
+            // dgvUnassigned
             // 
-            dgvAvailable.AllowUserToAddRows = false;
-            dgvAvailable.AllowUserToDeleteRows = false;
-            dgvAvailable.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvAvailable.BackgroundColor = Color.White;
-            dgvAvailable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvAvailable.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1 });
-            dgvAvailable.Location = new Point(37, 249);
-            dgvAvailable.MultiSelect = false;
-            dgvAvailable.Name = "dgvAvailable";
-            dgvAvailable.ReadOnly = true;
-            dgvAvailable.RowHeadersVisible = false;
-            dgvAvailable.RowHeadersWidth = 82;
-            dgvAvailable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvAvailable.Size = new Size(680, 590);
-            dgvAvailable.TabIndex = 6;
+            dgvUnassigned.AllowUserToAddRows = false;
+            dgvUnassigned.AllowUserToDeleteRows = false;
+            dgvUnassigned.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvUnassigned.BackgroundColor = Color.White;
+            dgvUnassigned.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvUnassigned.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, colMenu });
+            dgvUnassigned.Location = new Point(39, 304);
+            dgvUnassigned.MultiSelect = false;
+            dgvUnassigned.Name = "dgvUnassigned";
+            dgvUnassigned.ReadOnly = true;
+            dgvUnassigned.RowHeadersVisible = false;
+            dgvUnassigned.RowHeadersWidth = 82;
+            dgvUnassigned.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvUnassigned.Size = new Size(680, 590);
+            dgvUnassigned.TabIndex = 6;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -102,6 +101,13 @@
             dataGridViewTextBoxColumn1.ReadOnly = true;
             dataGridViewTextBoxColumn1.Visible = false;
             // 
+            // colMenu
+            // 
+            colMenu.HeaderText = "Menu";
+            colMenu.MinimumWidth = 10;
+            colMenu.Name = "colMenu";
+            colMenu.ReadOnly = true;
+            // 
             // dgvAssigned
             // 
             dgvAssigned.AllowUserToAddRows = false;
@@ -109,8 +115,8 @@
             dgvAssigned.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvAssigned.BackgroundColor = Color.White;
             dgvAssigned.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvAssigned.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn2 });
-            dgvAssigned.Location = new Point(1060, 261);
+            dgvAssigned.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn2, col2 });
+            dgvAssigned.Location = new Point(1060, 304);
             dgvAssigned.MultiSelect = false;
             dgvAssigned.Name = "dgvAssigned";
             dgvAssigned.ReadOnly = true;
@@ -128,6 +134,13 @@
             dataGridViewTextBoxColumn2.ReadOnly = true;
             dataGridViewTextBoxColumn2.Visible = false;
             // 
+            // col2
+            // 
+            col2.HeaderText = "Menu";
+            col2.MinimumWidth = 10;
+            col2.Name = "col2";
+            col2.ReadOnly = true;
+            // 
             // splitContainer3
             // 
             splitContainer3.Dock = DockStyle.Fill;
@@ -140,19 +153,16 @@
             splitContainer3.Panel1.BackgroundImage = Properties.Resources.Captura_de_pantalla_2025_08_02_005150;
             splitContainer3.Panel1.Controls.Add(panel1);
             splitContainer3.Panel1.Controls.Add(dgvAssigned);
-            splitContainer3.Panel1.Controls.Add(dgvAvailable);
+            splitContainer3.Panel1.Controls.Add(dgvUnassigned);
             splitContainer3.Panel1.Controls.Add(btnRemove);
             splitContainer3.Panel1.Controls.Add(btnAssign);
             // 
             // splitContainer3.Panel2
             // 
             splitContainer3.Panel2.BackgroundImage = Properties.Resources.Green_Retro_Illustrative_Fast_Food_Logo__1_;
-            splitContainer3.Panel2.Controls.Add(btnCancel);
-            splitContainer3.Panel2.Controls.Add(btnSave);
             splitContainer3.Size = new Size(1752, 1018);
-            splitContainer3.SplitterDistance = 851;
+            splitContainer3.SplitterDistance = 945;
             splitContainer3.TabIndex = 1;
-            splitContainer3.SplitterMoved += splitContainer3_SplitterMoved;
             // 
             // panel1
             // 
@@ -188,29 +198,6 @@
             label1.TabIndex = 4;
             label1.Text = "Rol:";
             // 
-            // btnCancel
-            // 
-            btnCancel.BackColor = Color.IndianRed;
-            btnCancel.ForeColor = SystemColors.ButtonHighlight;
-            btnCancel.Location = new Point(1558, 29);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(182, 95);
-            btnCancel.TabIndex = 5;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = false;
-            btnCancel.Click += btnCancel_Click;
-            // 
-            // btnSave
-            // 
-            btnSave.BackgroundImage = (Image)resources.GetObject("btnSave.BackgroundImage");
-            btnSave.Location = new Point(1362, 29);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(182, 95);
-            btnSave.TabIndex = 4;
-            btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
-            // 
             // frmPermissions
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -223,10 +210,9 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmPermissions";
             Load += PermissionsForm_Load;
-            ((System.ComponentModel.ISupportInitialize)dgvAvailable).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvUnassigned).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvAssigned).EndInit();
             splitContainer3.Panel1.ResumeLayout(false);
-            splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
             splitContainer3.ResumeLayout(false);
             panel1.ResumeLayout(false);
@@ -236,16 +222,16 @@
 
         #endregion
         private DataGridView dgvAssigned;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private DataGridView dgvAvailable;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridView dgvUnassigned;
         private Button btnRemove;
         private Button btnAssign;
         private SplitContainer splitContainer3;
         private ComboBox cboRoles;
         private Label label1;
-        private Button btnCancel;
-        private Button btnSave;
         private Panel panel1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn colMenu;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn col2;
     }
 }

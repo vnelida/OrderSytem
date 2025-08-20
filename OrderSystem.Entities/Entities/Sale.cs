@@ -33,5 +33,8 @@
         {
             Details.Remove(dt);
         }
+
+        public List<Payment> Payments { get; set; } = new List<Payment>(); // <<<--- Nueva lista de pagos en memoria
+
     }
 }

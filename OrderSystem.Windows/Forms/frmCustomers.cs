@@ -9,6 +9,17 @@ namespace Windows.Forms
 {
     public partial class frmCustomers : Form
     {
+        private readonly IServiceProvider? _serviceProvider;
+        private readonly ICustomersServices? _service;
+        private List<CustomerListDto>? lista;
+
+        private int currentPage = 1;
+        private int totalPages = 0;
+        private int pageSize = 20;
+        private int totalRecords = 0;
+
+        Order selectedOrder = Order.None;
+
         public frmCustomers(IServiceProvider? serviceProvider)
         {
             InitializeComponent();
@@ -20,16 +31,6 @@ namespace Windows.Forms
             _service = serviceProvider?.GetService<ICustomersServices>()
                 ?? throw new ApplicationException("Dependencies not loaded"); ;
         }
-        private readonly IServiceProvider? _serviceProvider;
-        private readonly ICustomersServices? _service;
-        private List<CustomerListDto>? lista;
-
-        private int currentPage = 1;
-        private int totalPages = 0;
-        private int pageSize = 20;
-        private int totalRecords = 0;
-
-        Order selectedOrder=Order.None;
         private void frmCustomers_Load(object sender, EventArgs e)
         {
             try
@@ -44,6 +45,7 @@ namespace Windows.Forms
                 throw;
             }
         }
+
         private void btnNew_Click(object sender, EventArgs e)
         {
             frmCustomersAE frm = new frmCustomersAE(_serviceProvider) { Text = "Add Customer" };
@@ -132,7 +134,6 @@ namespace Windows.Forms
                     GridHelper.SetearFila(r, c);
                     GridHelper.AgregarFila(r, dgvDatos);
                 }
-
             }
         }
         private void tsbDelete_Click(object sender, EventArgs e)

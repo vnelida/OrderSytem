@@ -10,7 +10,7 @@
         public ucItem()
         {
             InitializeComponent();
-            _noImageAvailablePath = Path.Combine(_imagesBasePath, "SinImagenDisponible.jpg");
+            _noImageAvailablePath = Path.Combine(_imagesBasePath, "ArchivoNoEncontrado1.jpg");
             _fileNotFoundPath = Path.Combine(_imagesBasePath, "ArchivoNoEncontrado1.jpg");
 
         }
@@ -34,31 +34,32 @@
         {
             BackColor = Color.White;
         }
+        
         private void LoadAndDisplayItemImage()
         {
-            picImage.Image = null; 
+            picImage.Image = null;
             if (!string.IsNullOrEmpty(_itemImageFileName))
             {
                 string fullPathToProductImage = Path.Combine(_imagesBasePath, _itemImageFileName);
 
                 try
-                {                   
+                {
                     if (File.Exists(fullPathToProductImage))
                     {
-                        picImage.Image = Image.FromFile(fullPathToProductImage); 
-                        picImage.SizeMode = PictureBoxSizeMode.Zoom;
+                        picImage.Image = Image.FromFile(fullPathToProductImage);
+                        picImage.SizeMode = PictureBoxSizeMode.StretchImage;
                     }
                     else
                     {
                         if (File.Exists(_fileNotFoundPath))
                         {
                             picImage.Image = Image.FromFile(_fileNotFoundPath);
-                            picImage.SizeMode = PictureBoxSizeMode.CenterImage; 
+                            picImage.SizeMode = PictureBoxSizeMode.StretchImage;
                         }
                         else
                         {
                             System.Diagnostics.Debug.WriteLine($"Error: Imagen de 'Archivo no encontrado' no existe en: {_fileNotFoundPath}");
-                            picImage.Image = null; 
+                            picImage.Image = null;
                         }
                     }
                 }
@@ -68,7 +69,7 @@
                     if (File.Exists(_fileNotFoundPath))
                     {
                         picImage.Image = Image.FromFile(_fileNotFoundPath);
-                        picImage.SizeMode = PictureBoxSizeMode.CenterImage;
+                        picImage.SizeMode = PictureBoxSizeMode.StretchImage;
                     }
                     else
                     {
@@ -76,12 +77,12 @@
                     }
                 }
             }
-            else 
+            else
             {
                 if (File.Exists(_noImageAvailablePath))
                 {
                     picImage.Image = Image.FromFile(_noImageAvailablePath);
-                    picImage.SizeMode = PictureBoxSizeMode.CenterImage;
+                    picImage.SizeMode = PictureBoxSizeMode.StretchImage;
                 }
                 else
                 {

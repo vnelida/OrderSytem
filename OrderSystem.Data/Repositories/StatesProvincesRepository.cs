@@ -30,7 +30,6 @@ namespace Data.Repositories
         {
             var deleteQuery = @"DELETE FROM StatesProvinces 
                 WHERE StateProvinceId=@StateProvinceId";
-            //TODO:Modificar este método
             int registrosAfectados = conn
                 .Execute(deleteQuery, new { stateProvinceId }, tran);
             if (registrosAfectados == 0)
@@ -45,7 +44,6 @@ namespace Data.Repositories
             SET StateProvinceName=@StateProvinceName,
                 CountryId=@CountryId
                 WHERE StateProvinceId=@StateProvinceId";
-            //TODO:Ver otra forma
             int registrosAfectados = conn.Execute(updateQuery, sp, tran);
             if (registrosAfectados == 0)
             {

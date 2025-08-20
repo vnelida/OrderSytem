@@ -130,7 +130,7 @@ namespace IOC
             });
 
             service.AddScoped<ISaleDetailsRepository, SaleDetailsRepository>();
-
+            service.AddScoped<IPaymentRepository, PaymentRepository>();
 
             service.AddScoped<ISalesRepository, SalesRepository>();
 
@@ -139,9 +139,12 @@ namespace IOC
                 var repository = new SalesRepository();
                 var repositoryDetails = new SaleDetailsRepository();
                 var itemsService = sp.GetRequiredService<IItemsService>(); 
+                var payRepository=sp.GetRequiredService<IPaymentRepository>();
 
-                return new SalesService(repository, repositoryDetails, itemsService, cadena);
+                return new SalesService(repository, repositoryDetails, itemsService,payRepository, cadena);
             });
+
+            ;
 
             service.AddScoped<IUsersService>(sp =>
             {
@@ -154,6 +157,18 @@ namespace IOC
             {
                 var repository = new RoleRepository();
                 return new RoleService(repository, cadena);
+            });
+            service.AddScoped<IPermissionRepository, PermissionsRepository>();
+            service.AddScoped<IPermissionService>(sp =>
+            {
+                var repository = new PermissionsRepository();
+                return new PermissionsService(repository, cadena);
+            });
+            service.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+            service.AddScoped<IPaymentMethodService>(sp =>
+            {
+                var repository = new PaymentMethodRepository();
+                return new PaymentMethodService(repository, cadena);
             });
 
             return service.BuildServiceProvider();

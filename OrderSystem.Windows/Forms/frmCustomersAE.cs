@@ -157,8 +157,8 @@ namespace Windows.Forms
 
                 if (_customer?.CustomerPhones.Any(cp => cp.Phone?.PhoneNumber == newCustomerPhoneEntity.Phone?.PhoneNumber) ?? false)
                 {
-                    MessageBox.Show("El número de teléfono ya existe en la lista para este cliente.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Salir del método sin agregar el teléfono
+                    MessageBox.Show("The phone number already exists in the list for this customer.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return; 
                 }
                 newCustomerPhoneEntity.Phone!.PhoneId = 0;
                 newCustomerPhoneEntity.PhoneId = 0;       
